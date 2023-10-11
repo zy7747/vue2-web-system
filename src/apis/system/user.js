@@ -1,0 +1,75 @@
+export default {
+  login: {
+    url: "/user/login",
+    method: "get",
+    app: "user",
+    text: "用户登录",
+  },
+  signUp: {
+    url: "/user/signUp",
+    method: "post",
+    app: "user",
+    text: "用户注册",
+  },
+  addFriend: {
+    url: "/user/addFriend",
+    method: "post",
+    app: "user",
+    text: "添加好友",
+  },
+  getFriend: {
+    url: "/user/getFriend",
+    method: "get",
+    app: "user",
+    text: "新增好友列表",
+  },
+  agreeFriend: {
+    url: "/user/agreeFriend",
+    method: "get",
+    app: "user",
+    text: "同意好友新增",
+  },
+  friendList: {
+    url: "/user/friendList",
+    method: "get",
+    app: "user",
+    text: "好友列表",
+  },
+  searchFriend: {
+    url: "/user/searchFriend",
+    method: "get",
+    app: "user",
+    text: "搜索好友",
+  },
+  page: {
+    url: "/user/page",
+    method: "get",
+    app: "user",
+    text: "用户分页",
+  },
+  detail: {
+    url: "/user/detail",
+    method: "get",
+    app: "user",
+    text: "用户详情",
+  },
+  saveList: {
+    url: "/user/saveList",
+    method: "post",
+    app: "user",
+    text: "用户编辑",
+  },
+  delete: {
+    url: "/user/delete",
+    method: "delete",
+    app: "user",
+    text: "用户删除",
+  },
+  export: {
+    url: "/user/export",
+    method: "get",
+    app: "user",
+    blob: true,
+    text: "用户导出",
+  },
+};

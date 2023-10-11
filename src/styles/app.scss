@@ -1,0 +1,20 @@
+:root {
+  --logoColor: #b3c0d1; //header栏颜色
+  // background: linear-gradient(to right, #ff0000, #00ff00);
+  // --logoColor: #3b4255;
+  --headerHeight: 50px;
+  --menuColor: #3b4255; //菜单背景颜色
+  --menuTextColor: #ece5d8;
+  --collapseBackGround: url("@/assets/images/国王与宝剑.jpg");
+  --headerBackground: linear-gradient(to right, #aebaca, #d5d9df);
+  --headerBackgroundImg: url("@/assets/images/派蒙.png");
+}
+
+.btn {
+  margin-right: 8px;
+}
+
+#nprogress .bar {
+  background-image: url("@/assets/images/国王与宝剑.jpg"); //自定义颜色
+  // height: 10px;
+}
