@@ -8,6 +8,7 @@ import CRadio from "./CElement/CRadio/index.vue";
 import CNumber from "./CElement/CNumber/index.vue";
 import CButton from "./CElement/CButton/index.vue";
 import CSwitch from "./CElement/CSwitch/index.vue";
+import CColorPicker from "./CElement/CColorPicker/index.vue";
 
 import CCard from "./CElement/CCard/index.vue";
 import CForm from "./CElement/CForm/index.vue";
@@ -15,6 +16,8 @@ import CTable from "./CElement/CTable/index.vue";
 import CDialog from "./CElement/CDialog/index.vue";
 
 import CDatePicker from "./CElement/CDatePicker/index.vue";
+import CTimePicker from "./CElement/CTimePicker/index.vue";
+import CDateTimePicker from "./CElement/CDateTimePicker/index.vue";
 import CTreeSelect from "./CElement/CTreeSelect/index.vue";
 
 import Editor from "./Editor/index.vue";
@@ -34,6 +37,9 @@ Vue.component("CSwitch", CSwitch);
 Vue.component("CCheckbox", CCheckbox);
 Vue.component("CRadio", CRadio);
 Vue.component("CNumber", CNumber);
+Vue.component("CColorPicker", CColorPicker);
+Vue.component("CTimePicker", CTimePicker);
+Vue.component("CDateTimePicker", CDateTimePicker);
 
 Vue.component("CForm", CForm);
 Vue.component("CCard", CCard);

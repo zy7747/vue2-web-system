@@ -180,7 +180,7 @@ export default {
      */
     //获取好友列表
     getFriendList() {
-      this.$service.system.user.friendList().then((res) => {
+      this.$service.baseData.user.friendList().then((res) => {
         this.friendList = res.data;
       });
     },
@@ -190,7 +190,7 @@ export default {
     },
     //获取需要同意的好友操作
     getAgreeFriendInfo() {
-      this.$service.system.user.getFriend().then((res) => {
+      this.$service.baseData.user.getFriend().then((res) => {
         this.agreeFriendList = res.data;
         this.getFriendList();
       });
@@ -321,7 +321,7 @@ export default {
     },
     //发送消息
     sendMessage() {
-      this.$service.system.message.sendOne({
+      this.$service.baseData.message.sendOne({
         friendId: this.active,
         message: JSON.stringify({
           userInfo: this.loginInfo,

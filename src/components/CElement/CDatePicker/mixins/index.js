@@ -36,13 +36,6 @@ export default {
         return false;
       },
     },
-    type: {
-      text: "日期选择器类型",
-      type: [String],
-      default: () => {
-        return "date";
-      },
-    },
     format: {
       text: "日期格式",
       type: [String],

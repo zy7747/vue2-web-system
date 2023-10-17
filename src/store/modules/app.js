@@ -12,7 +12,7 @@ const app = {
   actions: {
     //字典类型处理
     GetDict({ commit }) {
-      service.system.dict.dictAllList().then((res) => {
+      service.baseData.dict.dictAllList().then((res) => {
         let dictList = res.data;
 
         for (const key in dictList) {

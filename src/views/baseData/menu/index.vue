@@ -85,7 +85,7 @@ export default {
   methods: {
     //1.查询
     query(page, size) {
-      return this.$service.system.menu.list(this.queryData).then((res) => {
+      return this.$service.baseData.menu.list(this.queryData).then((res) => {
         const menu = res.data;
         menu.sort((a, b) => a.sort - b.sort);
         this.tableData = this.$handleTree(menu);
@@ -108,7 +108,7 @@ export default {
       // 新增
       this.$refs.form.validate().then((valid) => {
         if (valid) {
-          this.$service.system.menu.saveList([this.formData]).then((res) => {
+          this.$service.baseData.menu.saveList([this.formData]).then((res) => {
             if (res.code === 200) {
               this.$message.success("提交成功");
               this.search();
@@ -128,13 +128,13 @@ export default {
     },
     //删除
     deleteLine(row, index) {
-      this.$service.system.menu.delete([row]).then((res) => {
+      this.$service.baseData.menu.delete([row]).then((res) => {
         this.search();
       });
     },
     //通过id获取详情
     detail(id) {
-      this.$service.system.menu.detail({ id }).then((res) => {
+      this.$service.baseData.menu.detail({ id }).then((res) => {
         const data = res.data;
         this.formData = data;
       });
@@ -144,7 +144,7 @@ export default {
       this.$modal
         .confirm("是否删除")
         .then(() => {
-          this.$service.system.menu.delete(this.checkList).then((res) => {
+          this.$service.baseData.menu.delete(this.checkList).then((res) => {
             this.search();
           });
         })
@@ -202,7 +202,7 @@ export default {
     },
     //导出
     exportExcel() {
-      this.$service.system.menu.export().then((res) => {
+      this.$service.baseData.menu.export().then((res) => {
         this.$download.excel(res, "菜单.xls");
       });
     },

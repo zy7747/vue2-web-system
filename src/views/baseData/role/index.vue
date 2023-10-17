@@ -236,7 +236,7 @@ export default {
   methods: {
     //1.查询
     query(page, size) {
-      return this.$service.system.role
+      return this.$service.baseData.role
         .page({ page, size, ...this.queryData })
         .then((res) => {
           return res.data;
@@ -260,7 +260,7 @@ export default {
       // 新增
       this.$refs.form.validate().then((valid) => {
         if (valid) {
-          this.$service.system.role
+          this.$service.baseData.role
             .saveList([
               { ...this.formData, menuList: this.$refs.tree.getCheckedKeys() },
             ])
@@ -284,13 +284,13 @@ export default {
     },
     //删除
     deleteLine(row, index) {
-      this.$service.system.role.delete([row]).then((res) => {
+      this.$service.baseData.role.delete([row]).then((res) => {
         this.search();
       });
     },
     //通过id获取详情
     detail(id) {
-      this.$service.system.role.detail({ id }).then((res) => {
+      this.$service.baseData.role.detail({ id }).then((res) => {
         this.formData = res.data;
         this.menuCheckList = res.data.menuList;
         this.queryMenu();
@@ -301,7 +301,7 @@ export default {
       this.$modal
         .confirm("是否删除")
         .then(() => {
-          this.$service.system.role.delete(this.checkList).then((res) => {
+          this.$service.baseData.role.delete(this.checkList).then((res) => {
             this.search();
           });
         })
@@ -341,7 +341,7 @@ export default {
     },
     //导出
     exportExcel() {
-      this.$service.system.role.export().then((res) => {
+      this.$service.baseData.role.export().then((res) => {
         this.$download.excel(res, "角色.xls");
       });
     },
@@ -352,7 +352,7 @@ export default {
     },
     //查询菜单
     queryMenu() {
-      return this.$service.system.menu.list().then((res) => {
+      return this.$service.baseData.menu.list().then((res) => {
         this.menuList = this.$handleTree(res.data);
       });
     },

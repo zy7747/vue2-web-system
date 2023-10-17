@@ -12,6 +12,9 @@
         :data="tableData"
         :style="`width:${width}`"
         v-loading="loading"
+        element-loading-text="拼命加载中"
+        element-loading-spinner="el-icon-loading"
+        element-loading-background="rgba(0, 0, 0, 0.8)"
         @selection-change="handleSelectionChange"
       >
         <template v-for="(item, index) in tableColumn">
@@ -404,7 +407,6 @@ export default {
     },
     // 拖拽排序
     rowDrop() {
-      console.log(this.$refs.eTabl);
       const el = this.$refs.eTable.$el.querySelectorAll(
         ".el-table__body-wrapper > table > tbody"
       )[0];

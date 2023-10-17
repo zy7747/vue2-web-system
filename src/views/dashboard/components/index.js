@@ -1,0 +1,9 @@
+export { default as Lines } from "./Lines.vue";
+export { default as Bar } from "./Bar.vue";
+export { default as Pie } from "./Pie.vue";
+export { default as Radar } from "./Radar.vue";
+export { default as Gauge } from "./Gauge.vue";
+export { default as Label } from "./Label.vue";
+export { default as Nightingale } from "./Nightingale.vue";
+export { default as Rounded } from "./Rounded.vue";
+export { default as Calendar } from "./Calendar.vue";

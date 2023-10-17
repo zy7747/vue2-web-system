@@ -60,7 +60,7 @@ const user = {
   actions: {
     // 登录
     Login({ commit }, loginInfo) {
-      return service.system.user.login(loginInfo).then((response) => {
+      return service.baseData.user.login(loginInfo).then((response) => {
         if (response.code === 200) {
           //2.保存TOKEN
           commit("SET_TOKEN", response.data.token);

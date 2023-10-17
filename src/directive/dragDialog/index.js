@@ -1,3 +1,4 @@
+//element弹窗拖拽
 export default {
   bind(el, binding, vnode) {
     let dialogHeaderEl = el.querySelector(".el-dialog__header");

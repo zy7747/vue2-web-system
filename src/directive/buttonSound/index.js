@@ -1,3 +1,4 @@
+// 全局按键音效
 const typewriterButton = require("@/assets/audio/button/typewriter-button.mp3");
 const button2 = require("@/assets/audio/button/button2.mp3");
 

@@ -1,4 +1,4 @@
-<!--  -->
+<!-- 自定义鼠标样式 -->
 <template>
   <div ref="mouse" :class="{ pointer: 'pointer', hidden: hideCursor }">
     <svg-icon icon-class="鼠标" class="icon" />

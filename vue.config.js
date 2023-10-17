@@ -7,6 +7,7 @@ function resolve(dir) {
 }
 
 module.exports = defineConfig({
+  publicPath: "/web-system",
   transpileDependencies: true,
   devServer: {
     port: 3002,
@@ -14,15 +15,15 @@ module.exports = defineConfig({
       overlay: false,
     },
     host: "localhost",
-    proxy: {
-      "/devApis": {
-        target: "http://localhost:8080",
-        changeOrigin: true,
-        pathRewrite: {
-          "^/devApis": "",
-        },
-      },
-    },
+    // proxy: {
+    //   "/api": {
+    //     target: "http://localhost:8880",
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       "^/api": "",
+    //     },
+    //   },
+    // },
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

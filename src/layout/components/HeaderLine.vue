@@ -37,13 +37,15 @@
           content="系统公告"
           placement="top-start"
         >
-          <a class="cursor" href="JavaScript:void(0)">
-            <svg-icon
-              icon-class="系统公告"
-              class="icon"
-              style="font-size: 25px"
-            />
-          </a>
+          <el-badge is-dot class="dot">
+            <a class="cursor" href="JavaScript:void(0)">
+              <svg-icon
+                icon-class="系统公告"
+                class="icon"
+                style="font-size: 25px"
+              />
+            </a>
+          </el-badge>
         </el-tooltip>
 
         <div class="notice">
@@ -231,7 +233,6 @@ export default {
     },
     //切换账号
     changeAccount() {
-      console.log(123);
       this.accountVisible = true;
     },
     // 改变全屏
@@ -322,5 +323,9 @@ export default {
 
 .action-icon {
   font-size: 16px;
+}
+
+.el-badge__content.is-dot {
+  top: 5px;
 }
 </style>

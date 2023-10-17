@@ -22,13 +22,6 @@ export default {
         return [];
       },
     },
-    size: {
-      text: "下拉框大小",
-      type: [String],
-      default: () => {
-        return "small";
-      },
-    },
     clearable: {
       text: "可清除",
       type: [Boolean],

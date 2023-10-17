@@ -213,7 +213,7 @@ export default {
     },
     // 1.用户查询和过滤
     query(page, size) {
-      return this.$service.system.user
+      return this.$service.baseData.user
         .searchFriend({ page, size, ...this.queryData })
         .then((res) => {
           const userList = res.data.userList.list.map((user) => {
@@ -232,14 +232,16 @@ export default {
     },
     //添加好友
     addFriend(row) {
-      this.$service.system.user.addFriend({ friendId: row.id }).then((res) => {
-        if (res.code === 200) {
-          this.$message.success("好友请求已发送");
-          this.resetQueryData();
-        } else {
-          this.$message.success("消息推送失败");
-        }
-      });
+      this.$service.baseData.user
+        .addFriend({ friendId: row.id })
+        .then((res) => {
+          if (res.code === 200) {
+            this.$message.success("好友请求已发送");
+            this.resetQueryData();
+          } else {
+            this.$message.success("消息推送失败");
+          }
+        });
     },
   },
 };

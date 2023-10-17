@@ -122,6 +122,31 @@ export function divide(divisor, dividend) {
 }
 
 /**
+ * 生成随机颜色
+ *
+ * @param {*} num 生成随机颜色数量
+ * @param {*} dividend 被除数
+ * @returns
+ */
+export function randomColor(num) {
+  let colorList = [];
+  for (var i = 0; i < 10; i++) {
+    var colorStr = Math.floor(Math.random() * 0xffffff).toString(16);
+    //如果颜色值是五位，则补零
+    if (colorStr.length < 6) {
+      colorStr += "0";
+    }
+    if (colorStr == "005094") {
+      i--;
+      continue;
+    }
+    colorList.push("#" + colorStr);
+  }
+
+  return colorList;
+}
+
+/**
  * 格式化数字显示方式
  * 用法
  * formatNumber(12345.999,'#,##0.00');
@@ -188,5 +213,8 @@ export function formatMoney(value, prefix, pattern) {
   let sign = value < 0 ? "-" : "";
   return prefix + sign + formatNumber(Math.abs(value), pattern || "#,##0.00");
 }
+
+//数组对象去重
+//lodash.uniqBy(arr, 'value')
 
 Vue.prototype.$handleTree = handleTree;

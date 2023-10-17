@@ -101,6 +101,7 @@
           <!-- 文件 -->
           <div class="files">
             <draggable
+              v-if="fileFilterList.length > 0"
               v-model="fileList"
               group="people"
               @start="start"
@@ -151,6 +152,8 @@
                 </div>
               </transition-group>
             </draggable>
+
+            <el-empty v-else description="文件夹里空空如也"></el-empty>
           </div>
         </div>
       </div>
@@ -432,12 +435,10 @@ export default {
     },
     // 开始拖拽
     start(event) {
-      console.log("start");
       console.log(event, this.fileList);
     },
     // 结束拖拽
     end(event) {
-      console.log("end");
       // event.item  拖拽的本身
       // event.to      拖拽的目标列表
       // event.from    拖拽之前的列表

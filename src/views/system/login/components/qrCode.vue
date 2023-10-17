@@ -1,8 +1,8 @@
 <!-- 二维码 -->
 <template>
   <div class="qrCode">
-    <div class="qrCodeBox">
-      <el-image :src="src" />
+    <div class="qrCodeBox" @click="refresh">
+      <canvas ref="qrCodeCanvas" style="width: 200px; height: 200px"> </canvas>
     </div>
     <div class="prompt">
       {{ "打开微信扫一扫" }}
@@ -11,12 +11,24 @@
 </template>
 
 <script>
+import qrcode from "qrcode";
+
 export default {
   name: "QrCode",
-  data() {
-    return {
-      src: "https://my-1307762674.cos.ap-guangzhou.myqcloud.com/picture/%E4%BA%8C%E7%BB%B4%E7%A0%81.png",
-    };
+  mounted() {
+    this.createQrCode();
+  },
+  methods: {
+    createQrCode() {
+      qrcode.toCanvas(this.$refs.qrCodeCanvas, "要生成二维码的内容", {
+        width: 200, //自定义宽度
+        color: {
+          dark: "#000", //自定义码的颜色
+          light: "#f6f5f5", //自定义背景颜色
+        },
+      });
+    },
+    refresh() {},
   },
 };
 </script>
@@ -31,6 +43,7 @@ export default {
   justify-content: center;
   flex-direction: column;
   .qrCodeBox {
+    cursor: pointer;
     width: 200px;
     height: 200px;
     border-radius: 15px;

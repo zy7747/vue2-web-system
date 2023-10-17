@@ -3,6 +3,8 @@ import App from "./App.vue";
 import router from "@/permission";
 import store from "./store";
 import i18n from "./i18n";
+import Print from "vue-print-nb";
+import consoleColor from "./utils/consoleColor";
 
 //全局指令
 import "@/directive";
@@ -28,6 +30,9 @@ import "@/dict";
 import "@/utils/formatData";
 
 Vue.config.productionTip = false;
+Vue.prototype.$log = consoleColor;
+
+Vue.use(Print); //注册
 
 new Vue({
   i18n,

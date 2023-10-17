@@ -344,7 +344,7 @@ export default {
   methods: {
     //1.查询
     query(page, size) {
-      return this.$service.system.dict
+      return this.$service.baseData.dict
         .page({ page, size, ...this.queryData })
         .then((res) => {
           return res.data;
@@ -367,7 +367,7 @@ export default {
       // 新增
       this.$refs.form.validate().then((valid) => {
         if (valid) {
-          this.$service.system.dict.saveList([this.formData]).then((res) => {
+          this.$service.baseData.dict.saveList([this.formData]).then((res) => {
             if (res.code === 200) {
               this.$message.success("提交成功");
               this.search();
@@ -389,21 +389,21 @@ export default {
     },
     //删除
     deleteLine(row, index) {
-      this.$service.system.dict.delete([row]).then((res) => {
+      this.$service.baseData.dict.delete([row]).then((res) => {
         this.search();
       });
     },
     //详情
     detail(id) {
       //通过id获取详情
-      this.$service.system.dict.detail({ id }).then((res) => {
+      this.$service.baseData.dict.detail({ id }).then((res) => {
         this.formData = res.data;
         this.dictListDetail(id);
       });
     },
     dictListDetail(id) {
       //获取子集列表
-      this.$service.system.dict.dictSubList({ parentId: id }).then((res) => {
+      this.$service.baseData.dict.dictSubList({ parentId: id }).then((res) => {
         //获取数据
         this.dictSubListData = res.data;
         //刷新表单
@@ -415,7 +415,7 @@ export default {
       this.$modal
         .confirm("是否删除")
         .then(() => {
-          this.$service.system.dict.delete(this.checkList).then((res) => {
+          this.$service.baseData.dict.delete(this.checkList).then((res) => {
             this.search();
           });
         })
@@ -461,7 +461,7 @@ export default {
     },
     //导出
     exportExcel() {
-      this.$service.system.dict.export().then((res) => {
+      this.$service.baseData.dict.export().then((res) => {
         this.$download.excel(res, "字典.xls");
       });
     },
@@ -473,7 +473,7 @@ export default {
     saveDictList(row, index) {
       //数据处理
       const data = { ...row, parentId: this.formData.id };
-      this.$service.system.dict.saveList([data]).then((res) => {
+      this.$service.baseData.dict.saveList([data]).then((res) => {
         if (res.code === 200) {
           this.$message.success("提交成功");
           this.dictListDetail(this.formData.id);
@@ -484,7 +484,7 @@ export default {
     },
     //批量删除字典集
     deleteDictLists() {
-      this.$service.system.dict.delete(this.dictSubList).then((res) => {
+      this.$service.baseData.dict.delete(this.dictSubList).then((res) => {
         if (res.code === 200) {
           this.$message.success("删除成功");
           this.dictListDetail(this.formData.id);
@@ -495,7 +495,7 @@ export default {
     },
     //删除字典集
     deleteDictList(row, index) {
-      this.$service.system.dict.delete([row]).then((res) => {
+      this.$service.baseData.dict.delete([row]).then((res) => {
         if (res.code === 200) {
           this.$message.success("删除成功");
           this.dictListDetail(this.formData.id);

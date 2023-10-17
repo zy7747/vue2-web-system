@@ -20,13 +20,15 @@
               v-on="item.on"
             />
             <!-- 树形下拉 -->
-            <c-treeSelect
-              v-if="item.type === 'selectTree'"
-              v-bind="item.attributes"
-              v-model="formData[item.prop]"
-              :options="item.options"
-              v-on="item.on"
-            />
+            <div class="treeSelect" v-if="item.type === 'selectTree'">
+              <c-treeSelect
+                v-bind="item.attributes"
+                v-model="formData[item.prop]"
+                :options="item.options"
+                v-on="item.on"
+              />
+            </div>
+
             <!-- 输入框 -->
             <c-input
               v-if="item.type === 'input'"
@@ -57,6 +59,15 @@
               v-bind="item.attributes"
               v-on="item.on"
             />
+            <!-- 颜色选择器 -->
+            <div class="colorPicker" v-if="item.type === 'colorPicker'">
+              <c-colorPicker
+                v-model="formData[item.prop]"
+                v-bind="item.attributes"
+                v-on="item.on"
+              />
+            </div>
+
             <!-- 数字 -->
             <c-number
               v-if="item.type === 'number'"
@@ -67,6 +78,20 @@
             <!-- 日期 -->
             <c-datePicker
               v-if="item.type === 'datePicker'"
+              v-bind="item.attributes"
+              v-model="formData[item.prop]"
+              v-on="item.on"
+            />
+            <!-- 时间 -->
+            <c-timePicker
+              v-if="item.type === 'timePicker'"
+              v-bind="item.attributes"
+              v-model="formData[item.prop]"
+              v-on="item.on"
+            />
+            <!-- 日期范围 -->
+            <c-dateTimePicker
+              v-if="item.type === 'dateTimePicker'"
               v-bind="item.attributes"
               v-model="formData[item.prop]"
               v-on="item.on"
@@ -127,6 +152,7 @@ export default {
 }
 .el-col {
   padding: 0 15px;
+  overflow: hidden;
 }
 
 ::v-deep .el-form-item__label {

@@ -32,9 +32,6 @@ export default {
     value(value) {
       this.datePickerValue = value;
     },
-    selectValue(value) {
-      this.$emit("input", value);
-    },
   },
   methods: {},
 };

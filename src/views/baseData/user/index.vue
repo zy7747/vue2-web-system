@@ -468,12 +468,13 @@ export default {
     },
   },
   created() {
+    this.$log.error("你好");
     this.serviceDict();
   },
   methods: {
     // 1.查询
     query(page, size) {
-      return this.$service.system.user
+      return this.$service.baseData.user
         .page({ page, size, ...this.queryData })
         .then((res) => {
           return res.data;
@@ -503,7 +504,7 @@ export default {
       // 新增
       this.$refs.form.validate().then((valid) => {
         if (valid) {
-          this.$service.system.user.saveList([this.formData]).then((res) => {
+          this.$service.baseData.user.saveList([this.formData]).then((res) => {
             if (res.code === 200) {
               this.$message.success("提交成功");
               this.search();
@@ -523,7 +524,7 @@ export default {
     },
     // 删除
     deleteLine(row, index) {
-      this.$service.system.user.delete([row]).then((res) => {
+      this.$service.baseData.user.delete([row]).then((res) => {
         this.search();
       });
     },
@@ -532,7 +533,7 @@ export default {
       this.$modal
         .confirm("是否删除")
         .then(() => {
-          this.$service.system.user.delete(this.checkList).then((res) => {
+          this.$service.baseData.user.delete(this.checkList).then((res) => {
             this.search();
           });
         })
@@ -540,7 +541,7 @@ export default {
     },
     // 通过id获取详情
     detail(id) {
-      this.$service.system.user.detail({ id }).then((res) => {
+      this.$service.baseData.user.detail({ id }).then((res) => {
         this.formData = res.data;
       });
     },
@@ -581,7 +582,7 @@ export default {
     },
     // 导出
     exportExcel() {
-      this.$service.system.user.export().then((res) => {
+      this.$service.baseData.user.export().then((res) => {
         this.$download.excel(res, "用户信息.xls");
       });
     },

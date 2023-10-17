@@ -9,9 +9,9 @@
       :placeholder="placeholder"
       :size="size"
       v-bind="$attrs"
+      v-on="$listeners"
       :clearable="clearable"
       :style="`width:${width};min-width:${minWidth};`"
-      v-on="$listeners"
     />
   </div>
 </template>

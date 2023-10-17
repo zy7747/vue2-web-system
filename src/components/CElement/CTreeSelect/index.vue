@@ -1,38 +1,32 @@
 <!--  -->
 <template>
-  <div>
+  <div class="treeSelect">
     <treeselect
       ref="CTreeSelect"
+      appendToBody
+      z-index="9999"
       :filterable="filterable"
       :disabled="disabled"
       :clearable="clearable"
       :placeholder="placeholder"
-      :size="size"
       v-model="selectValue"
       :options="options"
       :max-height="200"
-      class="custom-treeselect"
       :style="`width:${width};min-width:${minWidth};`"
       v-bind="$attrs"
       :normalizer="(node) => normalizer(node, $attrs.id, $attrs.label)"
-      v-on="{
-        ...$listeners,
-      }"
+      v-on="$listeners"
     />
   </div>
 </template>
 
 <script>
-// import the component
 import Treeselect from "@riophae/vue-treeselect";
-// import the styles
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import baseParams from "./mixins";
-import lodash from "lodash";
 
 export default {
   name: "CTreeSelect",
-  // register the component
   components: { Treeselect },
   mixins: [baseParams],
   data() {
@@ -44,7 +38,6 @@ export default {
     value(value) {
       if (Array.isArray(value)) {
         this.selectValue = value;
-        //this.selectValue = value.join(",");
       } else {
         this.selectValue = value;
       }
@@ -75,11 +68,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// ::v-deep .vue-treeselect__control {
-//   height: 34px !important;
-// }
+::v-deep .vue-treeselect__control {
+  line-height: 32px !important;
+  height: 32px !important;
+}
 
-// ::v-deep .el-form-item__content {
-//   line-height: 34px !important;
-// }
+::v-deep .vue-treeselect__input {
+  height: 32px !important;
+}
+
+.treeSelect {
+  padding-top: 4px;
+  height: 40px;
+  width: 100%;
+  overflow: hidden;
+}
 </style>

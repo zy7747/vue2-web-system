@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     agreeFriend(item) {
-      this.$service.system.user
+      this.$service.baseData.user
         .agreeFriend({ friendId: item.id })
         .then((res) => {
           this.$message.success("已同意好友请求");
