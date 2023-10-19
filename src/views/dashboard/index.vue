@@ -54,6 +54,7 @@
       <el-tab-pane label="日历" name="日历">
         <Calendar></Calendar>
       </el-tab-pane>
+      <el-tab-pane label="树形导图" name="树形导图"> </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -98,6 +99,7 @@ export default {
         xAxis: [],
         series: [],
       },
+      testData: [], // 数据源
     };
   },
   methods: {

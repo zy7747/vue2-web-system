@@ -9,7 +9,7 @@ export default {
       queryParams: [
         {
           type: "input",
-          label: "菜单名",
+          label: "名称",
           prop: "title",
           span: 6,
           attributes: {},
@@ -48,7 +48,7 @@ export default {
           fixed: "left",
         },
         {
-          label: "菜单名",
+          label: "名称",
           prop: "title",
           width: 150,
           sortable: true,
@@ -61,7 +61,7 @@ export default {
           sortable: true,
         },
         {
-          label: "路由路径",
+          label: "路径",
           prop: "path",
           width: 150,
           sortable: true,
@@ -84,12 +84,6 @@ export default {
           width: 150,
           sortable: true,
         },
-        // {
-        //   label: "层级",
-        //   prop: "level",
-        //   width: 150,
-        //   sortable: true,
-        // },
         {
           label: "排序",
           prop: "sort",
@@ -188,17 +182,81 @@ export default {
   computed: {
     //新增表单基础参数
     formParams() {
-      if (this.formData.type === "directory") {
-        return [
+      const baseForm = [
+        {
+          type: "radio",
+          label: "类型",
+          prop: "type",
+          span: 24,
+          options: this.getDictData("menu_type"),
+          attributes: {},
+          on: {
+            change() {},
+          },
+        },
+      ];
+
+      if (this.formData.type === "system") {
+        return baseForm.concat([
           {
-            type: "radio",
-            label: "类型",
-            prop: "type",
-            span: 24,
-            options: this.getDictData("menu_type"),
+            type: "input",
+            label: "应用名称",
+            prop: "title",
+            rules: [
+              { required: true, message: "名称不能为空", trigger: "blur" },
+            ],
+            span: 6,
             attributes: {},
             on: {},
           },
+          {
+            type: "input",
+            label: "应用编码",
+            prop: "path",
+            span: 6,
+            rules: [
+              { required: true, message: "路由路径不能为空", trigger: "blur" },
+            ],
+            attributes: {},
+            on: {},
+          },
+          {
+            type: "input",
+            label: "权限标识",
+            prop: "permission",
+            span: 6,
+            attributes: {},
+            on: {},
+          },
+          {
+            type: "number",
+            label: "排序",
+            prop: "sort",
+            span: 6,
+            attributes: {},
+            on: {},
+          },
+          {
+            type: "radio",
+            label: "状态",
+            prop: "status",
+            options: this.getDictData("menu_status"),
+            span: 6,
+            attributes: {},
+            on: {},
+          },
+          {
+            type: "radio",
+            label: "是否可见",
+            prop: "visible",
+            options: this.getDictData("isNo"),
+            span: 6,
+            attributes: {},
+            on: {},
+          },
+        ]);
+      } else if (this.formData.type === "directory") {
+        return baseForm.concat([
           {
             type: "selectTree",
             label: "上级",
@@ -213,7 +271,7 @@ export default {
           },
           {
             type: "input",
-            label: "名称",
+            label: "目录名称",
             prop: "title",
             rules: [
               { required: true, message: "名称不能为空", trigger: "blur" },
@@ -224,7 +282,7 @@ export default {
           },
           {
             type: "input",
-            label: "路由路径",
+            label: "路径",
             prop: "path",
             span: 6,
             rules: [
@@ -275,18 +333,9 @@ export default {
             attributes: {},
             on: {},
           },
-        ];
+        ]);
       } else if (this.formData.type === "menu") {
-        return [
-          {
-            type: "radio",
-            label: "类型",
-            prop: "type",
-            span: 24,
-            options: this.getDictData("menu_type"),
-            attributes: {},
-            on: {},
-          },
+        return baseForm.concat([
           {
             type: "selectTree",
             label: "上级",
@@ -309,7 +358,7 @@ export default {
           },
           {
             type: "input",
-            label: "名称",
+            label: "菜单名称",
             prop: "title",
             span: 6,
             rules: [
@@ -403,18 +452,9 @@ export default {
             attributes: {},
             on: {},
           },
-        ];
+        ]);
       } else if (this.formData.type === "button") {
-        return [
-          {
-            type: "radio",
-            label: "类型",
-            prop: "type",
-            span: 24,
-            options: this.getDictData("menu_type"),
-            attributes: {},
-            on: {},
-          },
+        return baseForm.concat([
           {
             type: "selectTree",
             label: "上级",
@@ -429,7 +469,7 @@ export default {
           },
           {
             type: "input",
-            label: "名称",
+            label: "按钮名称",
             prop: "title",
             span: 6,
             rules: [
@@ -463,7 +503,7 @@ export default {
             attributes: {},
             on: {},
           },
-        ];
+        ]);
       }
     },
   },

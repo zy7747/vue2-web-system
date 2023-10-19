@@ -59,7 +59,17 @@
     </CDialog>
   </div>
 </template>
+
 <script>
+import {
+  phoneNumValidate,
+  EmailValidate,
+  PasswordValidate,
+  UserNameValidate,
+  IdCardValidate,
+  AgeValidate,
+} from "@/utils/formValidate";
+
 export default {
   data() {
     return {
@@ -336,12 +346,14 @@ export default {
           label: "电话号码",
           prop: "phone",
           span: 6,
+          rules: [{ validator: phoneNumValidate, trigger: "blur" }],
           on: {},
         },
         {
           type: "input",
           label: "电子邮箱",
           prop: "email",
+          rules: [{ validator: EmailValidate, trigger: "blur" }],
           span: 6,
           on: {},
         },
@@ -357,7 +369,10 @@ export default {
           type: "input",
           label: "密码",
           prop: "password",
-          rules: [{ required: true, message: "密码不能为空", trigger: "blur" }],
+          rules: [
+            { required: true, message: "密码不能为空", trigger: "blur" },
+            { validator: PasswordValidate, trigger: "blur" },
+          ],
           span: 6,
           on: {},
         },
@@ -366,6 +381,7 @@ export default {
           label: "用户名",
           rules: [
             { required: true, message: "用户名不能为空", trigger: "blur" },
+            { validator: UserNameValidate, trigger: "blur" },
           ],
           prop: "user",
           span: 6,
@@ -384,12 +400,14 @@ export default {
           prop: "sex",
           span: 6,
           options: this.getDictData("user_sex"),
+          rules: [{ required: true, message: "性别不能为空", trigger: "blur" }],
           on: {},
         },
         {
           type: "input",
           label: "身份证号码",
           prop: "idCard",
+          rules: [{ validator: IdCardValidate, trigger: "blur" }],
           span: 6,
           on: {},
         },
@@ -425,7 +443,6 @@ export default {
           prop: "userType",
           options: this.getDictData("user_type"),
           span: 6,
-
           on: {},
         },
         {
@@ -434,7 +451,6 @@ export default {
           prop: "status",
           options: this.getDictData("user_status"),
           span: 6,
-
           on: {},
         },
         {
@@ -442,7 +458,7 @@ export default {
           label: "年龄",
           prop: "age",
           span: 6,
-
+          rules: [{ validator: AgeValidate, trigger: "blur" }],
           on: {},
         },
         {
@@ -468,7 +484,6 @@ export default {
     },
   },
   created() {
-    this.$log.error("你好");
     this.serviceDict();
   },
   methods: {

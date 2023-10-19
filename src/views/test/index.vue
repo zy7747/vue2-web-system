@@ -23,16 +23,23 @@
           is-edit-line
           is-detail-line
           is-delete-line
+          :query="search"
           :table-column="tableColumn"
           @handleSelectionChange="selection"
         />
       </el-tab-pane>
+      <el-tab-pane label="页签2"> </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
+  created() {
+    this.search();
+  },
   data() {
     return {
       queryData: {},
@@ -193,7 +200,11 @@ export default {
   },
   computed: {},
   methods: {
-    search() {},
+    search() {
+      return axios.post("http://localhost:8080/test/table").then((res) => {
+        return res.data.data;
+      });
+    },
     resetQueryData() {},
     // 多选
     selection(list) {

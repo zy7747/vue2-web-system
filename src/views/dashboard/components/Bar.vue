@@ -48,6 +48,10 @@ export default {
             type: "bar",
             barWidth: "60%",
             data: series,
+            label: {
+              show: true,
+              position: "inside",
+            },
           },
         ],
       });

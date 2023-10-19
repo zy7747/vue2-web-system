@@ -1,10 +1,21 @@
+/*
+ * @Author: Zy
+ * @Date: 2023-10-14 23:24:36
+ * @LastEditTime: 2023-10-19 13:19:16
+ * @Description: 简介
+ */
 import chalk from "chalk";
+import Vue from "vue";
 
-export default {
+const consoleColor = {
   error(str) {
     console.log(chalk.bold.red(str));
   },
 };
+
+Vue.prototype.$log = consoleColor;
+
+export default consoleColor;
 
 // 'bold'          : ['\x1B[1m%s\x1B[22m'],
 // 'italic'        : ['\x1B[3m%s\x1B[23m'],

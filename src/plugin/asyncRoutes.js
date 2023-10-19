@@ -1,34 +1,18 @@
-//生成树形
+import { flattenTree } from "@/utils/formatData";
+
+//生成菜单树形结构
 function buildMenuTree(flatMenu, parentId = null, path = "") {
   const menuItems = flatMenu
     .filter((item) => item.parentId === parentId)
     .map((item) => {
       const menuItem = { ...item };
+      //路径拼接
       const menuPath = path === "" ? item.path : `${path}/${item.path}`;
       menuItem.path = menuPath;
       menuItem.children = buildMenuTree(flatMenu, item.id, menuPath);
       return menuItem;
     });
-
   return menuItems;
-}
-
-//平铺树形
-function flattenTree(tree, parentId = null) {
-  const flattenData = [];
-
-  for (const node of tree) {
-    const { id, children } = node;
-    // 拷贝节点信息到平铺结构
-    flattenData.push(node);
-
-    // 递归处理子节点
-    if (children && children.length) {
-      flattenData.push(...flattenTree(children, id));
-    }
-  }
-
-  return flattenData;
 }
 
 //获取路由

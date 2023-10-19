@@ -1,10 +1,15 @@
 /**
- * 通用js方法封装处理
+ * 通用js方法封装处理数据
  */
-
 import Vue from "vue";
+import lodash from "lodash";
 
-// 日期格式化
+/**
+ * @description: 日期格式化
+ * @param {*} time 时间
+ * @param {*} pattern 格式
+ * @return {*} 格式化日期
+ */
 export function parseTime(time, pattern) {
   if (arguments.length === 0 || !time) {
     return null;
@@ -48,13 +53,6 @@ export function parseTime(time, pattern) {
     return value || 0;
   });
   return time_str;
-}
-
-// 表单重置
-export function resetForm(refName) {
-  if (this.$refs[refName]) {
-    this.$refs[refName].resetFields();
-  }
 }
 
 /**
@@ -125,12 +123,11 @@ export function divide(divisor, dividend) {
  * 生成随机颜色
  *
  * @param {*} num 生成随机颜色数量
- * @param {*} dividend 被除数
  * @returns
  */
 export function randomColor(num) {
   let colorList = [];
-  for (var i = 0; i < 10; i++) {
+  for (var i = 0; i < num; i++) {
     var colorStr = Math.floor(Math.random() * 0xffffff).toString(16);
     //如果颜色值是五位，则补零
     if (colorStr.length < 6) {
@@ -207,14 +204,42 @@ export function formatNumber(value, pattern) {
   return retstr.replace(/^,+/, "").replace(/\.$/, "");
 }
 
-//格式化金额(元)
-export function formatMoney(value, prefix, pattern) {
-  if (!value || value == 0) return 0;
-  let sign = value < 0 ? "-" : "";
-  return prefix + sign + formatNumber(Math.abs(value), pattern || "#,##0.00");
+/**
+ * @description: 数组对象根据某个字段去重
+ * @param {*} arr 数组
+ * @param {*} key 字段key
+ * @return {*} 去重后数组
+ */
+export function uniqBy(arr, key) {
+  return lodash.uniqBy(arr, key);
 }
 
-//数组对象去重
-//lodash.uniqBy(arr, 'value')
+/**
+ * @description: 递归平铺树形结构的函数
+ * @param {*} tree 树形
+ * @return {*} 平铺后的数据
+ */
+export function flattenTree(tree) {
+  const flattenData = [];
+
+  for (const node of tree) {
+    const { id, children } = node;
+    // 拷贝节点信息到平铺结构
+    flattenData.push(node);
+
+    // 递归处理子节点
+    if (children && children.length) {
+      flattenData.push(...flattenTree(children, id));
+    }
+  }
+
+  return flattenData;
+}
 
 Vue.prototype.$handleTree = handleTree;
+Vue.prototype.$parseTime = parseTime;
+Vue.prototype.$formatNumber = formatNumber;
+Vue.prototype.$divide = divide;
+Vue.prototype.$getNowDateTime = getNowDateTime;
+Vue.prototype.$randomColor = randomColor;
+Vue.prototype.$uniqBy = uniqBy;

@@ -68,6 +68,7 @@
               :filter-node-method="filterNode"
               show-checkbox
               :default-checked-keys="menuCheckList"
+              :check-strictly="false"
               node-key="id"
               ref="tree"
             >
@@ -79,6 +80,8 @@
   </div>
 </template>
 <script>
+import Item from "@/layout/components/Sidebar/Item.vue";
+
 export default {
   data() {
     return {
@@ -262,7 +265,12 @@ export default {
         if (valid) {
           this.$service.baseData.role
             .saveList([
-              { ...this.formData, menuList: this.$refs.tree.getCheckedKeys() },
+              {
+                ...this.formData,
+                menuList: this.$refs.tree.getCheckedNodes().map((item) => {
+                  return item.id;
+                }),
+              },
             ])
             .then((res) => {
               if (res.code === 200) {

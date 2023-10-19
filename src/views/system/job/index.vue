@@ -75,7 +75,7 @@
     <CDialog
       ref="dialog"
       :title="title"
-      width="800px"
+      width="1200px"
       :has-check="title !== '详情'"
       @handleConfirm="handleConfirm"
     >
@@ -113,6 +113,14 @@ export default {
           on: {},
         },
         {
+          type: "input",
+          label: "任务编码",
+          prop: "jobCode",
+          span: 6,
+          attributes: {},
+          on: {},
+        },
+        {
           type: "datePicker",
           label: "开始时间",
           prop: "startTime",
@@ -121,67 +129,12 @@ export default {
           on: {},
         },
         {
-          type: "number",
-          label: "执行次数",
-          prop: "executeCount",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "number",
-          label: "执行间隔",
-          prop: "executeInterval",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
+          type: "select",
           label: "状态",
           prop: "status",
           span: 6,
           attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: "备注",
-          prop: "remark",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: "创建人",
-          prop: "creator",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: "更新人",
-          prop: "updater",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: "创建时间",
-          prop: "createTime",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: "更新时间",
-          prop: "updateTime",
-          span: 6,
-          attributes: {},
+          options: this.getDictData("job_status"),
           on: {},
         },
       ],
@@ -220,13 +173,19 @@ export default {
           sortable: true,
         },
         {
+          label: "任务编码",
+          prop: "jobCode",
+          width: 150,
+          sortable: true,
+        },
+        {
           label: "开始时间",
           prop: "startTime",
           width: 150,
           sortable: true,
         },
         {
-          label: "执行次数",
+          label: "剩余执行次数",
           prop: "executeCount",
           width: 150,
           sortable: true,
@@ -293,6 +252,13 @@ export default {
           on: {},
         },
         {
+          type: "input",
+          label: "任务编码",
+          prop: "jobCode",
+          span: 6,
+          on: {},
+        },
+        {
           type: "datePicker",
           label: "开始时间",
           prop: "startTime",
@@ -301,7 +267,7 @@ export default {
             format: "yyyy-MM-dd HH:mm:ss",
             valueFormat: "yyyy-MM-dd HH:mm:ss",
           },
-          span: 12,
+          span: 6,
           on: {},
         },
         {

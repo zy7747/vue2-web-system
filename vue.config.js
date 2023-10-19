@@ -1,3 +1,9 @@
+/**
+ * @Author: Zy
+ * @Date: 2023-09-16 09:37:31
+ * @LastEditTime: 2023-10-19 13:09:52
+ * @Description: 简介
+ */
 const path = require("path");
 const { defineConfig } = require("@vue/cli-service");
 const name = "后台系统"; // 网页标题
@@ -26,8 +32,6 @@ module.exports = defineConfig({
     // },
   },
   configureWebpack: {
-    // provide the app's title in webpack's name field, so that
-    // it can be accessed in index.html to inject the correct title.
     resolve: {
       alias: {
         "@": resolve("src"),
