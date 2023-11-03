@@ -131,14 +131,7 @@
     <div class="user">
       <el-dropdown @command="handleCommand" trigger="hover">
         <div class="avatar-wrapper cursor">
-          <img
-            class="avatar"
-            :src="
-              userInfo.avatar
-                ? baseUrl + userInfo.avatar
-                : '@/assets/avatar/avatar.gif'
-            "
-          />
+          <img class="avatar" :src="userInfo.avatar" />
           <p style="font-weight: 600">
             {{ userInfo.name }}
           </p>
@@ -189,6 +182,7 @@ import Config from "@/layout/config/index.vue";
 import SignIn from "@/views/system/login/login.vue";
 
 export default {
+  name: "HeaderLine",
   components: {
     Config,
     SignIn,

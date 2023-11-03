@@ -201,7 +201,7 @@ export default {
   computed: {},
   methods: {
     search() {
-      return axios.post("http://localhost:8080/test/table").then((res) => {
+      return axios.post("/test/table").then((res) => {
         return res.data.data;
       });
     },

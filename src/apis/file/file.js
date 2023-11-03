@@ -11,6 +11,7 @@ export default {
     app: "file",
     text: "所有文件列表",
   },
+
   fileList: {
     url: "/file/fileList",
     method: "get",
@@ -53,5 +54,14 @@ export default {
     app: "file",
     blob: true,
     text: "文件导出",
+  },
+  upload: {
+    url: "/file/upload",
+    method: "post",
+    app: "file",
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    text: "文件上传",
   },
 };

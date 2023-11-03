@@ -1,3 +1,9 @@
+<!--
+ * @Author: Zy
+ * @Date: 2023-10-16 10:32:08
+ * @LastEditTime: 2023-10-20 16:38:39
+ * @Description: 简介
+-->
 <!--  -->
 <template>
   <div ref="nightingale" id="nightingale"></div>
@@ -11,11 +17,14 @@ export default {
     return {};
   },
   methods: {
-    createdNightingale({ title, xAxis, series }) {
+    createdNightingale({ title, data, series }) {
       var myChart = echarts.init(this.$refs.nightingale);
       myChart.setOption({
         legend: {
           top: "bottom",
+        },
+        title: {
+          text: title,
         },
         toolbox: {
           show: true,
@@ -36,16 +45,7 @@ export default {
             itemStyle: {
               borderRadius: 8,
             },
-            data: [
-              { value: 40, name: "rose 1" },
-              { value: 38, name: "rose 2" },
-              { value: 32, name: "rose 3" },
-              { value: 30, name: "rose 4" },
-              { value: 28, name: "rose 5" },
-              { value: 26, name: "rose 6" },
-              { value: 22, name: "rose 7" },
-              { value: 18, name: "rose 8" },
-            ],
+            data: data,
           },
         ],
       });
@@ -56,7 +56,7 @@ export default {
 
 <style lang="scss" scoped>
 #nightingale {
-  width: 900px;
-  height: 600px;
+  width: 100%;
+  height: 500px;
 }
 </style>

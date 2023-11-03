@@ -16,6 +16,7 @@
         <div class="showBox" :style="`width:${width}px`"></div>
         <el-main>
           <navbar />
+          <tagsView />
           <appMain />
         </el-main>
       </el-container>
@@ -24,7 +25,14 @@
 </template>
 
 <script>
-import { Navbar, Sidebar, HeaderLine, Logo, AppMain } from "../components";
+import {
+  Navbar,
+  Sidebar,
+  HeaderLine,
+  Logo,
+  AppMain,
+  TagsView,
+} from "../components";
 
 export default {
   data() {
@@ -47,15 +55,15 @@ export default {
     HeaderLine,
     Logo,
     AppMain,
+    TagsView,
   },
 };
 </script>
 
 <style lang="scss" scoped>
 .logo {
-  width: 180px;
+  padding-left: 20px;
   height: var(--headerHeight);
-  background-color: var(--logoColor);
 }
 
 .header {
@@ -86,6 +94,7 @@ export default {
 
   .el-main {
     width: 100%;
+    height: 100%;
     padding: 15px;
   }
 }

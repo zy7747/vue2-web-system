@@ -48,6 +48,14 @@ export default {
           fixed: "left",
         },
         {
+          type: "custom",
+          label: "图标",
+          prop: "icon",
+          componentName: "icon",
+          width: 150,
+          sortable: true,
+        },
+        {
           label: "名称",
           prop: "title",
           width: 150,
@@ -67,7 +75,7 @@ export default {
           sortable: true,
         },
         {
-          label: "组件名",
+          label: "路由名",
           prop: "name",
           width: 150,
           sortable: true,
@@ -308,9 +316,10 @@ export default {
             on: {},
           },
           {
-            type: "input",
+            type: "custom",
             label: "图标",
             prop: "icon",
+            componentName: "icon",
             span: 12,
             attributes: {},
             on: {},
@@ -349,9 +358,10 @@ export default {
             on: {},
           },
           {
-            type: "input",
+            type: "custom",
             label: "图标",
             prop: "icon",
+            componentName: "icon",
             span: 12,
             attributes: {},
             on: {},

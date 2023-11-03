@@ -1,11 +1,3 @@
-/**
- *
- * element系统提示信息
- *
- *
- *
- */
-
 import { Message, MessageBox, Notification, Loading } from "element-ui";
 import Vue from "vue";
 

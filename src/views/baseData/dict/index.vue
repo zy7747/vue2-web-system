@@ -46,12 +46,12 @@
       @handleConfirm="handleConfirm"
     >
       <template slot="body">
-        <CCard title="字典">
-          <template slot="body">
+        <Collapse title="字典" :isSearch="false">
+          <template slot="content">
             <CForm ref="form" :form-data="formData" :form-params="formParams" />
           </template>
-        </CCard>
-        <div style="margin-top: 10px; width: 100%"></div>
+        </Collapse>
+        <div style="margin-top: 5px; width: 100%"></div>
         <CCard title="字典集" v-if="title !== '新增'">
           <template slot="body">
             <Toolbar
@@ -82,6 +82,7 @@
 </template>
 <script>
 export default {
+  name: "dict",
   data() {
     return {
       //弹框标题
@@ -168,7 +169,7 @@ export default {
         },
         {
           label: "更新人",
-          prop: "creator",
+          prop: "updater",
           sortable: true,
         },
         {
@@ -186,7 +187,7 @@ export default {
         dictCode: null,
         dictType: null,
         label: null,
-        value: null,
+        value: "",
         color: null,
         css: null,
         sort: null,
@@ -207,7 +208,7 @@ export default {
         dictCode: null,
         dictType: null,
         label: null,
-        value: null,
+        value: "",
         color: null,
         css: null,
         sort: null,
@@ -290,7 +291,6 @@ export default {
           label: "值",
           prop: "value",
           type: "input",
-          rules: [{ required: true, message: "值不能为空", trigger: "blur" }],
           width: 150,
           sortable: true,
         },
@@ -365,6 +365,12 @@ export default {
     //提交
     handleConfirm() {
       // 新增
+      console.log({
+        creator: null,
+        updater: null,
+        createTime: null,
+        updateTime: null,
+      });
       this.$refs.form.validate().then((valid) => {
         if (valid) {
           this.$service.baseData.dict.saveList([this.formData]).then((res) => {
@@ -441,7 +447,7 @@ export default {
         dictCode: null,
         dictType: "string",
         label: null,
-        value: null,
+        value: "",
         color: null,
         css: null,
         sort: null,
@@ -472,7 +478,11 @@ export default {
     //保存字典集
     saveDictList(row, index) {
       //数据处理
-      const data = { ...row, parentId: this.formData.id };
+      const data = {
+        ...row,
+        parentId: this.formData.id,
+      };
+
       this.$service.baseData.dict.saveList([data]).then((res) => {
         if (res.code === 200) {
           this.$message.success("提交成功");

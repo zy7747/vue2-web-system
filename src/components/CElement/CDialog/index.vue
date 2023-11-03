@@ -1,4 +1,3 @@
-<!-- Dialog  -->
 <template>
   <div>
     <el-dialog
@@ -9,6 +8,7 @@
       :modal="false"
       :close-on-click-modal="false"
       :destroy-on-close="destroyOnClose"
+      style="z-index: 9"
     >
       <div class="body">
         <slot name="body" />
@@ -70,6 +70,7 @@ export default {
   border-bottom: 1px solid #e3e3e3;
 }
 ::v-deep .el-dialog__body {
+  padding: 5px !important;
   background-color: #f6f7f9;
 }
 
@@ -88,7 +89,7 @@ export default {
 }
 
 .body {
-  max-height: 520px;
+  max-height: 700px;
   overflow: auto;
 }
 </style>

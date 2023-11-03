@@ -47,6 +47,15 @@
               @click="addLine(scope.row, scope.$index)"
             />
           </template>
+
+          <template slot="icon" slot-scope="{ scope }">
+            <div class="mss" style="width: 120px; font-size: 30px">
+              <svg-icon
+                :icon-class="scope.row.icon ? scope.row.icon : ''"
+                class="icon"
+              />
+            </div>
+          </template>
         </CTable>
       </el-tab-pane>
     </el-tabs>
@@ -66,7 +75,11 @@
               :disabled="title === '详情'"
               :form-data="formData"
               :form-params="formParams"
-            />
+            >
+              <template slot="icon">
+                <IconSelect v-model="formData.icon" />
+              </template>
+            </CForm>
           </template>
         </CCard>
       </template>
@@ -78,11 +91,15 @@
 import baseParams from "./mixins";
 
 export default {
+  name: "menu",
   mixins: [baseParams],
   created() {
     this.query();
   },
   methods: {
+    selected(name) {
+      this.formData.icon = name;
+    },
     //1.查询
     query(page, size) {
       return this.$service.baseData.menu.list(this.queryData).then((res) => {

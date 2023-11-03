@@ -2,7 +2,6 @@
 <template>
   <div class="CButton">
     <el-button
-      v-audio="'button2'"
       :style="`color:${color}`"
       :size="size"
       v-bind="$attrs"

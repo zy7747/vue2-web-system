@@ -1,18 +1,31 @@
 <!--  -->
 <template>
-  <div class="appMain">
-    <router-view />
-  </div>
+  <section class="app-main">
+    <transition name="el-zoom-in-center" mode="out-in">
+      <keep-alive :include="cachedViews">
+        <router-view :key="key" />
+      </keep-alive>
+    </transition>
+  </section>
 </template>
 
 <script>
-export default {};
+export default {
+  computed: {
+    cachedViews() {
+      return this.$store.state.tagsView.cachedViews;
+    },
+    key() {
+      return this.$route.path;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-.appMain {
+.app-main {
   width: 100%;
-  height: 100%;
+  height: calc(100% - var(--tagsViewHeight) - 5px);
   border-radius: 15px;
   overflow: hidden;
   overflow-y: auto;

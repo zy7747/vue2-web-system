@@ -41,6 +41,7 @@ export function getDictData(dictCode) {
   return dict;
 }
 
+//翻译
 export function getDictLabel(dictCode, value) {
   //获取字典
   const dict = store.getters.dict[dictCode] ? store.getters.dict[dictCode] : [];

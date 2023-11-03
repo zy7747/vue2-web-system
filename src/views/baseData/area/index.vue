@@ -1,9 +1,3 @@
-<!--
- * @Author: Zy
- * @Date: 2023-10-16 14:22:12
- * @LastEditTime: 2023-10-19 16:15:38
- * @Description: 简介
--->
 <!--  -->
 <template>
   <div>地区</div>
@@ -11,6 +5,7 @@
 
 <script>
 export default {
+  name: "area",
   created() {
     this.test();
   },

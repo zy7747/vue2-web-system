@@ -1,4 +1,3 @@
-<!--  -->
 <template>
   <div ref="rounded" id="rounded"></div>
 </template>
@@ -11,11 +10,14 @@ export default {
     return {};
   },
   methods: {
-    createdRounded({ title, xAxis, series }) {
+    createdRounded({ title, data, series }) {
       var myChart = echarts.init(this.$refs.rounded);
       myChart.setOption({
         tooltip: {
           trigger: "item",
+        },
+        title: {
+          text: title,
         },
         legend: {
           top: "5%",
@@ -46,13 +48,7 @@ export default {
             labelLine: {
               show: false,
             },
-            data: [
-              { value: 1048, name: "Search Engine" },
-              { value: 735, name: "Direct" },
-              { value: 580, name: "Email" },
-              { value: 484, name: "Union Ads" },
-              { value: 300, name: "Video Ads" },
-            ],
+            data: data,
           },
         ],
       });
@@ -63,7 +59,7 @@ export default {
 
 <style lang="scss" scoped>
 #rounded {
-  width: 500px;
-  height: 250px;
+  width: 50%;
+  height: 500px;
 }
 </style>

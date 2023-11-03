@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-  <div v-if="!item.hidden">
+  <div v-if="!item.visible">
     <template
       v-if="
         hasOneShowingChild(item.children, item) &&
@@ -70,7 +70,7 @@ export default {
   methods: {
     hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter((item) => {
-        if (item.hidden) {
+        if (item.visible === 1) {
           return false;
         } else {
           // Temp set(will be used if only has one showing child)
@@ -105,13 +105,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-::v-deep .el-submenu .el-menu-item {
-  background-color: #3a3d4c !important;
-}
-
-::v-deep .el-submenu .el-menu-item:hover {
-  background-color: rgb(45, 51, 64) !important;
-  color: var(--menuTextColor);
-}
-</style>
+<style lang="scss" scoped></style>

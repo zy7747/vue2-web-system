@@ -1,6 +1,3 @@
-/**
- * 通用js方法封装处理数据
- */
 import Vue from "vue";
 import lodash from "lodash";
 
@@ -63,7 +60,7 @@ export function parseTime(time, pattern) {
  * @param {*} children 孩子节点字段 默认 'children'
  * @param {*} rootId 根Id 默认 0
  */
-export function handleTree(data, id, parentId, children, rootId) {
+export function handleTree(data, rootId, id, parentId, children) {
   id = id || "id";
   parentId = parentId || "parentId";
   children = children || "children";

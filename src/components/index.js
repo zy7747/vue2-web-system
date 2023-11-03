@@ -21,6 +21,7 @@ import CDateTimePicker from "./CElement/CDateTimePicker/index.vue";
 import CTreeSelect from "./CElement/CTreeSelect/index.vue";
 
 import Editor from "./Editor/index.vue";
+import IconSelect from "./IconSelect/index.vue";
 import VideoPlayer from "./VideoPlayer/index.vue";
 import Toolbar from "./Toolbar/index.vue";
 import DictTag from "./DictTag/index.vue";
@@ -29,7 +30,9 @@ import Collapse from "./Collapse/index.vue";
 import DraggableResizable from "vue-draggable-resizable";
 import FileUpload from "./FileUpload/index.vue";
 import AvatarUpload from "./CElement/AvatarUpload/index.vue";
+import SvgIcon from "@/components/SvgIcon"; // svg组件
 
+Vue.component("SvgIcon", SvgIcon);
 Vue.component("CInput", CInput);
 Vue.component("CSelect", CSelect);
 Vue.component("CButton", CButton);
@@ -51,6 +54,7 @@ Vue.component("CDatePicker", CDatePicker);
 
 Vue.component("Pagination", Pagination);
 Vue.component("Editor", Editor);
+Vue.component("IconSelect", IconSelect);
 Vue.component("VideoPlayer", VideoPlayer);
 Vue.component("FileUpload", FileUpload);
 Vue.component("AvatarUpload", AvatarUpload);

@@ -15,22 +15,28 @@
 </template>
 
 <script>
-import CardData from './mixins/index'
+import CardData from "./mixins/index";
 
 export default {
-  mixins: [CardData]
-}
+  mixins: [CardData],
+};
 </script>
 
 <style lang="scss" scoped>
-.clearfix:before,
-.clearfix:after {
-  display: table;
-  content: "";
+.clearfix {
+  display: flex;
+  align-items: center;
 }
 
-.clearfix:after {
-  clear: both;
+::v-deep .el-card__header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  height: 48px;
+  background: var(--collapseBackGround);
 }
 
 .box-card {

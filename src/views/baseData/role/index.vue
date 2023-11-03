@@ -68,7 +68,8 @@
               :filter-node-method="filterNode"
               show-checkbox
               :default-checked-keys="menuCheckList"
-              :check-strictly="false"
+              check-strictly
+              @check-change="checkChange"
               node-key="id"
               ref="tree"
             >
@@ -80,9 +81,8 @@
   </div>
 </template>
 <script>
-import Item from "@/layout/components/Sidebar/Item.vue";
-
 export default {
+  name: "role",
   data() {
     return {
       //弹框标题
@@ -265,12 +265,7 @@ export default {
         if (valid) {
           this.$service.baseData.role
             .saveList([
-              {
-                ...this.formData,
-                menuList: this.$refs.tree.getCheckedNodes().map((item) => {
-                  return item.id;
-                }),
-              },
+              { ...this.formData, menuList: this.$refs.tree.getCheckedKeys() },
             ])
             .then((res) => {
               if (res.code === 200) {
@@ -363,6 +358,40 @@ export default {
       return this.$service.baseData.menu.list().then((res) => {
         this.menuList = this.$handleTree(res.data);
       });
+    },
+    checkChange(data, check) {
+      // 父节点操作
+      if (data.parentId !== null) {
+        if (check === true) {
+          // 如果选中，设置父节点为选中
+          this.$refs.tree.setChecked(data.parentId, true);
+        } else {
+          // 如果取消选中，检查父节点是否该取消选中（可能仍有子节点为选中状态）
+          var parentNode = this.$refs.tree.getNode(data.parentId);
+          var parentHasCheckedChild = false;
+          for (
+            var i = 0, parentChildLen = parentNode.childNodes.length;
+            i < parentChildLen;
+            i++
+          ) {
+            if (parentNode.childNodes[i].checked === true) {
+              parentHasCheckedChild = true;
+              break;
+            }
+          }
+          if (!parentHasCheckedChild)
+            this.$refs.tree.setChecked(data.parentId, false);
+        }
+      }
+      // 子节点操作，如果取消选中，取消子节点选中
+      if (data.children != null && check === false) {
+        for (var j = 0, len = data.children.length; j < len; j++) {
+          var childNode = this.$refs.tree.getNode(data.children[j].id);
+          if (childNode.checked === true) {
+            this.$refs.tree.setChecked(childNode.data.id, false);
+          }
+        }
+      }
     },
   },
   watch: {

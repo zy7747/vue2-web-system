@@ -140,7 +140,7 @@
 
               <!-- 自定义编辑框 -->
               <template
-                v-else-if="item.type === 'custom' && isForm(scope.$index)"
+                v-else-if="item.type === 'custom' || isForm(scope.$index)"
               >
                 <el-form-item :prop="item.prop">
                   <slot :name="item.componentName" :scope="scope" />
@@ -435,6 +435,7 @@ export default {
 }
 
 ::v-deep .el-form-item {
+  width: 100%;
   display: flex;
   align-items: center;
   margin-bottom: 0;

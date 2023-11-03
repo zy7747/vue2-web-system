@@ -1,12 +1,6 @@
-/**
- * @Author: Zy
- * @Date: 2023-09-16 09:37:31
- * @LastEditTime: 2023-10-19 13:09:52
- * @Description: 简介
- */
 const path = require("path");
 const { defineConfig } = require("@vue/cli-service");
-const name = "后台系统"; // 网页标题
+const APP_TITLE = process.env.VUE_APP_TITLE; // 网页标题
 
 function resolve(dir) {
   return path.join(__dirname, dir);
@@ -43,15 +37,14 @@ module.exports = defineConfig({
   },
   chainWebpack(config) {
     config.plugin("html").tap((args) => {
-      args[0].title = name;
+      args[0].title = APP_TITLE;
       return args;
     });
-    // set svg-sprite-loader
-    config.module.rule("svg").exclude.add(resolve("src/icons")).end();
+    config.module.rule("svg").exclude.add(resolve("src/svg")).end();
     config.module
       .rule("icons")
       .test(/\.svg$/)
-      .include.add(resolve("src/icons"))
+      .include.add(resolve("src/svg"))
       .end()
       .use("svg-sprite-loader")
       .loader("svg-sprite-loader")

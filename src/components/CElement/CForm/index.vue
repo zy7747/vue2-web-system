@@ -7,6 +7,7 @@
       :model="formData"
       :rules="rules"
       :label-position="labelPosition"
+      :validate-on-rule-change="false"
     >
       <template v-for="item in formParams">
         <el-col :key="item.prop" :span="item.span">
@@ -158,6 +159,6 @@ export default {
 ::v-deep .el-form-item__label {
   padding: 0;
   font-weight: 550;
-  line-height: 20px;
+  // line-height: 20px;
 }
 </style>

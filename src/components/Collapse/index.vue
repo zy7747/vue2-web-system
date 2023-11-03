@@ -7,22 +7,23 @@
           <div class="header" @click="stopProp">
             <span class="title"> {{ title }}<slot name="title" /> </span>
             <span class="button">
-              <c-button
-                :is-search="isSearch"
-                icon="el-icon-search"
-                type="primary"
-                class="btn"
-                text="查询"
-                @click="search"
-              />
-              <c-button
-                :is-reset="isReset"
-                plain
-                icon="el-icon-refresh"
-                class="btn"
-                text="重置"
-                @click="reset"
-              />
+              <div v-if="isSearch" class="button">
+                <c-button
+                  icon="el-icon-search"
+                  type="primary"
+                  class="btn"
+                  text="查询"
+                  @click="search"
+                  v-audio="'search'"
+                />
+                <c-button
+                  icon="el-icon-refresh"
+                  class="btn"
+                  text="重置"
+                  @click="reset"
+                />
+              </div>
+
               <slot name="button" />
             </span>
           </div>

@@ -2,7 +2,7 @@
 <template>
   <div class="backGround" @click.once="play()">
     <video loop="loop" class="video" ref="video">
-      <source src="@/assets/video/village-low.mp4" type="video/mp4" />
+      <source src="@/assets/video/login-video.mp4" type="video/mp4" />
     </video>
     <div class="main">
       <Login />

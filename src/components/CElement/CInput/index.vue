@@ -1,9 +1,10 @@
-<!-- 下拉框组件 -->
+<!-- 输入框组件 -->
 <template>
   <div>
     <el-input
       class="CInput"
       ref="CInput"
+      v-audio="'input'"
       v-model="inputValue"
       :disabled="disabled"
       :placeholder="placeholder"
@@ -37,19 +38,4 @@ export default {
 };
 </script>
 
-<style lang="scss">
-// .CInput {
-//   input {
-//     background-color: #3a4684;
-//     color: #fff;
-//     font-weight: 550;
-//     border: 0;
-//   }
-
-//   input::placeholder {
-//     color: #e1e0e0;
-//     font-weight: 400;
-//     opacity: 0.8;
-//   }
-// }
-</style>
+<style lang="scss"></style>

@@ -11,14 +11,14 @@ export default {
       text: "按钮大小",
       type: [String],
       default: () => {
-        return "small";
+        return "mini";
       },
     },
     color: {
       text: "按钮颜色",
       type: [String],
       default: () => {
-        return "small";
+        return "";
       },
     },
   },

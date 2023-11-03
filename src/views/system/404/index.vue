@@ -1,7 +1,7 @@
 <!--  -->
 <template>
   <div class="error">
-    <img src="@/assets/404/404.png" alt="" />
+    <img src="@/assets/images/404/404.png" alt="" />
   </div>
 </template>
 

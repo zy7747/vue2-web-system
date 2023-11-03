@@ -3,10 +3,10 @@
   <div class="app">
     <div class="main" @click="home">
       <div class="logo">
-        <img class="logoPng" src="@/assets/images/派蒙.png" alt="" />
+        <img class="logoPng" src="@/assets/images/logo/logo.png" alt="" />
       </div>
-      <div class="appName">
-        <span class="title">数据管理中心</span>
+      <div class="appTitle">
+        <span class="title">{{ appTitle }}</span>
       </div>
     </div>
   </div>
@@ -15,7 +15,9 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      appTitle: process.env.VUE_APP_TITLE,
+    };
   },
   methods: {
     home() {
@@ -27,7 +29,6 @@ export default {
 
 <style lang="scss" scoped>
 .app {
-  width: 100%;
   height: 50px;
   display: flex;
   justify-content: center;
@@ -58,7 +59,7 @@ export default {
       text-shadow: 1px -2px 0px black; /* 描边效果 */
     }
 
-    .appName {
+    .appTitle {
       display: flex;
       justify-content: center;
       align-items: center;

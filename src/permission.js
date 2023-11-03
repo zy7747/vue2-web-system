@@ -1,14 +1,13 @@
 import router from "@/router";
 import store from "@/store";
 import { Message } from "element-ui";
-import NProgress from "nprogress"; // progress bar
-import "nprogress/nprogress.css"; // progress bar style
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 import { getToken } from "./utils/auth";
 
-NProgress.configure({ showSpinner: false }); // NProgress Configuration
+NProgress.configure({ showSpinner: false });
 
 router.beforeEach(async (to, from, next) => {
-  // start progress bar
   NProgress.start();
 
   const token = getToken(); //token
@@ -24,15 +23,20 @@ router.beforeEach(async (to, from, next) => {
   // 2. 已登录 不是登录页 -> 放行
   if (token && url !== "/login") {
     const hasRoles = store.getters.roles && store.getters.roles.length > 0;
+
     if (!hasRoles) {
       try {
         //字典获取
         store.dispatch("GetDict");
         //重新获取基础数据
-        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-        await store.dispatch("Login", { ...userInfo, loginType: "account" });
+        await store.dispatch("Login", {
+          ...JSON.parse(localStorage.getItem("userInfo")),
+          loginType: "account",
+          loginSystem: "system",
+        });
+
         // 动态添加路由
-        router.addRoutes(store.getters.asyncRoutes);
+        router.addRoutes(store.getters.routes);
         // hack方法 确保addRoutes已完成
         next({ ...to, replace: true });
         NProgress.done();
@@ -61,7 +65,6 @@ router.beforeEach(async (to, from, next) => {
 });
 
 router.afterEach(() => {
-  // finish progress bar
   NProgress.done();
 });
 

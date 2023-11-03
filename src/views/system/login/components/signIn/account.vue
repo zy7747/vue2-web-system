@@ -41,6 +41,7 @@ export default {
         account: "",
         password: "",
         loginType: "account",
+        loginSystem: "system",
         rememberMe: false,
       },
       rules: {

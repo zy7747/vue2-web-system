@@ -30,7 +30,6 @@
             icon="el-icon-download"
             class="btn"
             text="导出"
-            plain
             @click="exportExcel"
           />
         </div>

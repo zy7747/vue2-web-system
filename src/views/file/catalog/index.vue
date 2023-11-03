@@ -28,7 +28,11 @@
       <!-- 主视图 -->
       <div class="view">
         <!-- 树形 -->
-        <div class="catalog" @click="clearId">
+        <div
+          class="catalog"
+          @click="clearId"
+          @contextmenu.prevent.stop="treeOtherClick"
+        >
           <c-input
             prefix-icon="el-icon-search"
             placeholder="目录搜索"
@@ -52,7 +56,7 @@
                 <span class="node-icon">
                   <img
                     style="width: 20px"
-                    src="@/assets/icons/folder.png"
+                    src="@/assets/images/file/folder.png"
                     alt=""
                   />
                 </span>
@@ -99,7 +103,7 @@
             />
           </div>
           <!-- 文件 -->
-          <div class="files">
+          <div class="files" @dragover.prevent @drop="handleDrop">
             <draggable
               v-if="fileFilterList.length > 0"
               v-model="fileList"
@@ -139,15 +143,9 @@
                     </div>
                   </div>
                   <div class="fileName">
-                    <el-tooltip
-                      :content="item.fileName"
-                      placement="bottom"
-                      effect="light"
-                    >
-                      <div class="container">
-                        {{ item.fileName }}
-                      </div>
-                    </el-tooltip>
+                    <span class="container" :title="item.fileName">
+                      {{ item.fileName }}
+                    </span>
                   </div>
                 </div>
               </transition-group>
@@ -230,6 +228,16 @@
         <i class="el-icon-delete"></i> 删除
       </li>
     </ul>
+
+    <ul
+      v-show="visible4"
+      :style="{ left: left + 'px', top: top + 'px' }"
+      class="contextmenu"
+    >
+      <li @click="addFolder">
+        <i class="el-icon-circle-plus-outline"></i> 新增
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -272,6 +280,7 @@ export default {
       visible: false, //右键菜单显示隐藏
       visible2: false, //右键菜单显示隐藏
       visible3: false, //右键树形菜单显示隐藏
+      visible4: false, //右键树形菜单显示隐藏
       folderClickData: {}, //文件夹右键参数
       fileClickData: {}, //文件右键事件参数
       baseUrl: process.env.VUE_APP_BASE_API, //基础url
@@ -315,7 +324,7 @@ export default {
     //文件图标
     fileIcon(item) {
       if (item.fileType === "folder") {
-        return require("@/assets/images/picture/folder.png");
+        return require("@/assets/images/file/folder.png");
       } else if (
         item.fileType === "jpg" ||
         item.fileType === "png" ||
@@ -323,19 +332,19 @@ export default {
       ) {
         return this.baseUrl + item.url;
       } else if (item.fileType === "pdf") {
-        return require("@/assets/images/picture/pdf.png");
+        return require("@/assets/images/file/pdf.png");
       } else if (item.fileType === "xls" || item.fileType === "xlsx") {
-        return require("@/assets/images/picture/excel.png");
+        return require("@/assets/images/file/excel.png");
       } else if (item.fileType === "docx") {
-        return require("@/assets/images/picture/word.png");
+        return require("@/assets/images/file/word.png");
       } else if (item.fileType === "txt") {
-        return require("@/assets/images/picture/text.png");
+        return require("@/assets/images/file/text.png");
       } else if (item.fileType === "mp3") {
-        return require("@/assets/images/picture/mp3.png");
+        return require("@/assets/images/file/mp3.png");
       } else if (item.fileType === "mp4") {
-        return require("@/assets/images/picture/mp4.png");
+        return require("@/assets/images/file/mp4.png");
       } else {
-        return require("@/assets/images/picture/file.png");
+        return require("@/assets/images/file/file.png");
       }
     },
     //确认新增文件夹
@@ -359,7 +368,22 @@ export default {
     },
     //确认修改文件夹
     updateConfirm() {
-      this.$service.file.file.saveList([this.updateParams]).then((res) => {
+      const newPath = this.updateParams.filePath.split("/");
+      let updateParam;
+      if (newPath.length > 2) {
+        newPath.pop();
+        updateParam = {
+          ...this.updateParams,
+          filePath: newPath.join("/") + "/" + this.updateParams.fileName,
+        };
+      } else {
+        updateParam = {
+          ...this.updateParams,
+          filePath: "/" + this.updateParams.fileName,
+        };
+      }
+
+      this.$service.file.file.saveList([updateParam]).then((res) => {
         if (res.code === 200) {
           this.$message.success("提交成功");
           this.query();
@@ -466,6 +490,10 @@ export default {
       this.folderClickData = item;
       event.stopPropagation();
     },
+    treeOtherClick(event) {
+      this.openMenu(event, "otherTree");
+      event.stopPropagation();
+    },
     //打开窗口位置
     openMenu(e, openMenu) {
       const menuMinWidth = 105; //菜单宽度
@@ -480,18 +508,26 @@ export default {
         this.left = left;
       }
 
-      this.top = e.clientY - 60; //调整Y轴距离
+      this.top = e.clientY - 100; //调整Y轴距离
 
       if (openMenu === "file") {
         this.visible = true;
         this.visible2 = false;
         this.visible3 = false;
+        this.visible4 = false;
       } else if (openMenu === "right") {
         this.visible2 = true;
         this.visible = false;
         this.visible3 = false;
-      } else {
+        this.visible4 = false;
+      } else if (openMenu === "tree") {
         this.visible3 = true;
+        this.visible2 = false;
+        this.visible = false;
+        this.visible4 = false;
+      } else if (openMenu === "otherTree") {
+        this.visible4 = true;
+        this.visible3 = false;
         this.visible2 = false;
         this.visible = false;
       }
@@ -501,6 +537,7 @@ export default {
       this.visible = false;
       this.visible2 = false;
       this.visible3 = false;
+      this.visible4 = false;
     },
     //删除文件夹和文件
     deleteFolder(file) {
@@ -525,6 +562,23 @@ export default {
     //上传成功刷新列表
     handleUploadSuccess(res, file) {
       this.queryFile();
+    },
+    //拖拽上传
+    handleDrop(e) {
+      e.preventDefault();
+      const files = e.dataTransfer.files;
+
+      for (let i = 0; i < files.length; i++) {
+        const formData = new FormData();
+
+        formData.append("file", files[i]);
+        formData.append("path", this.uploadData.path);
+        formData.append("parentId", this.uploadData.parentId);
+
+        this.$service.file.file.upload(formData).then((res) => {
+          this.queryFile();
+        });
+      }
     },
   },
   computed: {
@@ -580,6 +634,13 @@ export default {
         document.body.removeEventListener("click", this.closeMenu);
       }
     },
+    visible4(value) {
+      if (value) {
+        document.body.addEventListener("click", this.closeMenu);
+      } else {
+        document.body.removeEventListener("click", this.closeMenu);
+      }
+    },
   },
 };
 </script>
@@ -605,7 +666,7 @@ export default {
   .view {
     display: flex;
     width: 100%;
-    height: 700px;
+    height: 660px;
   }
 
   .toolbar {
@@ -700,10 +761,12 @@ export default {
           padding: 0 30px;
           width: 100%;
           height: 15%;
+          display: flex;
+          justify-content: center;
+
           .container {
-            text-align: center;
+            align-items: center;
             font-size: 12px;
-            width: 100%;
             height: 100%;
             white-space: nowrap; /* 文字不换行 */
             overflow: hidden; /* 溢出隐藏 */

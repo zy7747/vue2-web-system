@@ -40,7 +40,7 @@
     <CDialog
       ref="dialog"
       :title="title"
-      width="800px"
+      width="1000px"
       :has-check="title !== '详情'"
       @handleConfirm="handleConfirm"
     >
@@ -52,7 +52,21 @@
               :disabled="title === '详情'"
               :form-data="formData"
               :form-params="formParams"
-            />
+            >
+              <template slot="url">
+                <FileUpload
+                  v-model="formData.url"
+                  ref="fileUpload"
+                  btnName="音频上传"
+                  :fileType="['mp3']"
+                  :uploadData="{
+                    path: '/音频',
+                    parentId: '1709204168643567618',
+                  }"
+                  @handleDelete="handleDelete"
+                ></FileUpload>
+              </template>
+            </CForm>
           </template>
         </CCard>
       </template>
@@ -157,7 +171,7 @@ export default {
         title: null,
         type: null,
         region: null,
-        url: null,
+        url: [],
         picture: null,
         videoType: null,
         profile: null,
@@ -207,6 +221,7 @@ export default {
         {
           label: "音频分类",
           prop: "type",
+          translation: "audio_type",
           width: 150,
           sortable: true,
         },
@@ -214,6 +229,7 @@ export default {
           label: "音频地区",
           prop: "region",
           width: 150,
+          translation: "video_area",
           sortable: true,
         },
         {
@@ -362,24 +378,19 @@ export default {
           on: {},
         },
         {
-          type: "input",
-          label: "音频分类",
-          prop: "type",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
+          type: "select",
           label: "音频地区",
           prop: "region",
+          options: this.getDictData("video_area"),
           span: 6,
           on: {},
         },
         {
-          type: "input",
-          label: "音频图片",
-          prop: "picture",
+          type: "select",
+          label: "状态",
+          prop: "status",
           span: 6,
+          options: this.getDictData("video_status"),
           on: {},
         },
         {
@@ -390,9 +401,10 @@ export default {
           on: {},
         },
         {
-          type: "input",
-          label: "音频简介",
-          prop: "profile",
+          type: "select",
+          label: "音频分类",
+          prop: "type",
+          options: this.getDictData("audio_type"),
           span: 6,
           on: {},
         },
@@ -401,6 +413,17 @@ export default {
           label: "标签",
           prop: "label",
           span: 6,
+          on: {},
+        },
+        {
+          type: "datePicker",
+          label: "创作年份",
+          prop: "createYear",
+          span: 6,
+          attributes: {
+            format: "yyyy-MM-dd",
+            valueFormat: "yyyy-MM-dd",
+          },
           on: {},
         },
         {
@@ -432,24 +455,35 @@ export default {
           on: {},
         },
         {
-          type: "input",
-          label: "状态",
-          prop: "status",
+          type: "avatarUpload",
+          label: "音频图片",
+          prop: "picture",
           span: 6,
+          attributes: {
+            uploadData: {
+              path: "/资源管理器/音频封面",
+              parentId: "1719598971615318017",
+            },
+          },
           on: {},
         },
         {
           type: "input",
-          label: "备注",
-          prop: "remark",
-          span: 6,
+          label: "音频简介",
+          prop: "profile",
+          span: 18,
+          attributes: {
+            type: "textarea",
+            autosize: { minRows: 8, maxRows: 8 },
+          },
           on: {},
         },
         {
-          type: "input",
-          label: "创作年份",
-          prop: "createYear",
-          span: 6,
+          type: "custom",
+          label: "url地址",
+          prop: "url",
+          componentName: "url",
+          span: 24,
           on: {},
         },
       ],
@@ -460,7 +494,7 @@ export default {
         title: null,
         type: null,
         region: null,
-        url: null,
+        url: [],
         picture: null,
         videoType: null,
         profile: null,
@@ -552,6 +586,14 @@ export default {
           });
         })
         .catch(() => {});
+    },
+    //删除上传
+    handleDelete(index) {
+      this.$service.file.audio
+        .delete([this.formData.url[index]])
+        .then((res) => {
+          this.detail(this.formData.id);
+        });
     },
     //搜索
     search() {

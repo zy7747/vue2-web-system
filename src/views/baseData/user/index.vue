@@ -71,6 +71,7 @@ import {
 } from "@/utils/formValidate";
 
 export default {
+  name: "user",
   data() {
     return {
       // 弹框标题
@@ -186,7 +187,12 @@ export default {
           width: 200,
           sortable: true,
         },
-
+        {
+          label: "更新时间",
+          prop: "updateTime",
+          width: 200,
+          sortable: true,
+        },
         {
           label: "操作",
           type: "action",
@@ -229,8 +235,12 @@ export default {
         status: null,
         birthDate: null,
       },
-      // 查询表单基础参数
-      queryParams: [
+    };
+  },
+  computed: {
+    // 查询表单基础参数
+    queryParams() {
+      return [
         {
           type: "input",
           label: "电话号码",
@@ -334,10 +344,8 @@ export default {
           },
           on: {},
         },
-      ],
-    };
-  },
-  computed: {
+      ];
+    },
     // 新增表单基础参数
     formParams() {
       return [

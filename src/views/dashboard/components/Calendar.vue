@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-  <div>
+  <div class="fullCalendar">
     <FullCalendar :options="calendarOptions" />
   </div>
 </template>
@@ -21,7 +21,6 @@ export default {
       return {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         height: 700, //日历高度
-        width: 600,
         headerToolbar: {
           left: "prev,next,prevYear,nextYear",
           center: "title",
@@ -37,4 +36,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.fullCalendar {
+  padding-top: 30px;
+}
+</style>

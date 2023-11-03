@@ -1,13 +1,23 @@
 :root {
-  --logoColor: #b3c0d1; //header栏颜色
-  // background: linear-gradient(to right, #ff0000, #00ff00);
-  // --logoColor: #3b4255;
-  --headerHeight: 50px;
-  --menuColor: #3b4255; //菜单背景颜色
+  //菜单
+  --menuItemTextColor: #ece5d8;
+  --menuItemBackgroundColor: #3a3d4c;
+  --menuItemActiveTextColor: #3b4255; //子菜单选择字体颜色
+  --menuItemActiveBackgroundColor: #ece5d8; //子菜单选择背景颜色
+  --menuItemBorderLeft: 5px solid #0ece4b; //左侧下划线
+  --menuItemHoverTextColor: #3b4255;
+  --menuItemHoverBackgroundColor: #6eacf4;
   --menuTextColor: #ece5d8;
-  --collapseBackGround: url("@/assets/images/国王与宝剑.jpg");
+  --menuBackgroundColor: #3b4255;
+  --menuHoverTextColor: #3b4255;
+  --menuHoverBackgroundColor: #6eacf4;
+  --tagsViewHeight: 40px;
+  --tagsViewBackgroundColor: #6eacf4;
+  //伸缩框
+  --collapseBackGround: url("@/assets/images/background/国王与宝剑.jpg");
+  //导航栏
+  --headerHeight: 50px;
   --headerBackground: linear-gradient(to right, #aebaca, #d5d9df);
-  --headerBackgroundImg: url("@/assets/images/派蒙.png");
 }
 
 .btn {
@@ -15,6 +25,5 @@
 }
 
 #nprogress .bar {
-  background-image: url("@/assets/images/国王与宝剑.jpg"); //自定义颜色
-  // height: 10px;
+  background: linear-gradient(to right, #aebaca, #347eee); //自定义进度条颜色
 }

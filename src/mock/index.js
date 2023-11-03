@@ -1,9 +1,3 @@
-/*
- * @Author: Zy
- * @Date: 2023-10-19 12:00:54
- * @LastEditTime: 2023-10-19 13:29:09
- * @Description: 简介
- */
 import Mock from "mockjs";
 
 let list = Mock.mock({

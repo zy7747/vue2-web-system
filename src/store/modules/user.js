@@ -1,15 +1,8 @@
-/*
- * @Author: Zy
- * @Date: 2023-09-16 09:53:20
- * @LastEditTime: 2023-10-19 15:45:18
- * @Description: 简介
- */
 import service from "@/plugin/apis";
 import router from "@/router";
 import { getToken, setToken, removeToken } from "@/utils/auth";
 import { Message } from "element-ui";
-import { getMenu, getRoutes } from "@/plugin/asyncRoutes";
-import { handleTree, flattenTree } from "@/utils/formatData";
+import { getMenu, getRoutes } from "@/utils/asyncRoutes";
 
 const user = {
   state: {
@@ -27,19 +20,9 @@ const user = {
     },
     SET_USERINFO(state, data) {
       // 找到这个项目用的菜单
-      let systemMenu = [];
-      handleTree(data.menuList).forEach((item) => {
-        if (item.id === "1714885491456413697") {
-          systemMenu = flattenTree(
-            item.children.map((ch) => {
-              return { ...ch, parentId: null };
-            })
-          );
-        }
-      });
+      let systemMenu = data.menuList;
 
       const { menu, permission } = getMenu(systemMenu);
-
       const asyncRoutes = getRoutes(systemMenu);
 
       state.userInfo = data.userInfo; //用户信息
@@ -60,6 +43,7 @@ const user = {
       state.menu = [];
       state.permission = [];
       state.asyncRoutes = [];
+
       localStorage.removeItem("asyncRoutes");
       localStorage.removeItem("permission");
       localStorage.removeItem("userInfo");

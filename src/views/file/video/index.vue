@@ -45,8 +45,8 @@
       @handleConfirm="handleConfirm"
     >
       <template slot="body">
-        <CCard title="视频集">
-          <template slot="body">
+        <Collapse title="视频集" :isSearch="false">
+          <template slot="content">
             <CForm
               :disabled="title === '详情'"
               ref="form"
@@ -54,7 +54,7 @@
               :form-params="formParams"
             />
           </template>
-        </CCard>
+        </Collapse>
         <div style="margin-top: 10px; width: 100%"></div>
         <CCard title="视频列表" v-if="this.formData.id">
           <template slot="body">
@@ -107,6 +107,7 @@
 </template>
 <script>
 export default {
+  name: "video",
   data() {
     return {
       baseUrl: process.env.VUE_APP_BASE_API,
@@ -533,7 +534,6 @@ export default {
           span: 18,
           attributes: {
             type: "textarea",
-
             autosize: { minRows: 4, maxRows: 4 },
           },
           on: {},

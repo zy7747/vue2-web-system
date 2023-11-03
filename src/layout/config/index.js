@@ -1,4 +1,4 @@
 export default {
-  layout: '常规',
-  theme: ''
-}
+  layout: null,
+  theme: null,
+};
