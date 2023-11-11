@@ -9,6 +9,7 @@
         ref="eTable"
         v-bind="$attrs"
         :max-height="maxHeight"
+        :min-height="maxHeight"
         :data="tableData"
         :style="`width:${width}`"
         v-loading="loading"
@@ -31,7 +32,7 @@
 
           <!-- 需要用到插槽的表单 -->
           <el-table-column
-            v-else
+            v-else-if="item.show !== 'hidden'"
             v-bind="{
               ...item,
               align: item.align ? item.align : 'center',
@@ -55,7 +56,7 @@
                   style="
                     width: 50px;
                     height: 50px;
-                    border-radius: 10px;
+                    border-radius: 5px;
                     overflow: hidden;
                   "
                   :src="baseUrl + scope.row[item.prop]"
@@ -139,16 +140,14 @@
               </template>
 
               <!-- 自定义编辑框 -->
-              <template
-                v-else-if="item.type === 'custom' || isForm(scope.$index)"
-              >
+              <template v-else-if="item.type === 'custom'">
                 <el-form-item :prop="item.prop">
                   <slot :name="item.componentName" :scope="scope" />
                 </el-form-item>
               </template>
 
               <!-- 操作栏 -->
-              <template v-else-if="item.type === 'action' && !item.isDetail">
+              <template v-else-if="item.type === 'action'">
                 <!-- 可编辑状态的按钮 -->
                 <div v-if="isEditTable" class="action">
                   <!-- 编辑行 -->

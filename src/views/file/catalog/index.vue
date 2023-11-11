@@ -112,8 +112,10 @@
               @end="end"
               animation="10"
             >
-              <transition-group class="list-box">
-                <div
+              <!-- <transition-group>
+              </transition-group> -->
+              <ul class="list-box" v-infinite-scroll="load">
+                <li
                   class="item"
                   v-for="item in fileFilterList"
                   :key="item.id"
@@ -147,8 +149,8 @@
                       {{ item.fileName }}
                     </span>
                   </div>
-                </div>
-              </transition-group>
+                </li>
+              </ul>
             </draggable>
 
             <el-empty v-else description="文件夹里空空如也"></el-empty>
@@ -285,6 +287,7 @@ export default {
       fileClickData: {}, //文件右键事件参数
       baseUrl: process.env.VUE_APP_BASE_API, //基础url
       isFolder: null, //点的是文件夹还是文件
+      count: 32,
     };
   },
   created() {
@@ -580,6 +583,9 @@ export default {
         });
       }
     },
+    load() {
+      this.count += 8;
+    },
   },
   computed: {
     uploadData() {
@@ -597,14 +603,17 @@ export default {
     //文件筛选
     fileFilterList() {
       const value = this.filterFile;
+      let list;
 
       if (value !== "") {
-        return this.fileList.filter((item) => {
+        list = this.fileList.filter((item) => {
           return item.fileName.indexOf(value) !== -1;
         });
       } else {
-        return this.fileList;
+        list = this.fileList;
       }
+
+      return list.slice(0, this.count);
     },
   },
   watch: {

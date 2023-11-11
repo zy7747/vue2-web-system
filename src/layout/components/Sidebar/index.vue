@@ -111,7 +111,7 @@ export default {
   z-index: 8;
   .content {
     overflow: hidden;
-    border-radius: 30px;
+    border-radius: 10px;
     width: 100%;
     .isCollapse {
       display: flex;

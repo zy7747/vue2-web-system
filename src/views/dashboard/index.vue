@@ -5,15 +5,26 @@
     <el-tabs
       @tab-click="tabClick"
       tab-position="left"
-      style="height: 750px; width: 99%"
+      style="height: 790px; width: 99%"
       v-model="activeName"
     >
+      <!-- 天气组件 -->
       <el-tab-pane lazy label="天气" name="天气">
-        <div class="content"></div>
+        <div class="content">
+          <Message
+            text="标题"
+            title="一条好消息"
+            time="2023-10-17 16:39:52"
+          ></Message>
+          <NumberBox :text="[1, 5, 0, '份']"></NumberBox>
+          <NumberBox color="#febb23" :text="[1, 0, 0, '份']"></NumberBox>
+        </div>
       </el-tab-pane>
+      <!-- 日历组件 -->
       <el-tab-pane lazy label="日历" name="日历">
         <Calendar></Calendar>
       </el-tab-pane>
+      <!-- 柱状图组件 -->
       <el-tab-pane label="柱状图" name="柱状图">
         <div style="display: flex">
           <Label title="用户总数" icon="用户" :sum="userTotal">
@@ -21,50 +32,27 @@
               <el-tag type="danger"> 总 </el-tag>
             </template>
           </Label>
-
-          <Label title="视频总数" icon="视频" :sum="videoTotal">
-            <template slot="tag">
-              <el-tag type="danger"> 总 </el-tag>
-            </template>
-          </Label>
         </div>
-
         <div class="content">
           <Bar ref="Bar1"></Bar>
-          <Bar ref="Bar2"></Bar>
         </div>
       </el-tab-pane>
+      <!-- 饼图组件 -->
       <el-tab-pane label="饼图" name="饼图">
         <div class="content">
           <Pie ref="Pie1"></Pie>
-          <Pie ref="Pie2"></Pie>
         </div>
       </el-tab-pane>
-      <el-tab-pane :laze="true" label="圆角环形图" name="圆角环形图">
-        <div class="content">
-          <Rounded ref="Rounded1"></Rounded>
-          <Rounded ref="Rounded2"></Rounded>
-        </div>
-      </el-tab-pane>
-      <el-tab-pane label="南丁格尔玫瑰图" name="南丁格尔玫瑰图">
-        <div class="content">
-          <Nightingale ref="Nightingale1"></Nightingale>
-          <Nightingale ref="Nightingale2"></Nightingale>
-        </div>
-      </el-tab-pane>
+      <!-- 圆角环形图组件 -->
       <el-tab-pane label="折线图" name="折线图">
         <div class="content">
           <Lines ref="Lines1"></Lines>
         </div>
       </el-tab-pane>
+      <!-- 雷达图图组件 -->
       <el-tab-pane label="雷达图" name="雷达图">
         <div class="content">
           <Radar ref="Radar1"></Radar>
-        </div>
-      </el-tab-pane>
-      <el-tab-pane label="仪表盘" name="仪表盘">
-        <div class="content">
-          <Gauge ref="Gauge1"></Gauge>
         </div>
       </el-tab-pane>
       <el-tab-pane label="树形导图" name="树形导图"> </el-tab-pane>
@@ -79,10 +67,9 @@ import {
   Calendar,
   Lines,
   Radar,
-  Gauge,
   Label,
-  Rounded,
-  Nightingale,
+  NumberBox,
+  Message,
 } from "./components/index.js";
 
 export default {
@@ -92,10 +79,9 @@ export default {
     Lines,
     Calendar,
     Radar,
-    Gauge,
     Label,
-    Rounded,
-    Nightingale,
+    NumberBox,
+    Message,
   },
   mounted() {
     this.search();
@@ -107,7 +93,6 @@ export default {
       },
       activeName: "天气",
       userTotal: 0, //用户总数
-      videoTotal: 0, //视频总数
       Bar1: {
         title: "用户性别",
         xAxis: [],
@@ -117,16 +102,6 @@ export default {
         title: "用户性别",
         data: [],
       },
-      Bar2: {
-        title: "视频类型",
-        xAxis: [],
-        series: [],
-      },
-      Pie2: {
-        title: "视频类型",
-        data: [],
-      },
-      testData: [], // 数据源
     };
   },
   methods: {
@@ -134,9 +109,9 @@ export default {
       this.$service.baseData.statistics.getStatistics().then((res) => {
         //人数统计
         this.userTotal = res.data.userTotal;
-        //视频总数统计
-        this.videoTotal = res.data.videoTotal;
+
         res.data.userSex;
+
         const Bar1 = {
           title: "用户性别",
           xAxis: [],
@@ -148,33 +123,14 @@ export default {
           data: [],
         };
 
-        const Bar2 = {
-          title: "视频类型",
-          xAxis: [],
-          series: [],
-        };
-
-        const Pie2 = {
-          title: "视频类型",
-          data: [],
-        };
-
         for (const key in res.data.userSex) {
           Bar1.xAxis.push(key);
           Bar1.series.push(res.data.userSex[key]);
           Pie1.data.push({ value: res.data.userSex[key], name: key });
         }
 
-        for (const key in res.data.videoType) {
-          Bar2.xAxis.push(key);
-          Bar2.series.push(res.data.videoType[key]);
-          Pie2.data.push({ value: res.data.videoType[key], name: key });
-        }
-
         this.Bar1 = Bar1;
         this.Pie1 = Pie1;
-        this.Bar2 = Bar2;
-        this.Pie2 = Pie2;
 
         this.tabClick();
       });
@@ -183,22 +139,12 @@ export default {
       this.$nextTick(() => {
         if (this.activeName === "柱状图") {
           this.$refs.Bar1.createdBar(this.Bar1);
-          this.$refs.Bar2.createdBar(this.Bar2);
         } else if (this.activeName === "饼图") {
           this.$refs.Pie1.createdPie(this.Pie1);
-          this.$refs.Pie2.createdPie(this.Pie2);
-        } else if (this.activeName === "圆角环形图") {
-          this.$refs.Rounded1.createdRounded(this.Pie1);
-          this.$refs.Rounded2.createdRounded(this.Pie2);
-        } else if (this.activeName === "南丁格尔玫瑰图") {
-          this.$refs.Nightingale1.createdNightingale(this.Pie1);
-          this.$refs.Nightingale2.createdNightingale(this.Pie2);
         } else if (this.activeName === "折线图") {
           this.$refs.Lines1.createdLines({ title: "用户" });
         } else if (this.activeName === "雷达图") {
           this.$refs.Radar1.createdRadar({ title: "用户" });
-        } else if (this.activeName === "仪表盘") {
-          this.$refs.Gauge1.createdGauge({ title: "磁盘使用率" });
         }
       });
     },
@@ -207,13 +153,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.search {
-  margin-top: 15px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
 .picture {
   display: flex;
   justify-content: center;

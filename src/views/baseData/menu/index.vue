@@ -29,7 +29,7 @@
           is-detail-line
           is-delete-line
           row-key="id"
-          :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+          :tree-props="{ children: 'children' }"
           :table-data="tableData"
           :table-column="tableColumn"
           @editLine="editLine"
@@ -91,7 +91,7 @@
 import baseParams from "./mixins";
 
 export default {
-  name: "menu",
+  name: "menuPage",
   mixins: [baseParams],
   created() {
     this.query();

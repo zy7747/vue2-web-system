@@ -107,7 +107,7 @@
 </template>
 <script>
 export default {
-  name: "video",
+  name: "VideoPage",
   data() {
     return {
       baseUrl: process.env.VUE_APP_BASE_API,
@@ -700,7 +700,7 @@ export default {
     //导出
     exportExcel() {
       this.$service.file.video.export().then((res) => {
-        this.$download.excel(res, "视频.xls");
+        this.$download.excel(res, "视频.xlsx");
       });
     },
     //文件上传成功

@@ -646,7 +646,7 @@ export default {
     //导出
     exportExcel() {
       this.$service.file.audio.export().then((res) => {
-        this.$download.excel(res, "音频.xls");
+        this.$download.excel(res, "音频.xlsx");
       });
     },
   },

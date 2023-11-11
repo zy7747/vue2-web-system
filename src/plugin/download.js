@@ -4,7 +4,7 @@ import Vue from "vue";
 const download = {
   // 下载 Excel 方法
   excel(data, fileName) {
-    this.download(data, fileName, "application/vnd.ms-excel");
+    this.download(data, fileName, "application/vnd.ms-excel;charset=utf-8'");
   },
 
   // 下载 Zip 方法

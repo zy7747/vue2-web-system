@@ -5,7 +5,7 @@
 
 <script>
 export default {
-  name: "area",
+  name: "AreaPage",
   created() {
     this.test();
   },

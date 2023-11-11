@@ -426,7 +426,7 @@ export default {
     //导出
     exportExcel() {
       this.$service.system.job.export().then((res) => {
-        this.$download.excel(res, "定时任务.xls");
+        this.$download.excel(res, "定时任务.xlsx");
       });
     },
     changeTaskStatus(row) {

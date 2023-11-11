@@ -15,7 +15,6 @@
         <sidebar @widthChange="widthChange" />
         <div class="showBox" :style="`width:${width}px`"></div>
         <el-main>
-          <navbar />
           <tagsView />
           <appMain />
         </el-main>
@@ -25,14 +24,7 @@
 </template>
 
 <script>
-import {
-  Navbar,
-  Sidebar,
-  HeaderLine,
-  Logo,
-  AppMain,
-  TagsView,
-} from "../components";
+import { Sidebar, HeaderLine, Logo, AppMain, TagsView } from "../components";
 
 export default {
   data() {
@@ -50,7 +42,6 @@ export default {
     },
   },
   components: {
-    Navbar,
     Sidebar,
     HeaderLine,
     Logo,

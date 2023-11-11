@@ -606,7 +606,7 @@ export default {
     // 导出
     exportExcel() {
       this.$service.baseData.user.export().then((res) => {
-        this.$download.excel(res, "用户信息.xls");
+        this.$download.excel(res, "用户信息.xlsx");
       });
     },
   },

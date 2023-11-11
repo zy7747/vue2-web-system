@@ -1,8 +1,8 @@
 <!-- 登录页 -->
 <template>
   <div class="backGround" @click.once="play()">
-    <video loop="loop" class="video" ref="video">
-      <source src="@/assets/video/login-video.mp4" type="video/mp4" />
+    <video loop="loop" class="video" ref="video" muted>
+      <source src="@/assets/video/黄金铃.mp4" type="video/mp4" />
     </video>
     <div class="main">
       <Login />
@@ -17,6 +17,9 @@ export default {
   components: {
     Login,
   },
+  mounted() {
+    this.play();
+  },
   methods: {
     play() {
       this.$refs.video.play();
@@ -30,7 +33,9 @@ export default {
   position: relative;
   height: 100vh;
   width: 100vw;
+  overflow: hidden;
   .video {
+    transform: scale(1.2);
     position: absolute;
     width: 100%;
     height: 100%;

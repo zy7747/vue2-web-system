@@ -14,8 +14,6 @@ import "@/plugin";
 import "@/utils";
 //components
 import "@/components";
-//mock
-import "@/mock";
 //svg
 import "@/svg";
 //dict

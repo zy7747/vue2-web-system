@@ -4,7 +4,7 @@ export default {
       text: "最大高度",
       type: [String, Number],
       default: () => {
-        return "500px";
+        return "525px";
       },
     },
     tableData: {

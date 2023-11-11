@@ -1,33 +1,40 @@
 <!--  -->
 <template>
   <div class="HeaderLine">
-    <div class="lock">
+    <div class="refresh lineItem">
       <el-tooltip
         class="item"
         effect="light"
         :open-delay="300"
-        content="锁屏"
+        content="刷新页面"
         placement="top-start"
       >
-        <a class="cursor" href="JavaScript:void(0)">
-          <svg-icon icon-class="解锁" class="icon" />
+        <a class="cursor" href="JavaScript:void(0)" @click="refresh">
+          <svg-icon
+            icon-class="刷新图标"
+            class="icon"
+            style="font-size: 23px"
+          />
         </a>
       </el-tooltip>
     </div>
-    <div class="search">
+
+    <div class="screen lineItem">
       <el-tooltip
         class="item"
         effect="light"
         :open-delay="300"
-        content="搜索"
+        content="全屏显示"
         placement="top-start"
       >
-        <a class="cursor" href="JavaScript:void(0)">
-          <svg-icon icon-class="搜索" class="icon" />
+        <a class="cursor" href="JavaScript:void(0)" @click="changeScreen">
+          <svg-icon v-if="!isScreen" icon-class="全屏显示" class="icon" />
+          <svg-icon v-else icon-class="退出全屏" class="icon" />
         </a>
       </el-tooltip>
     </div>
-    <div class="news">
+
+    <div class="news lineItem">
       <el-popover placement="bottom" trigger="click">
         <el-tooltip
           slot="reference"
@@ -57,48 +64,8 @@
         </div>
       </el-popover>
     </div>
-    <div class="screen">
-      <el-tooltip
-        class="item"
-        effect="light"
-        :open-delay="300"
-        content="全屏显示"
-        placement="top-start"
-      >
-        <a class="cursor" href="JavaScript:void(0)" @click="changeScreen">
-          <svg-icon v-if="!isScreen" icon-class="全屏显示" class="icon" />
-          <svg-icon v-else icon-class="退出全屏" class="icon" />
-        </a>
-      </el-tooltip>
-    </div>
-    <div class="translate">
-      <el-dropdown trigger="click" placement="bottom-start">
-        <el-tooltip
-          class="item"
-          effect="light"
-          :open-delay="300"
-          content="语言翻译"
-          placement="top-start"
-        >
-          <a class="cursor" href="JavaScript:void(0)">
-            <svg-icon
-              icon-class="语言翻译"
-              class="icon"
-              style="font-size: 25px"
-            />
-          </a>
-        </el-tooltip>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item v-for="(item, index) in langs" :key="index">
-            <span>
-              <svg-icon :icon-class="item.icon" class="icon" />
-              <span style="margin-left: 10px">{{ item.lang }}</span></span
-            >
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-    </div>
-    <div class="theme">
+
+    <div class="theme lineItem">
       <el-tooltip
         class="item"
         effect="light"
@@ -111,36 +78,52 @@
         </a>
       </el-tooltip>
     </div>
-    <div class="refresh">
-      <el-tooltip
-        class="item"
-        effect="light"
-        :open-delay="300"
-        content="刷新页面"
-        placement="top-start"
+
+    <div class="translate lineItem">
+      <el-dropdown
+        @command="handleLangs"
+        trigger="click"
+        placement="bottom-start"
       >
-        <a class="cursor" href="JavaScript:void(0)" @click="refresh">
-          <svg-icon
-            icon-class="刷新图标"
-            class="icon"
-            style="font-size: 23px"
-          />
-        </a>
-      </el-tooltip>
+        <el-tooltip
+          class="item"
+          effect="light"
+          :open-delay="300"
+          content="语言翻译"
+          placement="top-start"
+        >
+          <a class="cursor" href="JavaScript:void(0)">
+            <svg-icon
+              :icon-class="languageIcon"
+              class="icon"
+              style="font-size: 25px"
+            />
+          </a>
+        </el-tooltip>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item
+            :command="item"
+            v-for="(item, index) in langs"
+            :key="index"
+          >
+            <span>
+              <svg-icon :icon-class="item.icon" class="icon" />
+              <span style="margin-left: 10px">{{ item.lang }}</span>
+            </span>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </div>
+
     <div class="user">
       <el-dropdown @command="handleCommand" trigger="hover">
         <div class="avatar-wrapper cursor">
-          <img class="avatar" :src="userInfo.avatar" />
-          <p style="font-weight: 600">
+          <img class="avatar" :src="baseUrl + userInfo.avatar" />
+          <p style="font-weight: 520; color: #108adc">
             {{ userInfo.name }}
           </p>
-          <svg-icon
-            style="font-size: 20px"
-            icon-class="向下箭头"
-            class="icon round"
-          />
         </div>
+
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>
             <div class="action" v-if="userInfo.account === 'visitor'">
@@ -218,6 +201,12 @@ export default {
     refresh() {
       location.reload();
     },
+    //修改语言
+    handleLangs(item) {
+      localStorage.setItem("language", item.language);
+      this.$i18n.locale = item.language;
+      this.refresh();
+    },
     handleCommand(command) {
       if (command === "logOut") {
         this.logOut();
@@ -241,37 +230,53 @@ export default {
       this.isScreen = !this.isScreen;
     },
   },
+  computed: {
+    languageIcon() {
+      const result = this.langs.find(
+        (item) => item.language === this.$i18n.locale
+      );
+
+      return result?.icon;
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .HeaderLine {
+  margin-right: 10px;
   display: flex;
   font-size: 25px;
   justify-content: space-between;
   align-items: center;
   float: right;
-  width: 400px;
   height: var(--headerHeight);
 }
+
+.lineItem {
+  margin: 0 7px;
+}
 .user {
-  width: 100px;
+  width: 80px;
+  display: flex;
+  align-items: center;
+  .avatar-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .avatar {
+      margin-right: 8px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      height: 30px;
+      width: 30px;
+    }
+  }
 }
 
 .el-dropdown {
   width: 100%;
-}
-.avatar-wrapper {
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  .avatar {
-    border-radius: 50%;
-    border: 2px solid #fff;
-    height: 30px;
-    width: 30px;
-  }
 }
 
 .cursor {
@@ -281,25 +286,6 @@ export default {
 .notice {
   width: 300px;
   height: 500px;
-}
-
-@keyframes rotate {
-  0% {
-    -webkit-transform: rotate(0deg);
-  }
-
-  100% {
-    -webkit-transform: rotate(180deg);
-  }
-}
-
-.avatar-wrapper:hover .round {
-  animation: rotate 0.5s linear;
-  transform: rotate(180deg);
-}
-
-::v-deep .el-drawer__header {
-  font-size: 16px;
 }
 
 .icon {
@@ -313,10 +299,9 @@ export default {
   justify-content: center;
   align-items: center;
   z-index: 1;
-}
-
-.action-icon {
-  font-size: 16px;
+  .action-icon {
+    font-size: 16px;
+  }
 }
 
 .el-badge__content.is-dot {

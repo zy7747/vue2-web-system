@@ -12,14 +12,14 @@
                   icon="el-icon-search"
                   type="primary"
                   class="btn"
-                  text="查询"
+                  :text="$t('system.query')"
                   @click="search"
                   v-audio="'search'"
                 />
                 <c-button
                   icon="el-icon-refresh"
                   class="btn"
-                  text="重置"
+                  :text="$t('system.reset')"
                   @click="reset"
                 />
               </div>

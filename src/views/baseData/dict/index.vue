@@ -267,6 +267,7 @@ export default {
     //字典集列表参数
     dictListColumn() {
       const that = this;
+
       return [
         {
           type: "selection",
@@ -336,7 +337,7 @@ export default {
           type: "action",
           fixed: "right",
           width: 160,
-          isDetail: that.title === "详情",
+          show: that.title !== "详情" ? true : "hidden",
         },
       ];
     },
@@ -468,7 +469,7 @@ export default {
     //导出
     exportExcel() {
       this.$service.baseData.dict.export().then((res) => {
-        this.$download.excel(res, "字典.xls");
+        this.$download.excel(res, "字典.xlsx");
       });
     },
     //新增字典集

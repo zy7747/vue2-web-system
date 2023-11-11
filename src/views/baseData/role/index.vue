@@ -345,7 +345,7 @@ export default {
     //导出
     exportExcel() {
       this.$service.baseData.role.export().then((res) => {
-        this.$download.excel(res, "角色.xls");
+        this.$download.excel(res, "角色.xlsx");
       });
     },
     //搜索框过滤

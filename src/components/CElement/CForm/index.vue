@@ -10,7 +10,11 @@
       :validate-on-rule-change="false"
     >
       <template v-for="item in formParams">
-        <el-col :key="item.prop" :span="item.span">
+        <el-col
+          :key="item.prop"
+          :span="item.span"
+          v-show="item.show !== 'hidden'"
+        >
           <el-form-item :label="item.label" :prop="item.prop">
             <!-- 下拉 -->
             <c-select

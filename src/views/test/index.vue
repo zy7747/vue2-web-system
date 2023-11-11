@@ -23,7 +23,6 @@
           is-edit-line
           is-detail-line
           is-delete-line
-          :query="search"
           :table-column="tableColumn"
           @handleSelectionChange="selection"
         />
@@ -34,8 +33,6 @@
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
   created() {
     this.search();
@@ -200,11 +197,7 @@ export default {
   },
   computed: {},
   methods: {
-    search() {
-      return axios.post("/test/table").then((res) => {
-        return res.data.data;
-      });
-    },
+    search() {},
     resetQueryData() {},
     // 多选
     selection(list) {

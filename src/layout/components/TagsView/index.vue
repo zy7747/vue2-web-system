@@ -12,7 +12,7 @@
         :class="isActive(tag) ? 'active' : ''"
         :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
         tag="span"
-        class="tags-view-item hvr-buzz-out"
+        class="tags-view-item hvr-wobble-bottom"
         @click.middle.native="!isAffix(tag) ? closeSelectedTag(tag) : ''"
         @contextmenu.prevent.native="openMenu(tag, $event)"
       >
@@ -45,7 +45,6 @@
 </template>
 
 <script>
-import Item from "../Sidebar/Item.vue";
 import ScrollPane from "./ScrollPane";
 import path from "path";
 
@@ -224,14 +223,10 @@ export default {
 <style lang="scss" scoped>
 .tags-view-container {
   height: var(--tagsViewHeight);
-  margin-bottom: 5px;
-  border-radius: 20px;
   overflow: hidden;
   display: flex;
   align-items: center;
   width: 100%;
-  // background: var(--tagsViewBackgroundColor);
-  // box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
   .tags-view-wrapper {
     .tags-view-item {
       display: flex;
@@ -242,8 +237,9 @@ export default {
       border-radius: 2px;
       height: 25px;
       line-height: 25px;
-      color: #fff;
-      background: #244c8a;
+      color: #000000;
+      background-color: #fff;
+      opacity: 0.9;
       padding: 0 8px;
       font-size: 12px;
       margin-left: 5px;
@@ -255,25 +251,14 @@ export default {
       }
       &.active {
         color: #fff;
-        border-color: #42b983;
-        background-color: #42b983;
-        // &::before {
-        //   content: "";
-        //   background: #fff;
-        //   display: inline-block;
-        //   width: 8px;
-        //   height: 8px;
-        //   border-radius: 50%;
-        //   position: relative;
-        //   margin-right: 2px;
-        // }
+        background: #303b75;
       }
     }
   }
   .contextmenu {
     margin: 0;
     background: #fff;
-    z-index: 3000;
+    z-index: 30;
     position: absolute;
     list-style-type: none;
     padding: 5px 0;
