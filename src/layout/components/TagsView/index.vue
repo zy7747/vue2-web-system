@@ -34,12 +34,12 @@
       :style="{ left: left + 'px', top: top + 'px' }"
       class="contextmenu"
     >
-      <li @click="refreshSelectedTag(selectedTag)">Refresh</li>
+      <li @click="refreshSelectedTag(selectedTag)">刷新</li>
       <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
-        Close
+        关闭
       </li>
-      <li @click="closeOthersTags">Close Others</li>
-      <li @click="closeAllTags(selectedTag)">Close All</li>
+      <li @click="closeOthersTags">关闭其他</li>
+      <li @click="closeAllTags(selectedTag)">关闭所有</li>
     </ul>
   </div>
 </template>
@@ -198,15 +198,15 @@ export default {
       const offsetLeft = this.$el.getBoundingClientRect().left; // container margin left
       const offsetWidth = this.$el.offsetWidth; // container width
       const maxLeft = offsetWidth - menuMinWidth; // left boundary
-      const left = e.clientX - offsetLeft + 15; // 15: margin right
+      const left = e.clientX - offsetLeft; // 15: margin right
 
       if (left > maxLeft) {
         this.left = maxLeft;
       } else {
-        this.left = left;
+        this.left = left + 150;
       }
 
-      this.top = e.clientY;
+      this.top = e.clientY - 30;
       this.visible = true;
       this.selectedTag = tag;
     },
@@ -234,7 +234,7 @@ export default {
       align-items: center;
       position: relative;
       cursor: pointer;
-      border-radius: 2px;
+      border-radius: 5px;
       height: 25px;
       line-height: 25px;
       color: #000000;

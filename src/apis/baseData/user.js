@@ -17,6 +17,12 @@ export default {
     app: "user",
     text: "用户分页",
   },
+  list: {
+    url: "/user/list",
+    method: "get",
+    app: "user",
+    text: "获取所有用户",
+  },
   detail: {
     url: "/user/detail",
     method: "get",
@@ -28,6 +34,12 @@ export default {
     method: "post",
     app: "user",
     text: "用户编辑",
+  },
+  userInfo: {
+    url: "/user/userInfo",
+    method: "get",
+    app: "user",
+    text: "获取用户信息",
   },
   delete: {
     url: "/user/delete",

@@ -35,14 +35,24 @@
 
 <script>
 export default {
+  created() {
+    //是否记住账号密码
+    const rememberMe = localStorage.getItem("rememberMe");
+    if (rememberMe) {
+      this.loginInfo = {
+        ...this.loginInfo,
+        ...JSON.parse(rememberMe),
+      };
+    }
+  },
   data() {
     return {
       loginInfo: {
         account: "",
         password: "",
+        rememberMe: false,
         loginType: "account",
         loginSystem: "system",
-        rememberMe: false,
       },
       rules: {
         account: [

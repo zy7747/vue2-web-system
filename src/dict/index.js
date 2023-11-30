@@ -33,7 +33,7 @@ export function getServiceData(serviceCode, params) {
   });
 }
 
-//1.只有一个参数获取字典列表 2.第二个参数获取翻译
+//1.获取字典列表
 export function getDictData(dictCode) {
   //获取字典
   const dict = store.getters.dict[dictCode] ? store.getters.dict[dictCode] : [];
@@ -41,8 +41,8 @@ export function getDictData(dictCode) {
   return dict;
 }
 
-//翻译
-export function getDictLabel(dictCode, value) {
+//获取tag翻译
+export function getDictTag(dictCode, value) {
   //获取字典
   const dict = store.getters.dict[dictCode] ? store.getters.dict[dictCode] : [];
   //找到label 和 value
@@ -55,6 +55,25 @@ export function getDictLabel(dictCode, value) {
   return [data];
 }
 
+//获取翻译后裔label
+export function getDictLabel(dictCode, value) {
+  if (Array.isArray(dictCode)) {
+    const data = lodash.find(dictCode, (item) => item.value === value);
+    return data.label;
+  }
+  //获取字典
+  const dict = store.getters.dict[dictCode] ? store.getters.dict[dictCode] : [];
+  //找到label 和 value
+  if (value === null) {
+    value = "";
+  }
+
+  const data = lodash.find(dict, (item) => item.value === value);
+
+  return data.label;
+}
+
 Vue.prototype.getDictData = getDictData;
 Vue.prototype.getDictLabel = getDictLabel;
+Vue.prototype.getDictTag = getDictTag;
 Vue.prototype.getServiceData = getServiceData;

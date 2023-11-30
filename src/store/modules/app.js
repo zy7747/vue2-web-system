@@ -1,4 +1,5 @@
 import service from "@/plugin/apis";
+import { getUserList } from "@/dict/service/user";
 
 const app = {
   state: {
@@ -11,8 +12,11 @@ const app = {
   },
   actions: {
     //字典类型处理
-    GetDict({ commit }) {
-      service.baseData.dict.dictAllList().then((res) => {
+    async GetDict({ commit }) {
+      //其他需要缓存的字典
+      const userList = await getUserList();
+      //缓存所有字典
+      const dictList = await service.baseData.dict.dictAllList().then((res) => {
         let dictList = res.data;
 
         for (const key in dictList) {
@@ -37,8 +41,12 @@ const app = {
           });
         }
 
-        commit("SET_DICT", dictList);
+        return dictList;
       });
+      //字典拼接
+      dictList.user = userList;
+
+      commit("SET_DICT", dictList);
     },
   },
 };

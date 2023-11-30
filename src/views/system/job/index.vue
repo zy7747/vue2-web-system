@@ -214,12 +214,14 @@ export default {
           prop: "creator",
           width: 150,
           sortable: true,
+          translation: "user",
         },
         {
           label: "更新人",
           prop: "updater",
           width: 150,
           sortable: true,
+          translation: "user",
         },
         {
           label: "创建时间",

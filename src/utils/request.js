@@ -1,9 +1,9 @@
 import axios from "axios";
 import modal from "@/plugin/modal";
 import { getToken } from "./auth";
+import store from "@/store/index";
 // 创建axios实例
 const service = axios.create({
-  // baseURL: '/devApis',
   baseURL: process.env.VUE_APP_BASE_API,
   timeout: 15000, // 请求超时时间
   headers: {
@@ -16,11 +16,11 @@ service.interceptors.request.use(
   (config) => {
     // 如果存在登录用户信息，则将其设置到请求头部
     if (getToken()) {
-      config.headers["Authorization"] = `Bearer ${getToken()}`;
-      // 获取登录用户信息
-      config.headers["userId"] = `${
-        JSON.parse(localStorage.getItem("userInfo")).id
-      }`;
+      config.headers["Authorization"] = getToken();
+    }
+
+    if (store.getters.userInfo.id) {
+      config.headers["UserId"] = store.getters.userInfo.id;
     }
 
     return config;

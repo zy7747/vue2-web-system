@@ -14,13 +14,13 @@ import CCard from "./CElement/CCard/index.vue";
 import CForm from "./CElement/CForm/index.vue";
 import CTable from "./CElement/CTable/index.vue";
 import CDialog from "./CElement/CDialog/index.vue";
+import CTree from "./CElement/CTree/index.vue";
 
 import CDatePicker from "./CElement/CDatePicker/index.vue";
 import CTimePicker from "./CElement/CTimePicker/index.vue";
 import CDateTimePicker from "./CElement/CDateTimePicker/index.vue";
 import CTreeSelect from "./CElement/CTreeSelect/index.vue";
 
-import Editor from "./Editor/index.vue";
 import IconSelect from "./IconSelect/index.vue";
 import VideoPlayer from "./VideoPlayer/index.vue";
 import Toolbar from "./Toolbar/index.vue";
@@ -45,6 +45,7 @@ Vue.component("CTimePicker", CTimePicker);
 Vue.component("CDateTimePicker", CDateTimePicker);
 
 Vue.component("CForm", CForm);
+Vue.component("CTree", CTree);
 Vue.component("CCard", CCard);
 Vue.component("Toolbar", Toolbar);
 Vue.component("CTable", CTable);
@@ -53,7 +54,6 @@ Vue.component("Collapse", Collapse);
 Vue.component("CDatePicker", CDatePicker);
 
 Vue.component("Pagination", Pagination);
-Vue.component("Editor", Editor);
 Vue.component("IconSelect", IconSelect);
 Vue.component("VideoPlayer", VideoPlayer);
 Vue.component("FileUpload", FileUpload);

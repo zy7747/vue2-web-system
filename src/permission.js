@@ -29,18 +29,16 @@ router.beforeEach(async (to, from, next) => {
         //字典获取
         store.dispatch("GetDict");
         //重新获取基础数据
-        await store.dispatch("Login", {
-          ...JSON.parse(localStorage.getItem("userInfo")),
-          loginType: "account",
-          loginSystem: "system",
-        });
+        await store.dispatch("UserInfo");
 
-        // 动态添加路由
+        //router.addRoute(store.getters.routes);
+
         router.addRoutes(store.getters.routes);
         // hack方法 确保addRoutes已完成
         next({ ...to, replace: true });
         NProgress.done();
       } catch (error) {
+        store.dispatch("LogOut");
         Message.error(error || "Has Error");
         next(`/login?redirect=${url}`);
         NProgress.done();

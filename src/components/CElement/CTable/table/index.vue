@@ -4,8 +4,8 @@
     <!-- 表格 -->
     <el-form ref="tableForm" :model="formData" :rules="rules">
       <el-table
-        stripe
         border
+        :stripe="stripe"
         ref="eTable"
         v-bind="$attrs"
         :max-height="maxHeight"
@@ -32,11 +32,13 @@
 
           <!-- 需要用到插槽的表单 -->
           <el-table-column
-            v-else-if="item.show !== 'hidden'"
+            v-else-if="item.show == undefined ? true : item.show"
             v-bind="{
               ...item,
               align: item.align ? item.align : 'center',
             }"
+            :filters="hasFilter(item) ? dataFilters(item) : null"
+            :filter-method="hasFilter(item) ? filterHandler : null"
             :key="index"
             :show-overflow-tooltip="true"
           >
@@ -79,6 +81,23 @@
                   "
                   >{{ scope.row[item.prop] }}
                 </a>
+              </template>
+
+              <!-- 拖拽排序框 -->
+              <template v-else-if="item.type === 'sort'">
+                <div
+                  style="
+                    justify-content: center;
+                    display: flex;
+                    align-items: center;
+                  "
+                >
+                  <c-button
+                    type="text"
+                    icon="el-icon-d-caret"
+                    size="medium"
+                  ></c-button>
+                </div>
               </template>
 
               <!-- 输入框 -->
@@ -259,9 +278,19 @@
 
               <!-- 正常栏位 -->
               <template v-else>
+                <!-- 值是数组，切需要翻译的 -->
+                <div v-if="item.isArrayValue" style="dict-tag-list">
+                  <dict-tag
+                    v-for="itemValue in scope.row[item.prop]"
+                    :key="itemValue"
+                    :dict="item.translation"
+                    :value="itemValue"
+                  />
+                </div>
+
                 <!-- 翻译器 -->
                 <dict-tag
-                  v-if="item.translation"
+                  v-else-if="item.translation"
                   :dict="item.translation"
                   :value="scope.row[item.prop]"
                 />
@@ -274,10 +303,7 @@
               v-if="item.type === 'action' && !item.isDetail"
               slot="header"
             >
-              <span class="table-header-icon">
-                <i class="el-icon-s-tools" />
-              </span>
-              {{ "操作" }}
+              <Action :tableColumn="tableColumn" />
             </template>
           </el-table-column>
         </template>
@@ -289,10 +315,14 @@
 <script>
 import baseParams from "./mixins/index";
 import Sortable from "sortablejs";
+import Action from "./components/Action";
 
 export default {
   name: "STable",
   mixins: [baseParams],
+  components: {
+    Action,
+  },
   mounted() {
     if (this.isRowDrop) {
       this.rowDrop();
@@ -409,12 +439,54 @@ export default {
       const el = this.$refs.eTable.$el.querySelectorAll(
         ".el-table__body-wrapper > table > tbody"
       )[0];
-      const sortable = Sortable.create(el, {
+
+      Sortable.create(el, {
         onEnd: (evt) => {
           const targetRow = this.tableData.splice(evt.oldIndex, 1)[0];
           this.tableData.splice(evt.newIndex, 0, targetRow);
+
+          for (let index in this.tableData) {
+            this.tableData[index].sort = parseInt(index);
+          }
         },
       });
+    },
+    //数据下拉筛选
+    dataFilters(column) {
+      const filtersData = [];
+
+      this.tableData.forEach((item) => {
+        const text = item[column.prop];
+
+        if (text && text !== "" && typeof text === "string") {
+          if (column.translation) {
+            filtersData.push({
+              text: this.getDictLabel(column.translation, text),
+              value: text,
+            });
+          } else {
+            filtersData.push({
+              text: text,
+              value: text,
+            });
+          }
+        }
+      });
+
+      return this.$uniqBy(filtersData, "value");
+    },
+    //哪些需要下拉过滤
+    hasFilter(item) {
+      const filterList = [];
+      if (filterList.includes(item.type) || !item.type) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    filterHandler(value, row, column) {
+      const property = column["property"];
+      return row[property] === value;
     },
   },
 };
@@ -455,8 +527,20 @@ export default {
 }
 
 .link {
-  color: #1683bd;
+  color: #45b3ee;
   font-weight: 550;
   width: 100%;
+}
+.link:hover {
+  color: #196a96;
+  text-decoration: underline;
+}
+
+.dict-tag-list {
+  display: flex;
+}
+
+::v-deep .el-icon-arrow-down {
+  color: #fff !important;
 }
 </style>

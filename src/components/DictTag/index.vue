@@ -1,8 +1,8 @@
-<!--  -->
+<!-- tag标签 -->
 <template>
   <div>
-    <template v-for="(item, index) in getDictLabel(dict, value)">
-      <el-tag v-if="item?.color !== null" :type="item?.color" :key="index">
+    <template v-for="(item, index) in options">
+      <el-tag v-if="item?.color" :type="item?.color" :key="index">
         {{ item?.label }}
       </el-tag>
       <span :key="index" v-else>{{ item?.label }}</span>
@@ -12,10 +12,11 @@
 
 <script>
 export default {
+  name: "DictTag",
   props: {
     value: {
       text: "值",
-      type: [String, Number],
+      type: [String, Number, Array],
       default: () => {
         return "";
       },
@@ -26,6 +27,16 @@ export default {
       default: () => {
         return "";
       },
+    },
+  },
+  computed: {
+    options() {
+      if (Array.isArray(this.dict)) {
+        const data = this.dict.find((item) => item.value === this.value);
+        return [data];
+      } else {
+        return this.getDictTag(this.dict, this.value);
+      }
     },
   },
 };

@@ -1,49 +1,18 @@
 <!--  -->
 <template>
   <div class="HeaderLine">
-    <div class="refresh lineItem">
-      <el-tooltip
-        class="item"
-        effect="light"
-        :open-delay="300"
-        content="刷新页面"
-        placement="top-start"
-      >
-        <a class="cursor" href="JavaScript:void(0)" @click="refresh">
-          <svg-icon
-            icon-class="刷新图标"
-            class="icon"
-            style="font-size: 23px"
-          />
-        </a>
-      </el-tooltip>
-    </div>
-
     <div class="screen lineItem">
-      <el-tooltip
-        class="item"
-        effect="light"
-        :open-delay="300"
-        content="全屏显示"
-        placement="top-start"
-      >
+      <div class="item" title="全屏显示">
         <a class="cursor" href="JavaScript:void(0)" @click="changeScreen">
           <svg-icon v-if="!isScreen" icon-class="全屏显示" class="icon" />
           <svg-icon v-else icon-class="退出全屏" class="icon" />
         </a>
-      </el-tooltip>
+      </div>
     </div>
 
     <div class="news lineItem">
       <el-popover placement="bottom" trigger="click">
-        <el-tooltip
-          slot="reference"
-          class="item"
-          effect="light"
-          :open-delay="300"
-          content="系统公告"
-          placement="top-start"
-        >
+        <div class="item" title="系统公告" slot="reference">
           <el-badge is-dot class="dot">
             <a class="cursor" href="JavaScript:void(0)">
               <svg-icon
@@ -53,8 +22,7 @@
               />
             </a>
           </el-badge>
-        </el-tooltip>
-
+        </div>
         <div class="notice">
           <el-tabs v-model="activeName">
             <el-tab-pane label="通知" name="通知">通知</el-tab-pane>
@@ -66,17 +34,11 @@
     </div>
 
     <div class="theme lineItem">
-      <el-tooltip
-        class="item"
-        effect="light"
-        :open-delay="300"
-        content="主题风格"
-        placement="top-start"
-      >
+      <div class="item" title="主题">
         <a class="cursor" href="JavaScript:void(0)" @click="theme">
-          <svg-icon icon-class="主题" class="icon" style="font-size: 24px" />
+          <svg-icon icon-class="Photo" class="icon" style="font-size: 24px" />
         </a>
-      </el-tooltip>
+      </div>
     </div>
 
     <div class="translate lineItem">
@@ -85,13 +47,7 @@
         trigger="click"
         placement="bottom-start"
       >
-        <el-tooltip
-          class="item"
-          effect="light"
-          :open-delay="300"
-          content="语言翻译"
-          placement="top-start"
-        >
+        <div class="item" title="语言">
           <a class="cursor" href="JavaScript:void(0)">
             <svg-icon
               :icon-class="languageIcon"
@@ -99,7 +55,8 @@
               style="font-size: 25px"
             />
           </a>
-        </el-tooltip>
+        </div>
+
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item
             :command="item"
@@ -120,7 +77,7 @@
         <div class="avatar-wrapper cursor">
           <img class="avatar" :src="baseUrl + userInfo.avatar" />
           <p style="font-weight: 520; color: #108adc">
-            {{ userInfo.name }}
+            {{ userInfo.user }}
           </p>
         </div>
 
@@ -260,6 +217,7 @@ export default {
   width: 80px;
   display: flex;
   align-items: center;
+  margin-left: 5px;
   .avatar-wrapper {
     width: 100%;
     display: flex;
@@ -267,8 +225,8 @@ export default {
     align-items: center;
     .avatar {
       margin-right: 8px;
-      border-radius: 50%;
-      border: 2px solid #fff;
+      border-radius: 5px;
+      border: 1px solid #fff;
       height: 30px;
       width: 30px;
     }

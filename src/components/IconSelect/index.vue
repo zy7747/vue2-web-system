@@ -16,7 +16,7 @@
           >
             <svg-icon
               :icon-class="item"
-              style="height: 30px; width: 16px; margin-right: 5px"
+              style="height: 35px; width: 26px; margin-right: 15px"
             />
             <span class="icon-name" :title="item">{{ item }}</span>
           </div>
@@ -92,16 +92,15 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 .icon-body {
   width: 100%;
-  padding: 10px;
   .icon-list {
     height: 200px;
     overflow-y: scroll;
     div {
-      height: 30px;
-      line-height: 30px;
+      height: 35px;
+      line-height: 35px;
       margin-bottom: -5px;
       cursor: pointer;
-      width: 33%;
+      width: 33.33%;
       float: left;
     }
     span {
@@ -119,6 +118,11 @@ export default {
     width: 160px;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .icon-name:hover {
+    color: aqua;
+    text-decoration: underline;
   }
 }
 

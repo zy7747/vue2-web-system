@@ -2,7 +2,7 @@ import service from "@/plugin/apis";
 import router from "@/router";
 import { getToken, setToken, removeToken } from "@/utils/auth";
 import { Message } from "element-ui";
-import { getMenu, getRoutes } from "@/utils/asyncRoutes";
+import { getMenu, getRoutes } from "@/router/asyncRoutes";
 
 const user = {
   state: {
@@ -57,9 +57,6 @@ const user = {
     REMOVE_ASYNC_ROUTERS(state) {
       state.asyncRoutes = [];
     },
-    REMOVE_PASSWORD(state) {
-      localStorage.removeItem("password");
-    },
   },
   actions: {
     // 登录
@@ -68,8 +65,6 @@ const user = {
         if (response.code === 200) {
           //2.保存TOKEN
           commit("SET_TOKEN", response.data.token);
-          //3.存储用户信息
-          commit("SET_USERINFO", response.data);
 
           return response.data;
         } else {
@@ -81,12 +76,29 @@ const user = {
     },
     // 登出
     LogOut({ commit }) {
-      commit("REMOVE_PASSWORD");
       commit("REMOVE_USERINFO");
       commit("REMOVE_TOKEN");
       commit("REMOVE_ASYNC_ROUTERS");
-      Message.success("已退出登录");
+
       router.push("/login");
+      Message.success("已退出登录");
+    },
+    //获取用户信息
+    UserInfo({ commit }) {
+      return service.baseData.user
+        .userInfo({ loginSystem: "system" })
+        .then((response) => {
+          if (response.code === 200) {
+            //3.存储用户信息
+            commit("SET_USERINFO", response.data);
+
+            return response.data;
+          } else {
+            Message.error(response.message);
+            removeToken();
+            return false;
+          }
+        });
     },
   },
 };

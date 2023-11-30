@@ -3,6 +3,10 @@
   <div>{{ 123 }}</div>
 </template>
 
-<script></script>
+<script>
+export default {
+  name: "Log",
+};
+</script>
 
 <style lang="scss" scoped></style>

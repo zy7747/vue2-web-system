@@ -1,4 +1,5 @@
 const path = require("path");
+
 const { defineConfig } = require("@vue/cli-service");
 const APP_TITLE = process.env.VUE_APP_TITLE; // 网页标题
 
@@ -7,23 +8,13 @@ function resolve(dir) {
 }
 
 module.exports = defineConfig({
-  publicPath: "/web-system",
-  transpileDependencies: true,
+  publicPath: process.env.PUBLIC_PATH ? process.env.PUBLIC_PATH : "/",
+  outputDir: "dist",
+  assetsDir: "static",
+  lintOnSave: process.env.NODE_ENV === "development",
   devServer: {
     port: 3002,
-    client: {
-      overlay: false,
-    },
-    host: "localhost",
-    // proxy: {
-    //   "/api": {
-    //     target: "http://localhost:8880",
-    //     changeOrigin: true,
-    //     pathRewrite: {
-    //       "^/api": "",
-    //     },
-    //   },
-    // },
+    open: true,
   },
   configureWebpack: {
     resolve: {

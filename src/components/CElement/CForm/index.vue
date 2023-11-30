@@ -13,7 +13,7 @@
         <el-col
           :key="item.prop"
           :span="item.span"
-          v-show="item.show !== 'hidden'"
+          v-if="item.show == undefined ? true : item.show"
         >
           <el-form-item :label="item.label" :prop="item.prop">
             <!-- 下拉 -->
@@ -144,7 +144,6 @@ export default {
         });
     },
     clearValidate() {
-      console.log(this.$refs["CForm"]);
       return this.$refs["CForm"].clearValidate();
     },
   },
@@ -154,6 +153,11 @@ export default {
 <style lang="scss" scoped>
 .CForm {
   width: 100%;
+  ::v-deep .el-input__inner {
+    background-color: #212147 !important;
+    color: #fff !important;
+    font-weight: 520 !important;
+  }
 }
 .el-col {
   padding: 0 15px;

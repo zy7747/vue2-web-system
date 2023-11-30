@@ -208,7 +208,11 @@ export function formatNumber(value, pattern) {
  * @return {*} 去重后数组
  */
 export function uniqBy(arr, key) {
-  return lodash.uniqBy(arr, key);
+  if (arr.length > 0) {
+    return lodash.uniqBy(arr, key);
+  } else {
+    return arr;
+  }
 }
 
 /**

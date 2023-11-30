@@ -35,6 +35,11 @@ export default {
         return false;
       },
     },
+    stripe: {
+      text: "stripe",
+      type: [Boolean],
+      default: true,
+    },
     isEditTable: {
       text: "可编辑的表单",
       type: [Boolean],
@@ -43,28 +48,22 @@ export default {
       },
     },
     isEditLine: {
-      text: "编辑的行按钮",
+      text: "编辑行按钮",
       type: [Boolean],
-      default: () => {
-        return false;
-      },
+      default: true,
     },
     isDetailLine: {
       text: "详情行按钮",
       type: [Boolean],
-      default: () => {
-        return false;
-      },
-    },
-    isRowDrop: {
-      text: "是否可以拖拽行",
-      type: [Boolean],
-      default: () => {
-        return false;
-      },
+      default: true,
     },
     isDeleteLine: {
       text: "删除行按钮",
+      type: [Boolean],
+      default: true,
+    },
+    isRowDrop: {
+      text: "是否可以拖拽行",
       type: [Boolean],
       default: () => {
         return false;

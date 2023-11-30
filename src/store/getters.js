@@ -8,6 +8,6 @@ const getters = {
   dict: (state) => state.app.dict, //字典
   layout: (state) => state.config.layout, //布局
   visitedViews: (state) => state.tagsView.visitedViews, //动态页签
-  cachedViews: (state) => state.tagsView.cachedViews,
+  cachedViews: (state) => state.tagsView.cachedViews, //缓存页签
 };
 export default getters;

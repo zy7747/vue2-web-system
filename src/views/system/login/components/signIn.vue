@@ -61,6 +61,7 @@ export default {
       loginType: "account",
     };
   },
+
   methods: {
     // 登录
     async signIn() {
@@ -71,29 +72,32 @@ export default {
           .validate()
           .then(() => {
             this.loading = true;
-            this.$store
-              .dispatch("Login", loginInfo)
-              .then((res) => {
-                if (res) {
-                  //1.记住密码
-                  if (loginInfo.rememberMe) {
-                    localStorage.setItem("password", loginInfo.password);
-                  }
-                  this.loading = false;
-                  this.$message.success("登录成功");
-                  if (this.$route.fullPath !== "/login") {
-                    this.$router.push("/");
-                    location.reload();
-                  } else {
-                    this.$router.push("/");
-                  }
+            this.$store.dispatch("Login", loginInfo).then((res) => {
+              if (res) {
+                //1.记住密码
+                if (loginInfo.rememberMe) {
+                  localStorage.setItem(
+                    "rememberMe",
+                    JSON.stringify({
+                      ...loginInfo,
+                      rememberMe: true,
+                    })
+                  );
                 } else {
-                  this.loading = false;
+                  localStorage.removeItem("rememberMe");
                 }
-              })
-              .catch(() => {
+
+                this.$message.success("登录成功");
+
+                if (this.$route.fullPath !== "/login") {
+                  location.reload();
+                }
+                this.$router.push("/");
                 this.loading = false;
-              });
+              } else {
+                this.loading = false;
+              }
+            });
           })
           .catch(() => {
             this.loading = false;
