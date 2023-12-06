@@ -21,7 +21,7 @@
         </div>
       </el-popover>
     </span>
-    <span> {{ "操作" }}</span>
+    <span> {{ $t('system.action') }}</span>
   </div>
 </template>
 

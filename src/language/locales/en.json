@@ -1,6 +1,29 @@
 {
   "system": {
     "query": "query",
-    "reset": "reset"
+    "reset": "reset",
+    "import": "import",
+    "export": "export",
+    "add": "add",
+    "deleteMore": "deleteMore",
+    "action": "action",
+    "ordinal": "ordinal"
+  },
+  "notice": {
+    "notice": "notice",
+    "id": "id",
+    "roleName": "roleName",
+    "roleCode": "roleCode",
+    "type": "type",
+    "isRead": "isRead",
+    "status": "status",
+    "remark": "remark",
+    "creator": "creator",
+    "updater": "updater",
+    "createTime": "createTime",
+    "updateTime": "updateTime",
+    "isDeleted": "isDeleted",
+    "tenantId": "tenantId",
+    "version": "version"
   }
 }

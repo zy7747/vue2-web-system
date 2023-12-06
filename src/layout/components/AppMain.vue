@@ -24,6 +24,7 @@ export default {
 
 <style lang="scss" scoped>
 .app-main {
+  background-color: #fff;
   width: 100%;
   height: calc(100% - var(--tagsViewHeight) - 5px);
   border-radius: 15px;

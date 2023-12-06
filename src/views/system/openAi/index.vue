@@ -29,12 +29,8 @@
         </div>
 
         <div v-else class="botTalk">
-          {{ item.content }}
+          <pre><code class="hljs" v-html="highlightedCode(item.content)"></code></pre>
         </div>
-
-        <!-- <pre>
-            <code class="javascirpt">{{item.content}}</code>
-        </pre> -->
       </li>
     </ul>
   </div>
@@ -42,6 +38,9 @@
 
 <script>
 import OpenAI from "openai";
+import highlight from "@/plugin/highlight";
+
+//openAi
 const openai = new OpenAI({
   apiKey: "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",
   dangerouslyAllowBrowser: true,
@@ -56,6 +55,15 @@ export default {
     return {
       talk: "",
       talkAbout: [],
+      languages: [
+        "javascript",
+        "html",
+        "vue",
+        "java",
+        "bash",
+        "typescript",
+        "shell",
+      ],
       userInfo: null,
       baseUrl: process.env.VUE_APP_BASE_API,
     };
@@ -69,9 +77,13 @@ export default {
         messages: [{ role: "user", content: this.talk }],
         model: "gpt-3.5-turbo",
       });
+      // 用户说的话
       this.talkAbout.push({ role: "user", content: this.talk });
+      //AI说的话
       this.talkAbout.push(completion.choices[0].message);
+      //清空输入框
       this.talk = "";
+      //滚动条到最底下
       this.setScrollTop();
     },
     //滚动条到最底下
@@ -84,6 +96,33 @@ export default {
           container.scrollTop = container.scrollHeight + 200;
         }
       });
+    },
+    //将ai生成的代码片段经行处理
+    aiTalk(talk) {},
+    //vue中使用highlight.js
+    /** 高亮显示 */
+    highlightedCode(code) {
+      const arr = code.split("```");
+      let text = "";
+
+      //将代码部分与普通文字抽离出来
+      arr.forEach((item) => {
+        let result;
+
+        const arr2 = item.split("\n");
+        let language = arr2[0];
+
+        if (this.languages.includes(language)) {
+          arr2.shift();
+          result = highlight(language, arr2.join("\n"));
+        } else {
+          result = item;
+        }
+
+        text += result || "&nbsp;";
+      });
+
+      return text;
     },
   },
 };
@@ -138,5 +177,19 @@ export default {
 
 ::-webkit-scrollbar {
   display: none; /* Chrome Safari */
+}
+</style>
+
+<style lang="scss">
+.botTalkCode {
+  margin: 5px 0;
+  border-radius: 10px;
+  padding: 10px 20px;
+  background-color: #282c34;
+}
+
+.hljs {
+  color: black;
+  background-color: #fff;
 }
 </style>

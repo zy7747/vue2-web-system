@@ -15,12 +15,14 @@
                   :text="$t('system.query')"
                   @click="search"
                   v-audio="'search'"
+                  :hasPermission="permission.search"
                 />
                 <c-button
                   icon="el-icon-refresh"
                   class="btn"
                   :text="$t('system.reset')"
                   @click="reset"
+                  :hasPermission="permission.reset"
                 />
               </div>
 
@@ -44,6 +46,16 @@ export default {
       type: [String],
       default: () => {
         return "";
+      },
+    },
+    permission: {
+      text: "权限列表",
+      type: [Object],
+      default: () => {
+        return {
+          search: [],
+          reset: [],
+        };
       },
     },
     isSearch: {
