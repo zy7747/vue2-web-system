@@ -4,8 +4,9 @@
     <div class="header">
       <div class="left">
         <div class="button">
+          <!-- 新增 -->
           <c-button
-            v-if="isAdd"
+            v-if="hasAdd"
             type="primary"
             class="btn"
             :text="$t('system.add')"
@@ -13,10 +14,11 @@
             v-bind="addBtn"
             icon="el-icon-plus"
             @click="addLine"
+            v-hasPermission="permission.add"
           />
-
+          <!-- 批量删除 -->
           <c-button
-            v-if="isDelete"
+            v-if="hasDelete"
             type="danger"
             icon="el-icon-delete"
             class="btn"
@@ -24,8 +26,9 @@
             plain
             v-bind="deleteBtn"
             @click="deleteLines"
+            v-hasPermission="permission.delete"
           />
-
+          <!-- 导入 -->
           <el-upload
             :action="baseUrl + imports.url"
             :data="imports.data"
@@ -40,27 +43,24 @@
               icon="el-icon-upload2"
               :text="$t('system.import')"
               :loading="importLoading"
+              v-hasPermission="permission.imports"
             />
           </el-upload>
-
+          <!-- 导出 -->
           <c-button
-            v-if="isExport"
+            v-if="hasExport"
             type="warning"
             icon="el-icon-download"
             class="btn"
             plain
-            text="导出"
             :text="$t('system.export')"
             @click="exportExcel"
             :loading="exportLoading"
+            v-hasPermission="permission.exports"
           />
         </div>
       </div>
-      <div class="right">
-        <div class="title">
-          {{ title }}
-        </div>
-      </div>
+      <div class="right"></div>
     </div>
   </div>
 </template>
@@ -78,28 +78,21 @@ export default {
     };
   },
   props: {
-    title: {
-      text: "标题",
-      type: [String],
-      default: () => {
-        return "";
-      },
-    },
-    isAdd: {
+    hasAdd: {
       text: "是否需要新增按钮",
       type: [Boolean],
       default: () => {
         return true;
       },
     },
-    isDelete: {
+    hasDelete: {
       text: "是否需要批量删除按钮",
       type: [Boolean],
       default: () => {
         return true;
       },
     },
-    isExport: {
+    hasExport: {
       text: "是否需要导出按钮",
       type: [Boolean],
       default: () => {
@@ -113,15 +106,15 @@ export default {
         return false;
       },
     },
-    deleteBtn: {
-      text: "删除按钮权限/禁用状态",
+    addBtn: {
+      text: "新增按钮权限/禁用状态",
       type: [Object],
       default: () => {
         return {};
       },
     },
-    addBtn: {
-      text: "新增按钮权限/禁用状态",
+    deleteBtn: {
+      text: "删除按钮权限/禁用状态",
       type: [Object],
       default: () => {
         return {};
@@ -142,9 +135,21 @@ export default {
       type: [Object],
       default: () => {
         return {
-          url: "",
-          name: null,
+          api: () => {},
+          fileName: null,
           data: {},
+        };
+      },
+    },
+    permission: {
+      text: "按钮权限配置",
+      type: [Object],
+      default: () => {
+        return {
+          add: [],
+          delete: [],
+          imports: [],
+          exports: [],
         };
       },
     },
@@ -160,7 +165,21 @@ export default {
     },
     //导出
     exportExcel() {
-      this.$emit("exportExcel");
+      //Loading...
+      this.exportLoading = true;
+      this.exports
+        .api()
+        .then((res) => {
+          this.$download.excel(res, this.exports.fileName + "xlsx");
+          //Loading...
+          this.exportLoading = false;
+          this.$message.success("导出成功");
+        })
+        .catch(() => {
+          //Loading...
+          this.exportLoading = false;
+          this.$message.error("导出失败");
+        });
     },
     //导入
     importExcel() {
@@ -177,12 +196,6 @@ export default {
   justify-content: space-between;
   width: 100%;
   height: 50px;
-
-  .title {
-    font-size: 16px;
-    font-weight: 600;
-  }
-
   .button {
     display: flex;
   }

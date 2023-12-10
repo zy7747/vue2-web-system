@@ -24,6 +24,7 @@
         <slot name="action" :scope="scope" />
       </template>
     </STable>
+
     <!-- 分页 -->
     <div class="pagination">
       <pagination
@@ -110,6 +111,7 @@ export default {
     saveForm() {
       this.$emit("saveForm", row, index, item);
     },
+    //重置table表单数据
     refreshForm() {
       this.$refs.STable.refreshForm();
     },

@@ -20,7 +20,7 @@ service.interceptors.request.use(
     }
 
     if (store.getters.userInfo.id) {
-      config.headers["UserId"] = store.getters.userInfo.id;
+      config.headers["UserId"] = store.getters.userId;
     }
 
     return config;

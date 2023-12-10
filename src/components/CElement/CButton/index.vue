@@ -6,7 +6,7 @@
       :size="size"
       v-bind="$attrs"
       v-on="$listeners"
-      :hasPermission="hasPermission"
+      v-hasPermission="hasPermission"
     >
       {{ text }}
     </el-button>

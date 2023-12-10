@@ -18,9 +18,13 @@
           :delete-btn="{
             disabled: checkList.length === 0,
           }"
+          :exports="{
+            api: $service.system.job.export,
+            fileName: '定时任务',
+            data: {},
+          }"
           @addLine="addLine"
           @deleteLines="deleteLines"
-          @exportExcel="exportExcel"
         />
         <CTable
           ref="table"
@@ -424,12 +428,6 @@ export default {
     //多选
     selection(list) {
       this.checkList = list;
-    },
-    //导出
-    exportExcel() {
-      this.$service.system.job.export().then((res) => {
-        this.$download.excel(res, "定时任务.xlsx");
-      });
     },
     changeTaskStatus(row) {
       console.log(row);

@@ -61,18 +61,23 @@ const user = {
   actions: {
     // 登录
     Login({ commit }, loginInfo) {
-      return service.baseData.user.login(loginInfo).then((response) => {
-        if (response.code === 200) {
-          //2.保存TOKEN
-          commit("SET_TOKEN", response.data.token);
+      return service.user.user
+        .login(loginInfo)
+        .then((response) => {
+          if (response.code === 200) {
+            //2.保存TOKEN
+            commit("SET_TOKEN", response.data.token);
 
-          return response.data;
-        } else {
-          Message.error(response.message);
-          removeToken();
+            return response.data;
+          } else {
+            Message.error(response.message);
+            removeToken();
+            return false;
+          }
+        })
+        .catch(() => {
           return false;
-        }
-      });
+        });
     },
     // 登出
     LogOut({ commit }) {
@@ -85,7 +90,7 @@ const user = {
     },
     //获取用户信息
     UserInfo({ commit }) {
-      return service.baseData.user
+      return service.user.user
         .userInfo({ loginSystem: "system" })
         .then((response) => {
           if (response.code === 200) {

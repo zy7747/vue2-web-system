@@ -64,7 +64,7 @@ export default {
           .validate()
           .then(() => {
             if (signUpInfo.password === signUpInfo.confirmPassword) {
-              this.$service.baseData.user.signUp(signUpInfo).then((res) => {
+              this.$service.user.user.signUp(signUpInfo).then((res) => {
                 if (res.code === 200) {
                   this.$message.success("注册成功");
                   // 清空表单

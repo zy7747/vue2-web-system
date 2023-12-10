@@ -139,7 +139,7 @@ export default {
       uploadList: [],
       baseUrl: process.env.VUE_APP_BASE_API,
       uploadFileUrl: process.env.VUE_APP_BASE_API + "/file/upload", // 请求地址
-      headers: { Authorization: "Bearer " + getToken() }, // 设置上传的请求头部
+      headers: { Authorization: getToken() }, // 设置上传的请求头部
       fileList: [],
     };
   },

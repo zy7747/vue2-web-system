@@ -1,6 +1,7 @@
 const getters = {
   token: (state) => state.user.token, //token
   userInfo: (state) => state.user.userInfo, //用户信息
+  userId: (state) => state.user.userInfo.id, //用户ID
   roles: (state) => state.user.roles, //角色
   menu: (state) => state.user.menu, //树形菜单
   permission: (state) => state.user.permission, //权限

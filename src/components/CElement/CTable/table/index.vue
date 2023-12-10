@@ -169,21 +169,22 @@
               <template v-else-if="item.type === 'action'">
                 <!-- 可编辑状态的按钮 -->
                 <div v-if="isEditTable" class="action">
-                  <!-- 编辑行 -->
+                  <!-- 编辑 -->
                   <template v-if="!isForm(scope.$index)">
                     <c-button
-                      text="修改"
+                      :text="$t('system.edit')"
                       class="btn"
                       type="text"
                       icon="el-icon-edit-outline"
                       @click="editForm(scope.row, scope.$index, item)"
+                      v-hasPermission="permission.edit"
                     />
                   </template>
 
-                  <!-- 保存行 -->
+                  <!-- 保存 -->
                   <template v-if="isForm(scope.$index)">
                     <c-button
-                      text="保存"
+                      :text="$t('system.save')"
                       type="text"
                       class="btn"
                       icon="el-icon-folder-checked"
@@ -194,7 +195,7 @@
                   <!-- 取消 -->
                   <template v-if="isForm(scope.$index)">
                     <c-button
-                      text="取消"
+                      :text="$t('system.cancel')"
                       type="text"
                       class="btn"
                       icon="el-icon-close"
@@ -217,10 +218,11 @@
                     >
                       <c-button
                         slot="reference"
-                        text="删除"
+                        :text="$t('system.delete')"
                         color="red"
                         type="text"
                         icon="el-icon-delete"
+                        v-hasPermission="permission.delete"
                       />
                     </el-popconfirm>
                   </template>
@@ -232,8 +234,9 @@
                   <template v-if="isEditLine">
                     <c-button
                       class="btn"
-                      text="修改"
                       type="text"
+                      :text="$t('system.edit')"
+                      v-hasPermission="permission.edit"
                       icon="el-icon-edit-outline"
                       @click="editLine(scope.row, scope.$index, item)"
                     />
@@ -246,7 +249,7 @@
                   <template v-if="isDetailLine">
                     <c-button
                       class="btn"
-                      text="详情"
+                      :text="$t('system.detail')"
                       type="text"
                       color="orange"
                       icon="el-icon-tickets"
@@ -266,10 +269,11 @@
                     >
                       <c-button
                         slot="reference"
-                        text="删除"
+                        :text="$t('system.delete')"
                         color="red"
                         type="text"
                         icon="el-icon-delete"
+                        v-hasPermission="permission.delete"
                       />
                     </el-popconfirm>
                   </template>

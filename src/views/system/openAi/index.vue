@@ -4,7 +4,7 @@
     <c-input
       class="talkInput"
       type="textarea"
-      placeholder="请输入内容开始聊天"
+      placeholder="$t('qing-shu-ru-nei-rong-kai-shi-liao-tian')"
       v-model="talk"
       @keyup.native.enter="say"
       :autosize="{ minRows: 6, maxRows: 10 }"
@@ -39,10 +39,11 @@
 <script>
 import OpenAI from "openai";
 import highlight from "@/plugin/highlight";
+import { speak } from "@/plugin/speak";
 
 //openAi
 const openai = new OpenAI({
-  apiKey: "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",
+  apiKey: "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",
   dangerouslyAllowBrowser: true,
 });
 
@@ -81,6 +82,8 @@ export default {
       this.talkAbout.push({ role: "user", content: this.talk });
       //AI说的话
       this.talkAbout.push(completion.choices[0].message);
+      speak(completion.choices[0].message.content);
+
       //清空输入框
       this.talk = "";
       //滚动条到最底下
@@ -110,6 +113,7 @@ export default {
         let result;
 
         const arr2 = item.split("\n");
+
         let language = arr2[0];
 
         if (this.languages.includes(language)) {

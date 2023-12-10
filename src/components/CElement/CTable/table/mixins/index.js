@@ -69,5 +69,15 @@ export default {
         return false;
       },
     },
+    permission: {
+      text: "按钮权限配置",
+      type: [Object],
+      default: () => {
+        return {
+          edit: [],
+          delete: [],
+        };
+      },
+    },
   },
 };
