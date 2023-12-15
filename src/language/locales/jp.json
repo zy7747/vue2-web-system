@@ -14,6 +14,10 @@
     "reset": "リセット",
     "save": "保存"
   },
+  "form": {
+    "please enter": "入力してください",
+    "please select": "選択してください"
+  },
   "user": {
     "user": "ユーザー",
     "id": "id",

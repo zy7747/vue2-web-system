@@ -1,9 +1,9 @@
 <!--  -->
 <template>
-  <div>
+  <div class="avatarBox">
     <el-upload
       class="avatar-uploader"
-      :action="uploadFileUrl"
+      :action="baseUrl"
       :show-file-list="false"
       :on-success="handleAvatarSuccess"
       :before-upload="beforeAvatarUpload"
@@ -12,7 +12,7 @@
       v-bind="$attrs"
       v-on="$listeners"
     >
-      <img v-if="imageUrl" :src="baseUrl + imageUrl" class="avatar" />
+      <img v-if="imageUrl" :src="fileUrl + imageUrl" class="avatar" />
       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
     </el-upload>
   </div>
@@ -27,8 +27,8 @@ export default {
   data() {
     return {
       imageUrl: this.value,
-      uploadFileUrl: process.env.VUE_APP_BASE_API + "/file/upload", // 请求地址
-      baseUrl: process.env.VUE_APP_BASE_API,
+      fileUrl: process.env.VUE_APP_FILE_API,
+      baseUrl: process.env.VUE_APP_BASE_API + "/file/upload", // 请求地址
     };
   },
   methods: {
@@ -91,6 +91,8 @@ export default {
 
 <style lang="scss" scoped>
 ::v-deep .avatar-uploader .el-upload {
+  width: 125px;
+  height: 125px;
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
   cursor: pointer;
@@ -103,14 +105,22 @@ export default {
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
+  width: 120px;
+  height: 120px;
+  line-height: 120px;
   text-align: center;
 }
+
+.avatarBox {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .avatar {
-  width: 178px;
-  height: 178px;
+  width: 100%;
+  height: 100%;
   display: block;
 }
 </style>

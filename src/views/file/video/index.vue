@@ -109,7 +109,7 @@ export default {
   name: "VideoPage",
   data() {
     return {
-      baseUrl: process.env.VUE_APP_BASE_API,
+      fileUrl: process.env.VUE_APP_FILE_API,
       //弹框标题
       title: "",
       //多选
@@ -120,14 +120,6 @@ export default {
           type: "input",
           label: "视频名称",
           prop: "videoName",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: "视频标题",
-          prop: "title",
           span: 6,
           attributes: {},
           on: {},
@@ -618,7 +610,7 @@ export default {
         this.action = 0;
         this.$refs.videoView.handleOpen();
         this.$nextTick(() => {
-          this.$refs.VideoPlayer.setVideo(this.baseUrl + this.videoInfo?.url);
+          this.$refs.VideoPlayer.setVideo(this.fileUrl + this.videoInfo?.url);
         });
       });
     },
@@ -626,7 +618,7 @@ export default {
     play(index) {
       this.videoInfo = this.videoList[index];
       this.action = index;
-      this.$refs.VideoPlayer.setVideo(this.baseUrl + this.videoInfo.url);
+      this.$refs.VideoPlayer.setVideo(this.fileUrl + this.videoInfo.url);
     },
     //批量删除
     deleteLines() {

@@ -16,33 +16,35 @@ const app = {
       //其他需要缓存的字典
       const userList = await getUserList();
       //缓存所有字典
-      const dictList = await service.baseData.dict.dictAllList().then((res) => {
-        let dictList = res.data;
+      const dictList = await service.configuration.dict
+        .dictAllList()
+        .then((res) => {
+          let dictList = res.data;
 
-        for (const key in dictList) {
-          dictList[key] = dictList[key].map((item) => {
-            //字典类型转换
-            if (item.dictType) {
-              if (item.dictType === "string") {
+          for (const key in dictList) {
+            dictList[key] = dictList[key].map((item) => {
+              //字典类型转换
+              if (item.dictType) {
+                if (item.dictType === "string") {
+                  return {
+                    ...item,
+                    value: item.value ? item.value.toString() : "",
+                  };
+                } else if (item.dictType === "number") {
+                  return { ...item, value: Number(item.value) };
+                }
+              } else {
                 return {
                   ...item,
+                  dictType: "string",
                   value: item.value ? item.value.toString() : "",
                 };
-              } else if (item.dictType === "number") {
-                return { ...item, value: Number(item.value) };
               }
-            } else {
-              return {
-                ...item,
-                dictType: "string",
-                value: item.value ? item.value.toString() : "",
-              };
-            }
-          });
-        }
+            });
+          }
 
-        return dictList;
-      });
+          return dictList;
+        });
       //字典拼接
       dictList.user = userList;
 

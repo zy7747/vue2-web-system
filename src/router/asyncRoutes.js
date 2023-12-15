@@ -36,7 +36,10 @@ export function getMenu(data) {
   const permission = [];
 
   data.forEach((item) => {
-    if (item.type === "directory" || item.type === "menu") {
+    if (
+      (item.type === "directory" || item.type === "menu") &&
+      item.status === "0"
+    ) {
       menu.push({
         ...item,
         meta: {
@@ -46,7 +49,7 @@ export function getMenu(data) {
           icon: item.icon,
         },
       });
-    } else if (item.type === "button") {
+    } else if (item.type === "button" && item.status === "0") {
       //按钮
       if (item.permission) {
         permission.push(item.permission);

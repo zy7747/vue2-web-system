@@ -2,7 +2,7 @@
 <template>
   <div>
     <!-- 搜索栏 -->
-    <Collapse :title="'系统角色'" @reset="resetQueryData" @search="search">
+    <Collapse :title="$t('role.role')" @reset="resetQueryData" @search="search">
       <template slot="content">
         <CForm
           ref="queryForm"
@@ -14,20 +14,35 @@
 
     <!-- 表单栏 -->
     <el-tabs type="border-card">
-      <el-tab-pane label="系统角色">
+      <el-tab-pane :label="$t('role.role')">
         <Toolbar
           :delete-btn="{
             disabled: checkList.length === 0,
           }"
+          :hasImport="true"
+          :imports="{
+            url: '/role/import',
+            data: {},
+          }"
           :exports="{
-            api: $service.baseData.role.export,
+            api: $service.configuration.role.export,
             fileName: '角色',
             data: {},
+          }"
+          :permission="{
+            add: ['configuration:role:add'],
+            delete: ['configuration:role:delete'],
+            imports: ['configuration:role:import'],
+            exports: ['configuration:role:export'],
           }"
           @addLine="addLine"
           @deleteLines="deleteLines"
         />
         <CTable
+          :permission="{
+            edit: ['configuration:role:edit'],
+            delete: ['configuration:role:delete'],
+          }"
           ref="table"
           :query="query"
           :table-column="tableColumn"
@@ -38,20 +53,21 @@
         />
       </el-tab-pane>
     </el-tabs>
+
     <!-- 新增/编辑/详情弹框 -->
     <CDialog
       ref="dialog"
       :title="title"
-      width="1000px"
-      :has-check="title !== '详情'"
+      width="800px"
+      :has-check="dialogType !== 'detail'"
       @handleConfirm="handleConfirm"
     >
       <template slot="body">
-        <CCard title="系统角色">
+        <CCard :title="$t('role.role')">
           <template slot="body">
             <CForm
               ref="form"
-              :disabled="title === '详情'"
+              :disabled="dialogType === 'detail'"
               :form-data="formData"
               :form-params="formParams"
             />
@@ -78,18 +94,20 @@
 </template>
 <script>
 export default {
-  name: "role",
+  name: "Role",
   data() {
     return {
       //弹框标题
       title: "",
       //多选
       checkList: [],
+      //弹框类型
+      dialogType: "",
       //查询表单基础参数
       queryParams: [
         {
           type: "input",
-          label: "角色名称",
+          label: this.$t("role.roleName"), //角色名称
           prop: "roleName",
           span: 6,
           attributes: {},
@@ -97,7 +115,7 @@ export default {
         },
         {
           type: "select",
-          label: "状态",
+          label: this.$t("role.status"), //状态
           prop: "status",
           options: this.getDictData("role_status"),
           span: 6,
@@ -112,45 +130,63 @@ export default {
           width: 55,
         },
         {
-          label: "序号",
+          label: this.$t("system.no"), //序号
           type: "index",
           width: 55,
         },
         {
-          label: "角色名称",
+          label: this.$t("role.roleName"), //角色名称
           prop: "roleName",
           width: 200,
           sortable: true,
         },
         {
-          label: "角色编码",
+          label: this.$t("role.roleCode"), //角色编码
           prop: "roleCode",
-          width: 200,
+          width: 150,
           sortable: true,
         },
         {
-          label: "状态",
+          label: this.$t("role.status"), //状态
           prop: "status",
           translation: "role_status",
-          width: 200,
+          width: 100,
           sortable: true,
         },
         {
-          label: "备注",
+          label: this.$t("role.remark"), //备注
           prop: "remark",
+          width: 150,
           sortable: true,
-          width: 200,
         },
         {
-          label: "创建时间",
+          label: this.$t("role.creator"), //创建人
+          prop: "creator",
+          width: 150,
+          sortable: true,
+          translation: "user",
+        },
+        {
+          label: this.$t("role.updater"), //更新人
+          prop: "updater",
+          width: 150,
+          sortable: true,
+          translation: "user",
+        },
+        {
+          label: this.$t("role.createTime"), //创建时间
           prop: "createTime",
+          width: 150,
           sortable: true,
         },
         {
-          label: "操作",
+          label: this.$t("role.updateTime"), //更新时间
+          prop: "updateTime",
+          sortable: true,
+        },
+        {
           type: "action",
           fixed: "right",
-          width: 160,
         },
       ],
       //数据
@@ -170,16 +206,18 @@ export default {
       },
       //新增/修改/详情数据
       formData: {
+        id: null,
         roleName: null,
         roleCode: null,
-        permission: null,
         status: null,
-        sort: null,
         remark: null,
         creator: null,
         updater: null,
         createTime: null,
         updateTime: null,
+        isDeleted: null,
+        tenantId: null,
+        version: null,
       },
       //菜单树形
       menuList: [],
@@ -195,7 +233,7 @@ export default {
       formParams: [
         {
           type: "input",
-          label: "角色名称",
+          label: this.$t("role.roleName"), //角色名称
           prop: "roleName",
           span: 6,
           rules: [
@@ -205,7 +243,7 @@ export default {
         },
         {
           type: "input",
-          label: "角色编码",
+          label: this.$t("role.roleCode"), //角色编码
           prop: "roleCode",
           rules: [
             { required: true, message: "角色编码不能为空", trigger: "blur" },
@@ -215,7 +253,7 @@ export default {
         },
         {
           type: "select",
-          label: "状态",
+          label: this.$t("role.status"), //状态
           prop: "status",
           rules: [{ required: true, message: "状态不能为空", trigger: "blur" }],
           options: this.getDictData("role_status"),
@@ -224,7 +262,7 @@ export default {
         },
         {
           type: "input",
-          label: "备注",
+          label: this.$t("role.remark"), //备注
           prop: "remark",
           span: 6,
           on: {},
@@ -235,7 +273,7 @@ export default {
   methods: {
     //1.查询
     query(page, size) {
-      return this.$service.baseData.role
+      return this.$service.configuration.role
         .page({ page, size, ...this.queryData })
         .then((res) => {
           return res.data;
@@ -244,15 +282,24 @@ export default {
     //新增
     addLine() {
       this.title = "新增";
+      this.dialogType = "add";
       this.resetForm();
-      this.$refs.dialog.handleOpen();
       this.queryMenu();
+      this.$refs.dialog.handleOpen();
     },
     //编辑
     editLine(row, index) {
       this.title = "编辑";
-      this.$refs.dialog.handleOpen();
+      this.dialogType = "edit";
       this.detail(row.id);
+      this.$refs.dialog.handleOpen();
+    },
+    //详情
+    detailLine(row, index) {
+      this.title = "详情";
+      this.dialogType = "detail";
+      this.detail(row.id);
+      this.$refs.dialog.handleOpen();
     },
     //提交
     handleConfirm() {
@@ -260,7 +307,7 @@ export default {
       // 新增
       this.$refs.form.validate().then((valid) => {
         if (valid) {
-          this.$service.baseData.role
+          this.$service.configuration.role
             .saveList([{ ...this.formData, menuList }])
             .then((res) => {
               if (res.code === 200) {
@@ -274,36 +321,37 @@ export default {
         }
       });
     },
-    //详情
-    detailLine(row, index) {
-      this.title = "详情";
-      this.$refs.dialog.handleOpen();
-      this.detail(row.id);
-    },
-    //删除
-    deleteLine(row, index) {
-      this.$service.baseData.role.delete([row]).then((res) => {
-        this.search();
-      });
-    },
     //通过id获取详情
     detail(id) {
-      this.$service.baseData.role.detail({ id }).then((res) => {
+      this.$service.configuration.role.detail({ id }).then((res) => {
         this.formData = res.data;
         this.menuCheckList = res.data.menuList;
         this.queryMenu();
       });
     },
+    //删除
+    deleteLine(row, index) {
+      this.$service.configuration.role.delete([row]).then((res) => {
+        if (res.code === 200) {
+          this.$message.success("删除成功");
+          this.search();
+        } else {
+          this.$message.warning(res.message);
+        }
+      });
+    },
     //批量删除
     deleteLines() {
-      this.$modal
-        .confirm("是否删除")
-        .then(() => {
-          this.$service.baseData.role.delete(this.checkList).then((res) => {
+      this.$modal.confirm("是否删除").then(() => {
+        this.$service.configuration.role.delete(this.checkList).then((res) => {
+          if (res.code === 200) {
+            this.$message.success("删除成功");
             this.search();
-          });
-        })
-        .catch(() => {});
+          } else {
+            this.$message.warning(res.message);
+          }
+        });
+      });
     },
     //搜索
     search() {
@@ -344,7 +392,7 @@ export default {
     },
     //查询菜单
     queryMenu() {
-      return this.$service.baseData.menu.list().then((res) => {
+      return this.$service.configuration.menu.list().then((res) => {
         this.menuList = this.$handleTree(res.data);
       });
     },

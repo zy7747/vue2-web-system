@@ -2,7 +2,7 @@
   <div class="upload-file">
     <el-upload
       multiple
-      :action="uploadFileUrl"
+      :action="baseUrl"
       :before-upload="handleBeforeUpload"
       :file-list="fileList"
       :limit="limit"
@@ -47,7 +47,7 @@
         :key="file.url"
       >
         <el-link
-          :href="`${baseUrl + file.url}`"
+          :href="`${fileUrl + file.url}`"
           :underline="false"
           target="_blank"
         >
@@ -137,8 +137,8 @@ export default {
       filename: undefined,
       number: 0,
       uploadList: [],
-      baseUrl: process.env.VUE_APP_BASE_API,
-      uploadFileUrl: process.env.VUE_APP_BASE_API + "/file/upload", // 请求地址
+      fileUrl: process.env.VUE_APP_FILE_API,
+      baseUrl: process.env.VUE_APP_BASE_API + "/file/upload", // 请求地址
       headers: { Authorization: getToken() }, // 设置上传的请求头部
       fileList: [],
     };

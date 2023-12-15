@@ -61,13 +61,22 @@ export default {
 }
 
 ::v-deep .el-dialog__title {
+  padding-left: 10px;
   line-height: 24px;
   font-size: 18px;
   color: #282f37;
+  border-left: 3px solid #3478f5;
 }
+
 ::v-deep .el-dialog__header {
   font-weight: 700;
   border-bottom: 1px solid #e3e3e3;
+}
+
+::v-deep .dialog-header {
+  width: 99% !important;
+  display: flex;
+  justify-content: space-between;
 }
 ::v-deep .el-dialog__body {
   padding: 5px !important;

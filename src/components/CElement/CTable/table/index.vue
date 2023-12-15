@@ -1,4 +1,4 @@
-<!--  -->
+<!-- 表格 -->
 <template>
   <div class="STable">
     <!-- 表格 -->
@@ -37,8 +37,8 @@
               ...item,
               align: item.align ? item.align : 'center',
             }"
-            :filters="hasFilter(item) ? dataFilters(item) : null"
-            :filter-method="hasFilter(item) ? filterHandler : null"
+            :filters="item.isFilters ? dataFilters(item) : null"
+            :filter-method="item.isFilters ? filterHandler : null"
             :key="index"
             :show-overflow-tooltip="true"
           >
@@ -61,8 +61,8 @@
                     border-radius: 5px;
                     overflow: hidden;
                   "
-                  :src="baseUrl + scope.row[item.prop]"
-                  :preview-src-list="[baseUrl + scope.row[item.prop]]"
+                  :src="fileUrl + scope.row[item.prop]"
+                  :preview-src-list="[fileUrl + scope.row[item.prop]]"
                   fit="cover"
                 ></el-image>
               </template>
@@ -92,11 +92,7 @@
                     align-items: center;
                   "
                 >
-                  <c-button
-                    type="text"
-                    icon="el-icon-d-caret"
-                    size="medium"
-                  ></c-button>
+                  <c-button type="text" icon="el-icon-d-caret" size="medium" />
                 </div>
               </template>
 
@@ -231,7 +227,7 @@
                 <!-- 正常状态按钮 -->
                 <div v-else class="action">
                   <!-- 编辑 -->
-                  <template v-if="isEditLine">
+                  <template v-if="hasEditLine">
                     <c-button
                       class="btn"
                       type="text"
@@ -246,7 +242,7 @@
                   <slot name="action" :scope="scope" />
 
                   <!-- 详情 -->
-                  <template v-if="isDetailLine">
+                  <template v-if="hasDetailLine">
                     <c-button
                       class="btn"
                       :text="$t('system.detail')"
@@ -258,7 +254,7 @@
                   </template>
 
                   <!-- 删除 -->
-                  <template v-if="isDeleteLine">
+                  <template v-if="hasDeleteLine">
                     <el-popconfirm
                       confirm-button-text="好的"
                       cancel-button-text="不用了"
@@ -340,7 +336,7 @@ export default {
       editLineIndex: null,
       //表单旧数据
       oldData: {},
-      baseUrl: process.env.VUE_APP_BASE_API,
+      fileUrl: process.env.VUE_APP_FILE_API,
     };
   },
   computed: {
@@ -478,15 +474,6 @@ export default {
       });
 
       return this.$uniqBy(filtersData, "value");
-    },
-    //哪些需要下拉过滤
-    hasFilter(item) {
-      const filterList = [];
-      if (filterList.includes(item.type) || !item.type) {
-        return true;
-      } else {
-        return false;
-      }
     },
     filterHandler(value, row, column) {
       const property = column["property"];

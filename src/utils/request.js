@@ -33,6 +33,9 @@ service.interceptors.request.use(
 // response拦截器
 service.interceptors.response.use(
   async (response) => {
+    if (response.data.code !== 200) {
+      modal.notifyWarning(response.data.message);
+    }
     switch (response.status) {
       case 200:
         return response.data;
@@ -40,7 +43,6 @@ service.interceptors.response.use(
         modal.notifyWarning("发出信息有误");
         break;
       case 401:
-        //清除token 跳转至登录页
         modal.notifyError("用户没有权限（令牌、用户名、密码错误）");
         break;
       case 403:

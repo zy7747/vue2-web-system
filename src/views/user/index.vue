@@ -22,16 +22,16 @@
             url: '/user/import',
             data: {},
           }"
+          :exports="{
+            api: $service.user.user.export,
+            fileName: '用户',
+            data: {},
+          }"
           :permission="{
             add: ['user:user:add'],
             delete: ['user:user:delete'],
             imports: ['user:user:import'],
             exports: ['user:user:export'],
-          }"
-          :exports="{
-            api: $service.user.user.export,
-            fileName: '用户',
-            data: {},
           }"
           :hasImport="true"
           @addLine="addLine"
@@ -61,7 +61,7 @@
       @handleConfirm="handleConfirm"
     >
       <template slot="body">
-        <CCard title="用户">
+        <CCard :title="$t('user.user')">
           <template slot="body">
             <CForm
               ref="form"
@@ -85,7 +85,7 @@ import {
 } from "@/utils/formValidate";
 
 export default {
-  name: "user",
+  name: "User",
   data() {
     return {
       // 弹框标题
@@ -178,15 +178,6 @@ export default {
         },
         {
           type: "select",
-          label: this.$t("user.roles"), //角色
-          prop: "roles",
-          span: 6,
-          options: this.roleList,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "select",
           label: this.$t("user.userType"), //用户类型
           prop: "userType",
           options: this.getDictData("user_type"),
@@ -209,64 +200,6 @@ export default {
     formParams() {
       return [
         {
-          type: "input",
-          label: this.$t("user.phone"), //电话号码
-          prop: "phone",
-          span: 8,
-          rules: [{ validator: phoneNumValidate, trigger: "blur" }],
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("user.email"), //电子邮箱
-          prop: "email",
-          rules: [{ validator: EmailValidate, trigger: "blur" }],
-          span: 8,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("user.account"), //账号
-          prop: "account",
-          rules: [{ required: true, message: "账号不能为空", trigger: "blur" }],
-          span: 8,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("user.user"), //用户名
-          prop: "user",
-          rules: [
-            { required: true, message: "用户名不能为空", trigger: "blur" },
-            { validator: UserNameValidate, trigger: "blur" },
-          ],
-          span: 8,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("user.password"), //密码
-          prop: "password",
-          rules: [
-            { required: true, message: "密码不能为空", trigger: "blur" },
-            { validator: PasswordValidate, trigger: "blur" },
-          ],
-          span: 8,
-          on: {},
-        },
-        {
-          type: "select",
-          label: this.$t("user.roles"), //角色
-          span: 8,
-          options: this.roleList,
-          rules: [{ required: true, message: "角色不能为空", trigger: "blur" }],
-          attributes: {
-            multiple: true,
-            "collapse-tags": true,
-          },
-          on: {},
-        },
-        {
           type: "avatarUpload",
           label: this.$t("user.avatar"), //头像
           prop: "avatar",
@@ -277,7 +210,51 @@ export default {
               parentId: "1708477176327725057",
             },
           },
-          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("user.phone"), //电话号码
+          prop: "phone",
+          span: 8,
+          rules: [{ validator: phoneNumValidate, trigger: "blur" }],
+        },
+        {
+          type: "input",
+          label: this.$t("user.email"), //电子邮箱
+          prop: "email",
+          rules: [{ validator: EmailValidate, trigger: "blur" }],
+          span: 8,
+        },
+        {
+          type: "input",
+          label: this.$t("user.account"), //账号
+          prop: "account",
+          rules: [{ required: true, message: "账号不能为空", trigger: "blur" }],
+          span: 8,
+        },
+        {
+          type: "input",
+          label: this.$t("user.user"), //用户名
+          prop: "user",
+          rules: [
+            { required: true, message: "用户名不能为空", trigger: "blur" },
+            { validator: UserNameValidate, trigger: "blur" },
+          ],
+          span: 8,
+        },
+        {
+          type: "input",
+          label: this.$t("user.password"), //密码
+          prop: "password",
+          attributes: {
+            type: "password",
+            showPassword: true,
+          },
+          rules: [
+            { required: true, message: "密码不能为空", trigger: "blur" },
+            { validator: PasswordValidate, trigger: "blur" },
+          ],
+          span: 8,
         },
         {
           type: "select",
@@ -285,15 +262,25 @@ export default {
           prop: "userType",
           options: this.getDictData("user_type"),
           span: 8,
-          on: {},
         },
         {
           type: "select",
           label: this.$t("user.status"), //状态
           prop: "status",
+          rules: [{ required: true, message: "状态不能为空", trigger: "blur" }],
           options: this.getDictData("user_status"),
           span: 8,
-          on: {},
+        },
+        {
+          type: "select",
+          label: this.$t("user.roles"), //角色
+          prop: "roles",
+          span: 24,
+          options: this.roleList,
+          rules: [{ required: true, message: "角色不能为空", trigger: "blur" }],
+          attributes: {
+            multiple: true,
+          },
         },
       ];
     },
@@ -321,31 +308,29 @@ export default {
           prop: "user",
           width: 150,
           sortable: true,
+          isFilters: true,
         },
         {
           label: this.$t("user.account"), //账号
           prop: "account",
           width: 150,
           sortable: true,
+          isFilters: true,
         },
         {
           label: this.$t("user.phone"), //电话号码
           prop: "phone",
           width: 150,
           sortable: true,
+          isFilters: true,
         },
         {
           label: this.$t("user.email"), //电子邮箱
           prop: "email",
           width: 150,
           sortable: true,
+          isFilters: true,
         },
-        // {
-        //   label: this.$t("user.password"), //密码
-        //   prop: "password",
-        //   width: 150,
-        //   sortable: true,
-        // },
         {
           label: this.$t("user.roles"), //角色
           prop: "roles",
@@ -360,6 +345,7 @@ export default {
           width: 150,
           translation: "user_type",
           sortable: true,
+          isFilters: true,
         },
         {
           label: this.$t("user.status"), //状态
@@ -367,6 +353,7 @@ export default {
           translation: "user_status",
           width: 120,
           sortable: true,
+          isFilters: true,
         },
         {
           label: this.$t("user.createTime"), //创建时间
@@ -404,9 +391,11 @@ export default {
     //通过接口请求的下拉
     serviceDict() {
       //获取角色列表
-      this.getServiceData("getRoleList").then((res) => {
-        this.roleList = res;
-      });
+      this.getServiceData([{ serviceCode: "getRoleList", params: {} }]).then(
+        (res) => {
+          this.roleList = res.getRoleList;
+        }
+      );
     },
     //新增
     addLine() {
@@ -449,24 +438,35 @@ export default {
     // 删除
     deleteLine(row, index) {
       this.$service.user.user.delete([row]).then((res) => {
-        this.search();
+        if (res.code === 200) {
+          this.$message.success("删除成功");
+          this.search();
+        } else {
+          this.$message.warning(res.message);
+        }
       });
     },
     // 批量删除
     deleteLines() {
-      this.$modal
-        .confirm("是否删除")
-        .then(() => {
-          this.$service.user.user.delete(this.checkList).then((res) => {
+      this.$modal.confirm("是否删除").then(() => {
+        this.$service.user.user.delete(this.checkList).then((res) => {
+          if (res.code === 200) {
+            this.$message.success("删除成功");
             this.search();
-          });
-        })
-        .catch(() => {});
+          } else {
+            this.$message.warning(res.message);
+          }
+        });
+      });
     },
     // 通过id获取详情
     detail(id) {
       this.$service.user.user.detail({ id }).then((res) => {
-        this.formData = res.data;
+        if (res.code === 200) {
+          this.formData = res.data;
+        } else {
+          this.$message.warning(res.message);
+        }
       });
     },
     // 搜索

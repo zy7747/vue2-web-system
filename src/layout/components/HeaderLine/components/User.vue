@@ -3,7 +3,7 @@
   <div style="margin-left: 5px">
     <el-dropdown @command="handleCommand" trigger="hover">
       <div class="avatar-wrapper cursor">
-        <img class="avatar" :src="baseUrl + userInfo.avatar" />
+        <img class="avatar" :src="fileUrl + userInfo.avatar" />
         <p style="font-weight: 520; color: #108adc">
           {{ userInfo.user }}
         </p>
@@ -56,7 +56,7 @@ export default {
     return {
       userInfo: {},
       accountVisible: false, //切换账号弹窗
-      baseUrl: process.env.VUE_APP_BASE_API,
+      fileUrl: process.env.VUE_APP_FILE_API,
     };
   },
   methods: {

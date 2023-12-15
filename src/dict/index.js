@@ -27,9 +27,21 @@ const exportedFunctions = context.keys().reduce((acc, fileName) => {
   };
 }, {});
 
-export function getServiceData(serviceCode, params) {
-  return exportedFunctions[serviceCode](params).then((res) => {
-    return res;
+//2.批量获取需要的下拉
+export function getServiceData(serviceCodeList) {
+  const list = [];
+
+  //接口放入
+  serviceCodeList.forEach((item) => {
+    list.push(exportedFunctions[item.serviceCode](item.params));
+  });
+  //循环接口
+  return Promise.all(list).then((res) => {
+    const maps = {};
+    serviceCodeList.forEach((item, index) => {
+      maps[item.serviceCode] = res[index];
+    });
+    return maps;
   });
 }
 

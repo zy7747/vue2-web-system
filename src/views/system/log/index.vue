@@ -302,6 +302,22 @@ export default {
           width: 160,
         },
       ],
+      //新增/修改/详情数据
+      formData: {
+        id: null,
+        operateModules: null,
+        operateContent: null,
+        operateType: null,
+        operatePlace: null,
+        remark: null,
+        time: null,
+        status: null,
+        creator: null,
+        createTime: null,
+        isDeleted: null,
+        tenantId: null,
+        version: null,
+      },
       //表格数据
       tableData: [],
       //新增表单基础参数
@@ -398,22 +414,6 @@ export default {
           on: {},
         },
       ],
-      //新增/修改/详情数据
-      formData: {
-        id: null,
-        operateModules: null,
-        operateContent: null,
-        operateType: null,
-        operatePlace: null,
-        remark: null,
-        time: null,
-        status: null,
-        creator: null,
-        createTime: null,
-        isDeleted: null,
-        tenantId: null,
-        version: null,
-      },
     };
   },
   methods: {

@@ -65,7 +65,7 @@
       @handleConfirm="handleConfirm"
     >
       <template slot="body">
-        <CCard title="个人信息">
+        <CCard :title="$t('person.person')">
           <template slot="body">
             <CForm
               ref="form"
@@ -80,6 +80,12 @@
   </div>
 </template>
 <script>
+import {
+  IdCardValidate,
+  phoneNumValidate,
+  EmailValidate,
+} from "@/utils/formValidate";
+
 export default {
   name: "Person",
   data() {
@@ -94,30 +100,6 @@ export default {
       queryParams: [
         {
           type: "input",
-          label: this.$t("person.id"), //id
-          prop: "id",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.userId"), //用户id
-          prop: "userId",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.photo"), //照片
-          prop: "photo",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
           label: this.$t("person.name"), //姓名
           prop: "name",
           span: 6,
@@ -125,9 +107,10 @@ export default {
           on: {},
         },
         {
-          type: "input",
+          type: "select",
           label: this.$t("person.sex"), //性别
           prop: "sex",
+          options: this.getDictData("user_sex"),
           span: 6,
           attributes: {},
           on: {},
@@ -190,14 +173,6 @@ export default {
         },
         {
           type: "input",
-          label: this.$t("person.hobby"), //爱好
-          prop: "hobby",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
           label: this.$t("person.age"), //年龄
           prop: "age",
           span: 6,
@@ -229,7 +204,7 @@ export default {
           on: {},
         },
         {
-          type: "input",
+          type: "datePicker",
           label: this.$t("person.birthDate"), //出生日期
           prop: "birthDate",
           span: 6,
@@ -237,73 +212,9 @@ export default {
           on: {},
         },
         {
-          type: "input",
+          type: "select",
           label: this.$t("person.status"), //状态
           prop: "status",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.remark"), //备注
-          prop: "remark",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.creator"), //创建人
-          prop: "creator",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.updater"), //更新人
-          prop: "updater",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.createTime"), //创建时间
-          prop: "createTime",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.updateTime"), //更新时间
-          prop: "updateTime",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.isDeleted"), //是否删除
-          prop: "isDeleted",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.tenantId"), //租户id
-          prop: "tenantId",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.version"), //乐观锁
-          prop: "version",
           span: 6,
           attributes: {},
           on: {},
@@ -350,23 +261,18 @@ export default {
           type: "index",
           width: 55,
         },
-        {
-          label: this.$t("person.id"), //id
-          prop: "id",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: this.$t("person.userId"), //用户id
-          prop: "userId",
-          width: 150,
-          sortable: true,
-        },
+        // {
+        //   label: this.$t("person.userId"), //用户id
+        //   prop: "userId",
+        //   width: 150,
+        //   sortable: true,
+        // },
         {
           label: this.$t("person.photo"), //照片
           prop: "photo",
           width: 150,
           sortable: true,
+          type: "picture",
         },
         {
           label: this.$t("person.name"), //姓名
@@ -377,6 +283,7 @@ export default {
         {
           label: this.$t("person.sex"), //性别
           prop: "sex",
+          translation: "user_sex",
           width: 150,
           sortable: true,
         },
@@ -491,24 +398,6 @@ export default {
         {
           label: this.$t("person.updateTime"), //更新时间
           prop: "updateTime",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: this.$t("person.isDeleted"), //是否删除
-          prop: "isDeleted",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: this.$t("person.tenantId"), //租户id
-          prop: "tenantId",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: this.$t("person.version"), //乐观锁
-          prop: "version",
           width: 150,
           sortable: true,
         },
@@ -523,26 +412,24 @@ export default {
       tableData: [],
       //新增表单基础参数
       formParams: [
+        // {
+        //   type: "input",
+        //   label: this.$t("person.userId"), //用户id
+        //   prop: "userId",
+        //   span: 6,
+        //   on: {},
+        // },
         {
-          type: "input",
-          label: this.$t("person.id"), //id
-          prop: "id",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.userId"), //用户id
-          prop: "userId",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
+          type: "avatarUpload",
           label: this.$t("person.photo"), //照片
           prop: "photo",
           span: 6,
-          on: {},
+          attributes: {
+            uploadData: {
+              path: "/资源管理器/个人头像",
+              parentId: "1708477176327725057",
+            },
+          },
         },
         {
           type: "input",
@@ -552,9 +439,31 @@ export default {
           on: {},
         },
         {
-          type: "input",
+          type: "select",
           label: this.$t("person.sex"), //性别
           prop: "sex",
+          options: this.getDictData("user_sex"),
+          span: 6,
+          on: {},
+        },
+        {
+          type: "number",
+          label: this.$t("person.age"), //年龄
+          prop: "age",
+          span: 6,
+          on: {},
+        },
+        {
+          type: "number",
+          label: this.$t("person.height") + "(cm)", //身高
+          prop: "height",
+          span: 6,
+          on: {},
+        },
+        {
+          type: "number",
+          label: this.$t("person.weight") + "(kg)", //体重
+          prop: "weight",
           span: 6,
           on: {},
         },
@@ -562,6 +471,44 @@ export default {
           type: "input",
           label: this.$t("person.profession"), //职业
           prop: "profession",
+          span: 6,
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("person.degree"), //最高学历
+          prop: "degree",
+          span: 6,
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("person.phone"), //电话号码
+          rules: [{ validator: phoneNumValidate, trigger: "blur" }],
+          prop: "phone",
+          span: 6,
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("person.email"), //电子邮箱
+          prop: "email",
+          rules: [{ validator: EmailValidate, trigger: "blur" }],
+          span: 6,
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("person.idCard"), //身份证号码
+          prop: "idCard",
+          rules: [{ validator: IdCardValidate, trigger: "blur" }],
+          span: 6,
+          on: {},
+        },
+        {
+          type: "datePicker",
+          label: this.$t("person.birthDate"), //出生日期
+          prop: "birthDate",
           span: 6,
           on: {},
         },
@@ -587,23 +534,9 @@ export default {
           on: {},
         },
         {
-          type: "input",
-          label: this.$t("person.degree"), //最高学历
-          prop: "degree",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.height"), //身高
-          prop: "height",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.weight"), //体重
-          prop: "weight",
+          type: "select",
+          label: this.$t("person.status"), //状态
+          prop: "status",
           span: 6,
           on: {},
         },
@@ -616,99 +549,8 @@ export default {
         },
         {
           type: "input",
-          label: this.$t("person.age"), //年龄
-          prop: "age",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.idCard"), //身份证号码
-          prop: "idCard",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.phone"), //电话号码
-          prop: "phone",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.email"), //电子邮箱
-          prop: "email",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.birthDate"), //出生日期
-          prop: "birthDate",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.status"), //状态
-          prop: "status",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
           label: this.$t("person.remark"), //备注
           prop: "remark",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.creator"), //创建人
-          prop: "creator",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.updater"), //更新人
-          prop: "updater",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.createTime"), //创建时间
-          prop: "createTime",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.updateTime"), //更新时间
-          prop: "updateTime",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.isDeleted"), //是否删除
-          prop: "isDeleted",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.tenantId"), //租户id
-          prop: "tenantId",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("person.version"), //乐观锁
-          prop: "version",
           span: 6,
           on: {},
         },
@@ -795,25 +637,36 @@ export default {
     //删除
     deleteLine(row) {
       this.$service.user.person.delete([row]).then((res) => {
-        this.search();
+        if (res.code === 200) {
+          this.$message.success("删除成功");
+          this.search();
+        } else {
+          this.$message.warning(res.message);
+        }
+      });
+    },
+    //批量删除
+    deleteLines() {
+      this.$modal.confirm("是否删除").then(() => {
+        this.$service.user.person.delete(this.checkList).then((res) => {
+          if (res.code === 200) {
+            this.$message.success("删除成功");
+            this.search();
+          } else {
+            this.$message.warning(res.message);
+          }
+        });
       });
     },
     //通过id获取详情
     detail(id) {
       this.$service.user.person.detail({ id }).then((res) => {
-        this.formData = res.data;
+        if (res.code === 200) {
+          this.formData = res.data;
+        } else {
+          this.$message.warning(res.message);
+        }
       });
-    },
-    //批量删除
-    deleteLines() {
-      this.$modal
-        .confirm("是否删除")
-        .then(() => {
-          this.$service.user.person.delete(this.checkList).then((res) => {
-            this.search();
-          });
-        })
-        .catch(() => {});
     },
     //搜索
     search() {

@@ -2,29 +2,8 @@
 <template>
   <div class="fileView">
     <!-- 搜索栏 -->
-    <div class="header">文件</div>
+    <div class="header">{{ fileName === "" ? "文件管理" : fileName }}</div>
     <div class="main">
-      <!-- 工具栏 -->
-      <div class="toolbar">
-        <div class="leftButton">
-          <c-button
-            size="small"
-            text="创建文件夹"
-            @click="createFolder"
-          ></c-button>
-        </div>
-        <!-- 文件名 -->
-        <div class="title">{{ fileName }}</div>
-        <div class="action">
-          <FileUpload
-            ref="fileUpload"
-            :isShowTip="false"
-            :isFileList="false"
-            :uploadData="uploadData"
-            @handleUploadSuccess="handleUploadSuccess"
-          ></FileUpload>
-        </div>
-      </div>
       <!-- 主视图 -->
       <div class="view">
         <!-- 树形 -->
@@ -127,7 +106,7 @@
                       "
                       style="width: 100px; height: 100px"
                       :src="fileIcon(item)"
-                      :preview-src-list="[baseUrl + item.filePath]"
+                      :preview-src-list="[fileUrl + item.filePath]"
                     >
                     </el-image>
                     <img
@@ -238,7 +217,7 @@
 
 <script>
 export default {
-  name: "catalog",
+  name: "File",
   data() {
     return {
       title: "创建文件夹",
@@ -276,7 +255,7 @@ export default {
       visible4: false, //右键树形菜单显示隐藏
       folderClickData: {}, //文件夹右键参数
       fileClickData: {}, //文件右键事件参数
-      baseUrl: process.env.VUE_APP_BASE_API, //基础url
+      fileUrl: process.env.VUE_APP_FILE_API, //基础url
       isFolder: null, //点的是文件夹还是文件
       count: 32,
     };
@@ -324,7 +303,7 @@ export default {
         item.fileType === "png" ||
         item.fileType === "gif"
       ) {
-        return this.baseUrl + item.url;
+        return this.fileUrl + item.url;
       } else if (item.fileType === "pdf") {
         return require("@/assets/images/file/pdf.png");
       } else if (item.fileType === "xls" || item.fileType === "xlsx") {
@@ -417,7 +396,7 @@ export default {
       if (item.fileType === "folder") {
         this.nodeClick(item);
       } else {
-        return window.open(this.baseUrl + item.filePath);
+        return window.open(this.fileUrl + item.filePath);
       }
     },
     //节点跳转

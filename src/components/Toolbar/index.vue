@@ -170,7 +170,7 @@ export default {
       this.exports
         .api()
         .then((res) => {
-          this.$download.excel(res, this.exports.fileName + "xlsx");
+          this.$download.excel(res, this.exports.fileName);
           //Loading...
           this.exportLoading = false;
           this.$message.success("导出成功");

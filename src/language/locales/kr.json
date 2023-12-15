@@ -14,6 +14,10 @@
     "reset": "초기화",
     "save": "저장"
   },
+  "form": {
+    "please enter": "입력해주세요",
+    "please select": "선택해주세요"
+  },
   "user": {
     "user": "사용자",
     "id": "아이디",

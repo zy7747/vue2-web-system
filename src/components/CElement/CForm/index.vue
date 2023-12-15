@@ -153,11 +153,11 @@ export default {
 <style lang="scss" scoped>
 .CForm {
   width: 100%;
-  ::v-deep .el-input__inner {
-    background-color: #212147 !important;
-    color: #fff !important;
-    font-weight: 520 !important;
-  }
+  // ::v-deep .el-input__inner {
+  //   background-color: #212147 !important;
+  //   color: #fff !important;
+  //   font-weight: 520 !important;
+  // }
 }
 .el-col {
   padding: 0 15px;

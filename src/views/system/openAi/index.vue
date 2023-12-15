@@ -4,7 +4,7 @@
     <c-input
       class="talkInput"
       type="textarea"
-      placeholder="$t('qing-shu-ru-nei-rong-kai-shi-liao-tian')"
+      placeholder="请输入"
       v-model="talk"
       @keyup.native.enter="say"
       :autosize="{ minRows: 6, maxRows: 10 }"
@@ -15,7 +15,7 @@
           <img
             v-if="item.role === 'user'"
             class="avatar"
-            :src="baseUrl + userInfo.avatar"
+            :src="fileUrl + userInfo.avatar"
           />
           <img
             v-else
@@ -66,7 +66,7 @@ export default {
         "shell",
       ],
       userInfo: null,
-      baseUrl: process.env.VUE_APP_BASE_API,
+      fileUrl: process.env.VUE_APP_FILE_API,
     };
   },
   methods: {

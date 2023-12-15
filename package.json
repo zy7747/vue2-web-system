@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "vue-cli-service serve --mode dev",
+    "sit": "vue-cli-service serve --mode sit",
     "prod": "vue-cli-service serve --mode prod",
     "build:dev": "vue-cli-service build --mode dev",
+    "build:sit": "vue-cli-service build --mode sit",
     "build:prod": "vue-cli-service build --mode prod"
   },
   "dependencies": {
