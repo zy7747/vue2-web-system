@@ -56,8 +56,6 @@ export default {
 <style lang="scss" scoped>
 ::v-deep .el-dialog {
   border-radius: 15px;
-  overflow: hidden;
-  // opacity: 0.9;
 }
 
 ::v-deep .el-dialog__title {
@@ -73,11 +71,6 @@ export default {
   border-bottom: 1px solid #e3e3e3;
 }
 
-::v-deep .dialog-header {
-  width: 99% !important;
-  display: flex;
-  justify-content: space-between;
-}
 ::v-deep .el-dialog__body {
   padding: 5px !important;
   background-color: #f6f7f9;
@@ -98,7 +91,7 @@ export default {
 }
 
 .body {
-  max-height: 700px;
+  max-height: 550px;
   overflow: auto;
 }
 </style>

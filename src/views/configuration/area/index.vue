@@ -38,23 +38,32 @@
           @deleteLines="deleteLines"
         />
         <CTable
-          lazy
-          row-key="id"
-          :tree-props="{ children: 'children', hasChildren: 'id' }"
-          :load="load"
           :permission="{
             edit: ['configuration:area:edit'],
             delete: ['configuration:area:delete'],
           }"
           ref="table"
+          lazy
+          row-key="id"
+          :tree-props="{ children: 'children', hasChildren: 'id' }"
+          :load="load"
           :query="query"
-          :table-column="tableColumn"
           :table-data="tableData"
+          :table-column="tableColumn"
           @editLine="editLine"
           @detailLine="detailLine"
           @deleteLine="deleteLine"
           @handleSelectionChange="selection"
-        />
+        >
+          <template slot="icon" slot-scope="{ scope }">
+            <div style="width: 100px; font-size: 30px">
+              <svg-icon
+                :icon-class="scope.row.icon ? scope.row.icon : ''"
+                class="icon"
+              />
+            </div>
+          </template>
+        </CTable>
       </el-tab-pane>
     </el-tabs>
     <!-- 新增/编辑/详情弹框 -->
@@ -73,7 +82,14 @@
               :disabled="dialogType === 'detail'"
               :form-data="formData"
               :form-params="formParams"
-            />
+            >
+              <template slot="icon">
+                <IconSelect
+                  :loadIconList="['flagIcon']"
+                  v-model="formData.icon"
+                />
+              </template>
+            </CForm>
           </template>
         </CCard>
       </template>
@@ -91,13 +107,46 @@ export default {
       dialogType: "",
       //多选
       checkList: [],
-      treeList: [],
+      areaList: [],
+      areaTree: [],
       //查询表单基础参数
       queryParams: [
         {
           type: "input",
-          label: this.$t("area.areaName"), //名称
-          prop: "areaName",
+          label: this.$t("area.name"), //名称
+          prop: "name",
+          span: 6,
+          attributes: {},
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("area.cname"), //中文名称
+          prop: "cname",
+          span: 6,
+          attributes: {},
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("area.fullName"), //全称
+          prop: "fullName",
+          span: 6,
+          attributes: {},
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("area.fullCname"), //中文全称
+          prop: "fullCname",
+          span: 6,
+          attributes: {},
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("area.otherName"), //别称
+          prop: "otherName",
           span: 6,
           attributes: {},
           on: {},
@@ -120,8 +169,48 @@ export default {
         },
         {
           type: "input",
+          label: this.$t("area.code"), //区域编码
+          prop: "code",
+          span: 6,
+          attributes: {},
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("area.axis"), //坐标
+          prop: "axis",
+          span: 6,
+          attributes: {},
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("area.acreage"), //面积
+          prop: "acreage",
+          span: 6,
+          attributes: {},
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("area.population"), //人口
+          prop: "population",
+          span: 6,
+          attributes: {},
+          on: {},
+        },
+        {
+          type: "input",
           label: this.$t("area.climate"), //气候
           prop: "climate",
+          span: 6,
+          attributes: {},
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("area.capital"), //首都
+          prop: "capital",
           span: 6,
           attributes: {},
           on: {},
@@ -131,9 +220,12 @@ export default {
       queryData: {
         id: null,
         parentId: null,
-        areaName: null,
-        address: null,
+        name: null,
+        cname: null,
+        fullName: null,
+        fullCname: null,
         otherName: null,
+        address: null,
         type: null,
         code: null,
         axis: null,
@@ -159,28 +251,69 @@ export default {
       tableColumn: [
         {
           type: "selection",
-          width: 55,
+        },
+        {
+          label: this.$t("system.no"), //序号
+          type: "index",
         },
         {
           label: this.$t("system.show"),
           prop: "show",
           fixed: "left",
         },
+        // {
+        //   label: this.$t("area.id"), //id
+        //   prop: "id",
+        //   width: 150,
+        //   sortable: true,
+        // },
+        // {
+        //   label: this.$t("area.parentId"), //父节点id
+        //   prop: "parentId",
+        //   width: 150,
+        //   sortable: true,
+        // },
         {
-          label: this.$t("area.areaName"), //名称
-          prop: "areaName",
+          label: this.$t("area.icon"), //地区图标
+          prop: "icon",
+          width: 150,
+          sortable: true,
+          type: "custom",
+          componentName: "icon",
+        },
+        {
+          label: this.$t("area.name"), //名称
+          prop: "name",
           width: 150,
           sortable: true,
         },
         {
-          label: this.$t("area.address"), //地址
-          prop: "address",
+          label: this.$t("area.cname"), //中文名称
+          prop: "cname",
+          width: 150,
+          sortable: true,
+        },
+        {
+          label: this.$t("area.fullName"), //全称
+          prop: "fullName",
+          width: 150,
+          sortable: true,
+        },
+        {
+          label: this.$t("area.fullCname"), //中文全称
+          prop: "fullCname",
           width: 150,
           sortable: true,
         },
         {
           label: this.$t("area.otherName"), //别称
           prop: "otherName",
+          width: 150,
+          sortable: true,
+        },
+        {
+          label: this.$t("area.address"), //地址
+          prop: "address",
           width: 150,
           sortable: true,
         },
@@ -226,19 +359,19 @@ export default {
           width: 150,
           sortable: true,
         },
-
+        {
+          label: this.$t("area.sort"), //排序
+          prop: "sort",
+          width: 150,
+          sortable: true,
+        },
         {
           label: this.$t("area.level"), //层级
           prop: "level",
           width: 150,
           sortable: true,
         },
-        {
-          label: this.$t("area.icon"), //地区图标
-          prop: "icon",
-          width: 150,
-          sortable: true,
-        },
+
         {
           label: this.$t("area.description"), //描述
           prop: "description",
@@ -252,25 +385,6 @@ export default {
           sortable: true,
         },
         {
-          label: this.$t("area.remark"), //备注
-          prop: "remark",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: this.$t("area.createTime"), //创建时间
-          prop: "createTime",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: this.$t("area.updateTime"), //更新时间
-          prop: "updateTime",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: this.$t("system.action"), //操作
           type: "action",
           fixed: "right",
           width: 200,
@@ -280,6 +394,14 @@ export default {
       tableData: [],
       //新增表单基础参数
       formParams: [
+        {
+          type: "custom",
+          label: this.$t("area.icon"), //地区图标
+          prop: "icon",
+          componentName: "icon",
+          span: 12,
+          on: {},
+        },
         {
           type: "input",
           label: this.$t("area.id"), //id
@@ -296,15 +418,29 @@ export default {
         },
         {
           type: "input",
-          label: this.$t("area.areaName"), //名称
-          prop: "areaName",
+          label: this.$t("area.name"), //名称
+          prop: "name",
           span: 6,
           on: {},
         },
         {
           type: "input",
-          label: this.$t("area.address"), //地址
-          prop: "address",
+          label: this.$t("area.cname"), //中文名称
+          prop: "cname",
+          span: 6,
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("area.fullName"), //全称
+          prop: "fullName",
+          span: 6,
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("area.fullCname"), //中文全称
+          prop: "fullCname",
           span: 6,
           on: {},
         },
@@ -312,6 +448,13 @@ export default {
           type: "input",
           label: this.$t("area.otherName"), //别称
           prop: "otherName",
+          span: 6,
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("area.address"), //地址
+          prop: "address",
           span: 6,
           on: {},
         },
@@ -380,13 +523,6 @@ export default {
         },
         {
           type: "input",
-          label: this.$t("area.icon"), //地区图标
-          prop: "icon",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
           label: this.$t("area.description"), //描述
           prop: "description",
           span: 6,
@@ -406,63 +542,17 @@ export default {
           span: 6,
           on: {},
         },
-        {
-          type: "input",
-          label: this.$t("area.creator"), //创建人
-          prop: "creator",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("area.updater"), //更新人
-          prop: "updater",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("area.createTime"), //创建时间
-          prop: "createTime",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("area.updateTime"), //更新时间
-          prop: "updateTime",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("area.isDeleted"), //是否删除
-          prop: "isDeleted",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("area.tenantId"), //租户id
-          prop: "tenantId",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("area.version"), //乐观锁
-          prop: "version",
-          span: 6,
-          on: {},
-        },
       ],
       //新增/修改/详情数据
       formData: {
         id: null,
         parentId: null,
-        areaName: null,
-        address: null,
+        name: null,
+        cname: null,
+        fullName: null,
+        fullCname: null,
         otherName: null,
+        address: null,
         type: null,
         code: null,
         axis: null,
@@ -490,21 +580,13 @@ export default {
     //1.查询
     query(page, size) {
       return this.$service.configuration.area
-        .list({ page, size, ...this.queryData })
+        .list(this.queryData)
         .then((res) => {
-          const areaList = res.data;
+          const area = res.data;
 
-          this.tableData = [
-            {
-              id: "0",
-              parentId: null,
-              areaName: "中国",
-              address: "中国",
-              type: "国家",
-            },
-          ];
-
-          this.treeList = areaList;
+          this.areaTree = this.$handleTree(area);
+          this.tableData = area.filter((item) => !item.parentId);
+          this.areaList = area;
         });
     },
     //新增
@@ -540,30 +622,26 @@ export default {
                 this.$message.success("提交成功");
                 this.search();
                 this.$refs.dialog.handleClose();
-              } else {
-                this.$message.warning(res.message);
               }
             });
         }
       });
     },
-    //删除
-    deleteLine(row, index) {
-      this.$service.configuration.area.delete([row]).then((res) => {
+    //通过id获取详情
+    detail(id) {
+      this.$service.configuration.area.detail({ id }).then((res) => {
         if (res.code === 200) {
-          this.$message.success("提交成功");
-          this.search();
-          this.$refs.dialog.handleClose();
-        } else {
-          this.$message.warning(res.message);
+          this.formData = res.data;
         }
       });
     },
-    //通过id获取详情
-    detail(id) {
-      console.log(123, { id });
-      this.$service.configuration.area.detail({ id }).then((res) => {
-        this.formData = res.data;
+    //删除
+    deleteLine(row) {
+      this.$service.configuration.area.delete([row]).then((res) => {
+        if (res.code === 200) {
+          this.$message.success("删除成功");
+          this.search();
+        }
       });
     },
     //批量删除
@@ -571,11 +649,8 @@ export default {
       this.$modal.confirm("是否删除").then(() => {
         this.$service.configuration.area.delete(this.checkList).then((res) => {
           if (res.code === 200) {
-            this.$message.success("提交成功");
+            this.$message.success("删除成功");
             this.search();
-            this.$refs.dialog.handleClose();
-          } else {
-            this.$message.warning(res.message);
           }
         });
       });
@@ -593,12 +668,15 @@ export default {
     },
     //重置新增修改表单数据
     resetForm() {
-      this.$set(this, "formData", {
+      this.formData = {
         id: null,
         parentId: null,
-        areaName: null,
-        address: null,
+        name: null,
+        cname: null,
+        fullName: null,
+        fullCname: null,
         otherName: null,
+        address: null,
         type: null,
         code: null,
         axis: null,
@@ -619,14 +697,14 @@ export default {
         isDeleted: null,
         tenantId: null,
         version: null,
-      });
+      };
     },
     //多选
     selection(list) {
       this.checkList = list;
     },
-    load(tree, treeNode, resolve) {
-      resolve(this.treeList.filter((item) => item.parentId == tree.id));
+    load(row, treeNode, resolve) {
+      resolve(this.areaList.filter((item) => item.parentId == row.id));
     },
   },
 };

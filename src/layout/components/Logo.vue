@@ -6,7 +6,9 @@
         <img class="logoPng" src="@/assets/images/logo/logo.png" alt="" />
       </div>
       <div class="appTitle">
-        <span class="title">{{ appTitle }}</span>
+        <dv-decoration-11 style="width: 250px; height: 40px">
+          <span class="title">{{ appTitle }}</span>
+        </dv-decoration-11>
       </div>
     </div>
   </div>

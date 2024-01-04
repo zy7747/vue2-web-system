@@ -2,7 +2,11 @@
 <template>
   <div>
     <!-- 搜索栏 -->
-    <Collapse :title="'视频'" @reset="resetQueryData" @search="search">
+    <Collapse
+      :title="$t('video.video')"
+      @reset="resetQueryData"
+      @search="search"
+    >
       <template slot="content">
         <CForm
           ref="queryForm"
@@ -11,23 +15,39 @@
         />
       </template>
     </Collapse>
+
     <!-- 表单栏 -->
     <el-tabs type="border-card">
-      <el-tab-pane label="视频">
+      <el-tab-pane :label="$t('video.video')">
         <Toolbar
           :delete-btn="{
             disabled: checkList.length === 0,
+          }"
+          :hasImport="true"
+          :imports="{
+            url: '/video/import',
+            data: {},
           }"
           :exports="{
             api: $service.file.video.export,
             fileName: '视频',
             data: {},
           }"
+          :permission="{
+            add: ['file:video:add'],
+            delete: ['file:video:delete'],
+            imports: ['file:video:import'],
+            exports: ['file:video:export'],
+          }"
           @addLine="addLine"
           @deleteLines="deleteLines"
         />
         <CTable
           ref="table"
+          :permission="{
+            edit: ['file:video:edit'],
+            delete: ['file:video:delete'],
+          }"
           :query="query"
           :table-column="tableColumn"
           @editLine="editLine"
@@ -37,6 +57,7 @@
         />
       </el-tab-pane>
     </el-tabs>
+
     <!-- 新增/编辑/详情弹框 -->
     <CDialog
       ref="dialog"
@@ -56,34 +77,35 @@
             />
           </template>
         </Collapse>
+
         <div style="margin-top: 10px; width: 100%"></div>
+
         <CCard title="视频列表" v-if="this.formData.id">
           <template slot="body">
             <div class="videoList">
               <FileUpload
-                :disabled="true"
+                isRowDrop
+                sortRow="episode"
                 v-model="videoList"
                 ref="fileUpload"
                 btnName="视频上传"
                 :fileType="['mp4']"
+                :uploadData="uploadData"
+                @handleUploadSuccess="handleUploadSuccess"
                 @handleDelete="handleDelete"
-              ></FileUpload>
+              />
             </div>
           </template>
         </CCard>
       </template>
     </CDialog>
 
-    <CDialog
-      :destroyOnClose="true"
-      ref="videoView"
-      title="视频观看"
-      width="1000px"
-      :has-check="false"
-    >
+    <CDialog ref="videoView" title="视频观看" width="1000px" :has-check="false">
       <template slot="body">
         <VideoPlayer ref="VideoPlayer" :videoInfo="videoInfo"></VideoPlayer>
-        <div style="margin-top: 10px; width: 100%"></div>
+
+        <div style="margin-top: 10px; width: 100%; height: max-content"></div>
+
         <CCard title="视频列表">
           <template slot="body">
             <ul class="videos">
@@ -93,9 +115,9 @@
                 v-for="(item, index) in videoList"
                 :key="item.id"
               >
-                <a href="JavaScript:void(0)" @click="play(index)">{{
-                  item.videoName
-                }}</a>
+                <a href="JavaScript:void(0)" @click="play(index)">
+                  {{ item.videoName }}
+                </a>
               </li>
             </ul>
           </template>
@@ -107,6 +129,9 @@
 <script>
 export default {
   name: "VideoPage",
+  created() {
+    this.serviceDict();
+  },
   data() {
     return {
       fileUrl: process.env.VUE_APP_FILE_API,
@@ -114,11 +139,15 @@ export default {
       title: "",
       //多选
       checkList: [],
+      fileData: [],
+      action: 0,
+      //弹框类型
+      dialogType: "",
       //查询表单基础参数
       queryParams: [
         {
           type: "input",
-          label: "视频名称",
+          label: this.$t("video.videoName"), //视频名称
           prop: "videoName",
           span: 6,
           attributes: {},
@@ -126,7 +155,7 @@ export default {
         },
         {
           type: "select",
-          label: "视频分类",
+          label: this.$t("video.type"), //视频分类
           prop: "type",
           options: this.getDictData("video_category"),
           span: 6,
@@ -135,7 +164,7 @@ export default {
         },
         {
           type: "select",
-          label: "视频类型",
+          label: this.$t("video.videoType"), //视频类型
           prop: "videoType",
           options: this.getDictData("video_type"),
           span: 6,
@@ -144,7 +173,7 @@ export default {
         },
         {
           type: "select",
-          label: "视频地区",
+          label: this.$t("video.region"), //视频地区
           prop: "region",
           options: this.getDictData("video_area"),
           span: 6,
@@ -162,7 +191,7 @@ export default {
         },
         {
           type: "input",
-          label: "标签",
+          label: this.$t("video.label"), //标签
           prop: "label",
           span: 6,
           attributes: {},
@@ -170,7 +199,7 @@ export default {
         },
         {
           type: "input",
-          label: "作者名称",
+          label: this.$t("video.author"), //作者
           prop: "author",
           span: 6,
           attributes: {},
@@ -178,15 +207,39 @@ export default {
         },
         {
           type: "select",
-          label: "状态",
+          label: this.$t("video.status"), //状态
           prop: "status",
           span: 6,
           options: this.getDictData("video_status"),
           attributes: {},
           on: {},
         },
+        {
+          type: "datePicker",
+          label: "月份", //月份
+          prop: "month",
+          span: 6,
+          attributes: {
+            type: "month",
+            "value-format": "yyyy-MM",
+            format: "yyyy-MM",
+          },
+          on: {},
+        },
+        {
+          type: "dateTimePicker",
+          label: "日期范围", //日期范围
+          prop: "starTime",
+          propEnd: "endTime",
+          span: 12,
+          attributes: {
+            type: "datetimerange",
+            "value-format": "yyyy-MM",
+            format: "yyyy-MM",
+          },
+          on: {},
+        },
       ],
-      action: 0,
       //表列基础参数
       tableColumn: [
         {
@@ -194,19 +247,19 @@ export default {
           width: 55,
         },
         {
-          label: "序号",
+          label: this.$t("system.no"), //序号
           type: "index",
           width: 55,
         },
         {
-          label: "视频图片",
+          label: this.$t("video.picture"), //视频图片
           prop: "picture",
           type: "picture",
           width: 150,
           sortable: true,
         },
         {
-          label: "视频名称",
+          label: this.$t("video.videoName"), //视频名称
           prop: "videoName",
           type: "link",
           width: 150,
@@ -216,64 +269,64 @@ export default {
           },
         },
         {
-          label: "视频标题",
+          label: this.$t("video.title"), //视频标题
           prop: "title",
           width: 150,
           sortable: true,
         },
         {
-          label: "视频分类",
+          label: this.$t("video.type"), //视频分类
           prop: "type",
           translation: "video_category",
           width: 150,
           sortable: true,
         },
         {
-          label: "视频地区",
+          label: this.$t("video.region"), //视频地区
           prop: "region",
           translation: "video_area",
           width: 150,
           sortable: true,
         },
         {
-          label: "视频类型",
+          label: this.$t("video.videoType"), //视频类型
           prop: "videoType",
           translation: "video_type",
           width: 150,
           sortable: true,
         },
         {
-          label: "作者名称",
+          label: this.$t("video.author"), //作者
           prop: "author",
           width: 150,
           sortable: true,
         },
         {
-          label: "创作年份",
+          label: this.$t("video.createYear"), //创作年份
           prop: "createYear",
           width: 150,
           sortable: true,
         },
         {
-          label: "标签",
+          label: this.$t("video.label"), //标签
           prop: "label",
           width: 150,
           sortable: true,
         },
         {
-          label: "季",
+          label: this.$t("video.season"), //季
           prop: "season",
           width: 150,
           sortable: true,
         },
         {
-          label: "集",
+          label: this.$t("video.episode"), //集
           prop: "episode",
           width: 150,
           sortable: true,
         },
         {
-          label: "时长",
+          label: this.$t("video.duration"), //时长
           prop: "duration",
           width: 150,
           sortable: true,
@@ -298,41 +351,34 @@ export default {
         },
 
         {
-          label: "状态",
+          label: this.$t("video.status"), //状态
           prop: "status",
           width: 150,
           sortable: true,
           translation: "video_status",
         },
         {
-          label: "备注",
-          prop: "remark",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: "创建人",
+          label: this.$t("video.creator"), //创建人
           prop: "creator",
           width: 150,
           sortable: true,
           translation: "user",
         },
         {
-          label: "更新人",
+          label: this.$t("video.updater"), //更新人
           prop: "updater",
           width: 150,
           sortable: true,
           translation: "user",
         },
-
         {
-          label: "创建时间",
+          label: this.$t("video.createTime"), //创建时间
           prop: "createTime",
           width: 150,
           sortable: true,
         },
         {
-          label: "更新时间",
+          label: this.$t("video.updateTime"), //更新时间
           prop: "updateTime",
           width: 150,
           sortable: true,
@@ -344,7 +390,7 @@ export default {
           width: 160,
         },
       ],
-      //数据
+      //查询数据
       queryData: {
         id: null,
         parentId: null,
@@ -361,8 +407,6 @@ export default {
         season: null,
         episode: null,
         duration: null,
-        starsNum: null,
-        collectionNum: null,
         playNum: null,
         status: null,
         remark: null,
@@ -372,6 +416,9 @@ export default {
         createTime: null,
         updateTime: null,
         isDeleted: null,
+        tenantId: null,
+        version: null,
+        isCollection: null,
       },
       //新增/修改/详情数据
       formData: {
@@ -390,8 +437,6 @@ export default {
         season: null,
         episode: null,
         duration: null,
-        starsNum: null,
-        collectionNum: null,
         playNum: null,
         status: null,
         remark: null,
@@ -401,14 +446,56 @@ export default {
         createTime: null,
         updateTime: null,
         isDeleted: null,
+        tenantId: null,
+        version: null,
+        isCollection: null,
       },
       videoList: [],
       videoInfo: {},
-      //新增表单基础参数
-      formParams: [
+      fileList: [],
+      rowId: undefined,
+    };
+  },
+  computed: {
+    //新增表单基础参数
+    formParams() {
+      return [
+        {
+          type: "radio",
+          label: this.$t("video.isCollection"), //是否是集合
+          prop: "isCollection",
+          span: 6,
+          options: this.getDictData("isNo"),
+          rules: [
+            {
+              required: true,
+              message: "是否是集合不能为空",
+              trigger: "blur",
+            },
+          ],
+          on: {},
+        },
+        {
+          type: "selectTree",
+          label: "视频保存路径",
+          prop: "savePath",
+          span: 18,
+          options: this.fileData,
+          attributes: {
+            label: "label",
+            id: "value",
+          },
+          rules: [
+            {
+              required: true,
+              message: "视频保存路径不能为空",
+              trigger: "blur",
+            },
+          ],
+        },
         {
           type: "input",
-          label: "视频名称",
+          label: this.$t("video.videoName"), //视频名称
           prop: "videoName",
           span: 6,
           rules: [
@@ -418,7 +505,7 @@ export default {
         },
         {
           type: "input",
-          label: "视频标题",
+          label: this.$t("video.title"), //视频标题
           prop: "title",
           span: 6,
           rules: [
@@ -428,7 +515,7 @@ export default {
         },
         {
           type: "select",
-          label: "视频分类",
+          label: this.$t("video.type"), //视频分类
           prop: "type",
           span: 6,
           rules: [
@@ -439,7 +526,7 @@ export default {
         },
         {
           type: "select",
-          label: "视频类型",
+          label: this.$t("video.videoType"), //视频类型
           prop: "videoType",
           span: 6,
           rules: [
@@ -450,7 +537,7 @@ export default {
         },
         {
           type: "select",
-          label: "视频地区",
+          label: this.$t("video.region"), //视频地区
           prop: "region",
           span: 6,
           rules: [
@@ -461,21 +548,21 @@ export default {
         },
         {
           type: "input",
-          label: "标签",
+          label: this.$t("video.label"), //标签
           prop: "label",
           span: 6,
           on: {},
         },
         {
           type: "input",
-          label: "作者名称",
+          label: this.$t("video.author"), //作者
           prop: "author",
           span: 6,
           on: {},
         },
         {
           type: "select",
-          label: "状态",
+          label: this.$t("video.status"), //状态
           prop: "status",
           span: 6,
           rules: [{ required: true, message: "状态不能为空", trigger: "blur" }],
@@ -484,20 +571,20 @@ export default {
         },
         {
           type: "avatarUpload",
-          label: "视频图片",
+          llabel: this.$t("video.picture"), //视频图片
           prop: "picture",
           span: 6,
           attributes: {
             uploadData: {
-              path: "/资源管理器/视频封面",
-              parentId: "1708480352590258177",
+              parentId: "1738494567264088065",
             },
           },
           on: {},
         },
+
         {
           type: "datePicker",
-          label: "创作年份",
+          label: this.$t("video.createYear"), //创作年份
           prop: "createYear",
           span: 6,
           attributes: {
@@ -508,21 +595,24 @@ export default {
         },
         {
           type: "number",
-          label: "季",
+          label: this.$t("video.season"), //季
           prop: "season",
           span: 6,
           on: {},
         },
         {
           type: "number",
-          label: "集",
+          label: this.$t("video.episode"), //集
+          attributes: {
+            disabled: true,
+          },
           prop: "episode",
           span: 6,
           on: {},
         },
         {
           type: "input",
-          label: "视频简介",
+          label: this.$t("video.profile"), //视频简介
           prop: "profile",
           span: 18,
           attributes: {
@@ -531,8 +621,15 @@ export default {
           },
           on: {},
         },
-      ],
-    };
+      ];
+    },
+    uploadData() {
+      //如果是集合的都有一个父级目录
+      if (this.formData.id) {
+        const item = this.fileList.find((i) => i.id === this.formData.savePath);
+        return { path: item.filePath, parentId: item.id };
+      }
+    },
   },
   methods: {
     //1.查询
@@ -543,40 +640,99 @@ export default {
           return res.data;
         });
     },
+    //通过接口请求的下拉
+    serviceDict() {
+      //获取文件树列表
+      this.getServiceData([
+        { serviceCode: "getFileList", params: { fileType: "folder" } },
+      ]).then((res) => {
+        //平铺的数据
+        this.fileList = res.getFileList;
+        //树形数据
+        this.fileData = this.$handleTree(res.getFileList);
+      });
+    },
     //新增
     addLine() {
       this.title = "新增";
+      this.dialogType = "add";
+      this.rowId = undefined;
       this.resetForm();
       this.$refs.dialog.handleOpen();
     },
     //编辑
     editLine(row, index) {
       this.title = "编辑";
+      this.dialogType = "edit";
+      this.rowId = row.id;
+      this.detail(row.id);
+      this.$refs.dialog.handleOpen();
+    },
+    //详情
+    detailLine(row, index) {
+      this.title = "详情";
+      this.dialogType = "edit";
+      this.rowId = row.id;
       this.detail(row.id);
       this.$refs.dialog.handleOpen();
     },
     //提交
     handleConfirm() {
       // 新增
-      this.$refs.form.validate().then((valid) => {
+      this.$refs.form.validate().then(async (valid) => {
         if (valid) {
-          this.$service.file.video.saveList([this.formData]).then((res) => {
-            if (res.code === 200) {
-              this.$message.success("提交成功");
-              this.search();
-              this.$refs.dialog.handleClose();
-            } else {
-              this.$message.warning(res.message);
-            }
-          });
+          //生成一个文件夹存放视频
+          let savePath = JSON.parse(JSON.stringify(this.formData.savePath));
+
+          if (!this.formData.id) {
+            // 新增
+            const fileRes = await this.$service.file.file.createFolder({
+              fileName: this.formData.videoName,
+              fileType: "folder",
+              parentId: this.formData.savePath,
+            });
+
+            savePath = fileRes.data.id;
+          }
+
+          //如果是修改则直接走变更
+          this.$service.file.video
+            .saveList([
+              { ...this.formData, episode: this.videoList.length, savePath },
+              ...this.videoList,
+            ])
+            .then((res) => {
+              if (res.code === 200) {
+                this.$message.success("提交成功");
+                this.search();
+                this.$refs.dialog.handleClose();
+              } else {
+                this.$message.warning(res.message);
+              }
+            });
         }
       });
     },
-    //详情
-    detailLine(row, index) {
-      this.title = "详情";
-      this.$refs.dialog.handleOpen();
-      this.detail(row.id);
+    //文件上传成功
+    handleUploadSuccess(data, file) {
+      let formData = [];
+      //如果提交的不是集合url存在头数据当中
+      if (!this.formData.isCollection) {
+        formData = [{ ...this.formData, url: data.filePath, episode: 1 }];
+      } else {
+        //如果提交的是集合则创建一个新文件夹，url存在子数据当中
+        formData = [
+          {
+            parentId: this.formData.id,
+            url: data.filePath,
+            videoName: data.fileName,
+            episode: this.videoList.length,
+          },
+        ];
+      }
+
+      this.$service.file.video.saveList(formData);
+      this.detail(this.formData.id);
     },
     //删除
     deleteLine(row, index) {
@@ -592,6 +748,7 @@ export default {
     },
     //通过id获取详情
     detail(id) {
+      this.serviceDict();
       this.$service.file.video.detail({ id }).then((res) => {
         this.formData = res.data;
         this.videoList = res.data.videoList.map((item) => {
@@ -622,14 +779,11 @@ export default {
     },
     //批量删除
     deleteLines() {
-      this.$modal
-        .confirm("是否删除")
-        .then(() => {
-          this.$service.file.video.delete(this.checkList).then((res) => {
-            this.search();
-          });
-        })
-        .catch(() => {});
+      this.$modal.confirm("是否删除").then(() => {
+        this.$service.file.video.delete(this.checkList).then((res) => {
+          this.search();
+        });
+      });
     },
     //搜索
     search() {
@@ -660,8 +814,6 @@ export default {
         season: null,
         episode: null,
         duration: null,
-        starsNum: null,
-        collectionNum: null,
         playNum: null,
         status: null,
         remark: null,
@@ -671,6 +823,8 @@ export default {
         createTime: null,
         updateTime: null,
         isDeleted: null,
+        tenantId: null,
+        version: null,
       });
     },
     //多选

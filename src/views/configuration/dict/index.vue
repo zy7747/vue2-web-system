@@ -83,8 +83,6 @@
               row-key="id"
               isRowDrop
               isEditTable
-              is-edit-line
-              is-delete-line
               @saveForm="saveDictList"
               @deleteLine="deleteDictList"
               :table-data="dictSubListData"

@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-  <div>
+  <div class="table-action">
     <span class="table-header-icon">
       <el-popover
         placement="top"
@@ -21,7 +21,7 @@
         </div>
       </el-popover>
     </span>
-    <span> {{ $t('system.action') }}</span>
+    <span> {{ $t("system.action") }}</span>
   </div>
 </template>
 

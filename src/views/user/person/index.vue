@@ -261,12 +261,13 @@ export default {
           type: "index",
           width: 55,
         },
-        // {
-        //   label: this.$t("person.userId"), //用户id
-        //   prop: "userId",
-        //   width: 150,
-        //   sortable: true,
-        // },
+        {
+          label: this.$t("person.userId"), //用户id
+          prop: "userId",
+          width: 150,
+          sortable: true,
+          translation: "user",
+        },
         {
           label: this.$t("person.photo"), //照片
           prop: "photo",
@@ -370,6 +371,7 @@ export default {
           prop: "status",
           width: 150,
           sortable: true,
+          translation: "person_status",
         },
         {
           label: this.$t("person.remark"), //备注
@@ -412,13 +414,6 @@ export default {
       tableData: [],
       //新增表单基础参数
       formParams: [
-        // {
-        //   type: "input",
-        //   label: this.$t("person.userId"), //用户id
-        //   prop: "userId",
-        //   span: 6,
-        //   on: {},
-        // },
         {
           type: "avatarUpload",
           label: this.$t("person.photo"), //照片
@@ -426,10 +421,17 @@ export default {
           span: 6,
           attributes: {
             uploadData: {
-              path: "/资源管理器/个人头像",
               parentId: "1708477176327725057",
             },
           },
+        },
+        {
+          type: "select",
+          label: this.$t("person.userId"), //用户id
+          prop: "userId",
+          options: this.getDictData("user"),
+          span: 6,
+          on: {},
         },
         {
           type: "input",
@@ -537,6 +539,7 @@ export default {
           type: "select",
           label: this.$t("person.status"), //状态
           prop: "status",
+          options: this.getDictData("person_status"),
           span: 6,
           on: {},
         },

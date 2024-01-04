@@ -2,7 +2,7 @@ export default {
   props: {
     value: {
       text: "数据对象",
-      type: [String],
+      type: [String, Array],
       default: () => {
         return "";
       },

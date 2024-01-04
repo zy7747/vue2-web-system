@@ -7,21 +7,26 @@
       @show="reset()"
     >
       <div class="icon-body">
-        <div class="icon-list">
-          <div
-            v-for="(item, index) in iconList"
-            :key="index"
-            @click="selectedIcon(item)"
-            class="icon-item"
-          >
-            <svg-icon
-              :icon-class="item"
-              style="height: 35px; width: 26px; margin-right: 15px"
-            />
-            <span class="icon-name" :title="item">{{ item }}</span>
-          </div>
-        </div>
+        <vxe-list height="300" :data="iconList" :scroll-y="{ enabled: true }">
+          <template #default="{ items }">
+            <div v-for="(item, index) in items" :key="index" class="icon-list">
+              <div
+                @click="selectedIcon(i)"
+                class="list-item"
+                v-for="(i, index) in item"
+                :key="index"
+              >
+                <svg-icon
+                  :icon-class="i"
+                  style="height: 35px; width: 26px; margin-right: 15px"
+                />
+                <span class="icon-name" :title="i">{{ i }}</span>
+              </div>
+            </div>
+          </template>
+        </vxe-list>
       </div>
+
       <el-input
         slot="reference"
         v-model="inputValue"
@@ -30,9 +35,9 @@
         :size="size"
         v-bind="$attrs"
         v-on="$listeners"
-        :clearable="clearable"
         :style="`width:${width};min-width:${minWidth};`"
         readonly
+        clearable
       >
         <svg-icon
           v-if="inputValue"
@@ -56,7 +61,7 @@ export default {
   data() {
     return {
       name: "",
-      iconList: icons,
+      iconList: [],
       inputValue: this.value,
     };
   },
@@ -69,60 +74,47 @@ export default {
     },
   },
   methods: {
-    filterIcons() {
-      this.iconList = icons;
-      if (this.name) {
-        this.iconList = this.iconList.filter((item) =>
-          item.includes(this.name)
-        );
-      }
-    },
     selectedIcon(name) {
       this.inputValue = name;
       document.body.click();
     },
+    splitIntoGroups(array) {
+      let groups = [];
+      while (array.length > 0) {
+        groups.push(array.splice(0, 3));
+      }
+      return groups;
+    },
     reset() {
       this.name = "";
-      this.iconList = icons;
+      const iconList = icons(this.loadIconList);
+      this.iconList = this.splitIntoGroups(iconList);
     },
   },
 };
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style lang="scss" scoped>
 .icon-body {
   width: 100%;
   .icon-list {
-    height: 200px;
-    overflow-y: scroll;
-    div {
-      height: 35px;
-      line-height: 35px;
-      margin-bottom: -5px;
-      cursor: pointer;
-      width: 33.33%;
-      float: left;
-    }
-    span {
-      display: inline-block;
-      vertical-align: -0.15em;
-      fill: currentColor;
-      overflow: hidden;
-    }
+    display: flex;
+    align-items: center;
   }
-}
+  .list-item {
+    display: flex;
+    align-items: center;
+    width: 33.33%;
+    cursor: pointer;
+    .icon-name {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-.icon-item {
-  display: flex;
-  .icon-name {
-    width: 160px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .icon-name:hover {
-    color: aqua;
-    text-decoration: underline;
+    .icon-name:hover {
+      color: aqua;
+      text-decoration: underline;
+    }
   }
 }
 

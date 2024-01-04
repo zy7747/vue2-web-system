@@ -2,7 +2,7 @@
 <template>
   <div>
     <!-- 搜索栏 -->
-    <Collapse :title="'定时任务'" @reset="resetQueryData" @search="search">
+    <Collapse :title="$t('job.job')" @reset="resetQueryData" @search="search">
       <template slot="content">
         <CForm
           ref="queryForm"
@@ -13,82 +13,59 @@
     </Collapse>
     <!-- 表单栏 -->
     <el-tabs type="border-card">
-      <el-tab-pane label="定时任务">
+      <el-tab-pane :label="$t('job.job')">
         <Toolbar
           :delete-btn="{
             disabled: checkList.length === 0,
+          }"
+          :hasImport="true"
+          :imports="{
+            url: '/job/import',
+            data: {},
           }"
           :exports="{
             api: $service.system.job.export,
             fileName: '定时任务',
             data: {},
           }"
+          :permission="{
+            add: ['system:job:add'],
+            delete: ['system:job:delete'],
+            imports: ['system:job:import'],
+            exports: ['system:job:export'],
+          }"
           @addLine="addLine"
           @deleteLines="deleteLines"
         />
         <CTable
+          :permission="{
+            edit: ['system:job:edit'],
+            delete: ['system:job:delete'],
+          }"
           ref="table"
-          is-edit-line
-          is-detail-line
-          is-delete-line
           :query="query"
           :table-column="tableColumn"
           @editLine="editLine"
           @detailLine="detailLine"
           @deleteLine="deleteLine"
           @handleSelectionChange="selection"
-        >
-          <template slot="action" slot-scope="{ scope }">
-            <c-button
-              v-if="scope.row.status === 'run'"
-              class="btn"
-              text="暂停"
-              type="text"
-              icon="el-icon-video-pause"
-              @click="changeTaskStatus(scope.row)"
-            />
-            <c-button
-              v-if="scope.row.status === 'paused'"
-              class="btn"
-              text="恢复"
-              type="text"
-              icon="el-icon-refresh"
-              @click="changeTaskStatus(scope.row)"
-            />
-            <c-button
-              v-if="scope.row.status === 'unStarted'"
-              class="btn"
-              text="运行"
-              type="text"
-              icon="el-icon-video-play"
-              @click="changeTaskStatus(scope.row)"
-            />
-            <c-button
-              v-if="scope.row.status === 'over'"
-              class="btn"
-              text="重启"
-              type="text"
-              icon="el-icon-refresh-right"
-              @click="changeTaskStatus(scope.row)"
-            />
-          </template>
-        </CTable>
+        />
       </el-tab-pane>
     </el-tabs>
     <!-- 新增/编辑/详情弹框 -->
     <CDialog
       ref="dialog"
       :title="title"
-      width="1200px"
-      :has-check="title !== '详情'"
+      width="800px"
+      :has-check="dialogType !== 'detail'"
       @handleConfirm="handleConfirm"
     >
       <template slot="body">
-        <CCard title="定时任务">
+        <CCard :title="$t('job.job')">
           <template slot="body">
             <CForm
               ref="form"
-              :disabled="title === '详情'"
+              :disabled="dialogType === 'detail'"
               :form-data="formData"
               :form-params="formParams"
             />
@@ -98,19 +75,23 @@
     </CDialog>
   </div>
 </template>
+
 <script>
 export default {
+  name: "Job",
   data() {
     return {
       //弹框标题
       title: "",
+      //弹框类型
+      dialogType: "",
       //多选
       checkList: [],
       //查询表单基础参数
       queryParams: [
         {
           type: "input",
-          label: "任务名称",
+          label: this.$t("job.jobName"), //任务名称
           prop: "jobName",
           span: 6,
           attributes: {},
@@ -118,34 +99,26 @@ export default {
         },
         {
           type: "input",
-          label: "任务编码",
+          label: this.$t("job.jobCode"), //任务编码
           prop: "jobCode",
           span: 6,
           attributes: {},
           on: {},
         },
         {
-          type: "datePicker",
-          label: "开始时间",
-          prop: "startTime",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "select",
-          label: "状态",
+          type: "input",
+          label: this.$t("job.status"), //状态
           prop: "status",
           span: 6,
           attributes: {},
-          options: this.getDictData("job_status"),
           on: {},
         },
       ],
-      //数据
+      //查询数据
       queryData: {
         id: null,
         jobName: null,
+        jobCode: null,
         startTime: null,
         executeCount: null,
         executeInterval: null,
@@ -163,87 +136,77 @@ export default {
       tableColumn: [
         {
           type: "selection",
-          width: 55,
         },
         {
-          label: "序号",
+          label: this.$t("system.no"), //序号
           type: "index",
-          width: 55,
         },
         {
-          label: "任务名称",
+          label: this.$t("job.jobName"), //任务名称
           prop: "jobName",
           width: 150,
           sortable: true,
         },
         {
-          label: "任务编码",
+          label: this.$t("job.jobCode"), //任务编码
           prop: "jobCode",
           width: 150,
           sortable: true,
         },
         {
-          label: "开始时间",
+          label: this.$t("job.startTime"), //开始时间
           prop: "startTime",
           width: 150,
           sortable: true,
         },
         {
-          label: "剩余执行次数",
+          label: this.$t("job.executeCount"), //执行次数
           prop: "executeCount",
           width: 150,
           sortable: true,
         },
         {
-          label: "执行间隔",
+          label: this.$t("job.executeInterval"), //执行间隔
           prop: "executeInterval",
           width: 150,
           sortable: true,
         },
         {
-          label: "状态",
+          label: this.$t("job.status"), //状态
           prop: "status",
-          translation: "job_status",
           width: 150,
           sortable: true,
         },
         {
-          label: "备注",
-          prop: "remark",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: "创建人",
+          label: this.$t("job.creator"), //创建人
           prop: "creator",
           width: 150,
           sortable: true,
           translation: "user",
         },
         {
-          label: "更新人",
+          label: this.$t("job.updater"), //更新人
           prop: "updater",
           width: 150,
           sortable: true,
-          translation: "user",
+          translation: "updater",
         },
         {
-          label: "创建时间",
+          label: this.$t("job.createTime"), //创建时间
           prop: "createTime",
           width: 150,
           sortable: true,
         },
         {
-          label: "更新时间",
+          label: this.$t("job.updateTime"), //更新时间
           prop: "updateTime",
           width: 150,
           sortable: true,
         },
         {
-          label: "操作",
           type: "action",
           fixed: "right",
-          width: 220,
+          width: 150,
         },
       ],
       //表格数据
@@ -340,18 +303,21 @@ export default {
     //新增
     addLine() {
       this.title = "新增";
+      this.dialogType = "add";
       this.resetForm();
       this.$refs.dialog.handleOpen();
     },
     //编辑
     editLine(row, index) {
       this.title = "编辑";
+      this.dialogType = "edit";
       this.detail(row.id);
       this.$refs.dialog.handleOpen();
     },
     //详情
     detailLine(row, index) {
       this.title = "详情";
+      this.dialogType = "detail";
       this.detail(row.id);
       this.$refs.dialog.handleOpen();
     },
@@ -365,6 +331,7 @@ export default {
               this.$message.success("提交成功");
               this.search();
               this.$refs.dialog.handleClose();
+              this.$refs.table.doLayout();
             } else {
               this.$message.warning(res.message);
             }

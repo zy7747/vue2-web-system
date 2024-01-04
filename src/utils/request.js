@@ -5,7 +5,7 @@ import store from "@/store/index";
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
-  timeout: 15000, // 请求超时时间
+  // timeout: 15000, // 请求超时时间
   headers: {
     "Content-Type": "application/json;charset=utf-8",
   },
@@ -22,7 +22,6 @@ service.interceptors.request.use(
     if (store.getters.userInfo.id) {
       config.headers["UserId"] = store.getters.userId;
     }
-
     return config;
   },
   (error) => {

@@ -5,8 +5,8 @@
       :src="baseUrl + '/doc.html#/default'"
       frameborder="0"
       width="100%"
-      height="98%"
-    ></iframe>
+      height="99%"
+    />
   </div>
 </template>
 

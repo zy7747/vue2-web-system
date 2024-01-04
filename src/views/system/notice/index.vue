@@ -90,137 +90,6 @@ export default {
       dialogType: "",
       //多选
       checkList: [],
-      //查询表单基础参数
-      queryParams: [
-        {
-          type: "input",
-          label: this.$t("notice.id"), //id
-          prop: "id",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.noticeName"), //消息名称
-          prop: "noticeName",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.noticeContent"), //消息内容
-          prop: "noticeContent",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.pushModule"), //推送模块
-          prop: "pushModule",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.type"), //类型
-          prop: "type",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.isRead"), //是否已读
-          prop: "isRead",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.status"), //状态
-          prop: "status",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.remark"), //备注
-          prop: "remark",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.receiver"), //接收人
-          prop: "receiver",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.creator"), //创建人
-          prop: "creator",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.updater"), //更新人
-          prop: "updater",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.createTime"), //创建时间
-          prop: "createTime",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.updateTime"), //更新时间
-          prop: "updateTime",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.isDeleted"), //是否删除
-          prop: "isDeleted",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.tenantId"), //租户id
-          prop: "tenantId",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.version"), //乐观锁
-          prop: "version",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-      ],
       //数据
       queryData: {
         id: null,
@@ -231,7 +100,7 @@ export default {
         isRead: null,
         status: null,
         remark: null,
-        receiver: null,
+        receiver: [],
         creator: null,
         updater: null,
         createTime: null,
@@ -252,12 +121,6 @@ export default {
           width: 55,
         },
         {
-          label: this.$t("notice.id"), //id
-          prop: "id",
-          width: 150,
-          sortable: true,
-        },
-        {
           label: this.$t("notice.noticeName"), //消息名称
           prop: "noticeName",
           width: 150,
@@ -280,29 +143,27 @@ export default {
           prop: "type",
           width: 150,
           sortable: true,
+          translation: "notice_type",
         },
         {
           label: this.$t("notice.isRead"), //是否已读
           prop: "isRead",
           width: 150,
           sortable: true,
+          translation: "isRead",
         },
-        {
-          label: this.$t("notice.status"), //状态
-          prop: "status",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: this.$t("notice.remark"), //备注
-          prop: "remark",
-          width: 150,
-          sortable: true,
-        },
+        // {
+        //   label: this.$t("notice.status"), //状态
+        //   prop: "status",
+        //   width: 150,
+        //   sortable: true,
+        //   translation: "notice_status",
+        // },
         {
           label: this.$t("notice.receiver"), //接收人
           prop: "receiver",
           width: 150,
+          translation: "user",
           sortable: true,
         },
         {
@@ -310,41 +171,11 @@ export default {
           prop: "creator",
           width: 150,
           sortable: true,
-        },
-        {
-          label: this.$t("notice.updater"), //更新人
-          prop: "updater",
-          width: 150,
-          sortable: true,
+          translation: "user",
         },
         {
           label: this.$t("notice.createTime"), //创建时间
           prop: "createTime",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: this.$t("notice.updateTime"), //更新时间
-          prop: "updateTime",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: this.$t("notice.isDeleted"), //是否删除
-          prop: "isDeleted",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: this.$t("notice.tenantId"), //租户id
-          prop: "tenantId",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: this.$t("notice.version"), //乐观锁
-          prop: "version",
-          width: 150,
           sortable: true,
         },
         {
@@ -356,121 +187,6 @@ export default {
       ],
       //表格数据
       tableData: [],
-      //新增表单基础参数
-      formParams: [
-        {
-          type: "input",
-          label: this.$t("notice.id"), //id
-          prop: "id",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.noticeName"), //消息名称
-          prop: "noticeName",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.noticeContent"), //消息内容
-          prop: "noticeContent",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.pushModule"), //推送模块
-          prop: "pushModule",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.type"), //类型
-          prop: "type",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.isRead"), //是否已读
-          prop: "isRead",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.status"), //状态
-          prop: "status",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.remark"), //备注
-          prop: "remark",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.receiver"), //接收人
-          prop: "receiver",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.creator"), //创建人
-          prop: "creator",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.updater"), //更新人
-          prop: "updater",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.createTime"), //创建时间
-          prop: "createTime",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.updateTime"), //更新时间
-          prop: "updateTime",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.isDeleted"), //是否删除
-          prop: "isDeleted",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.tenantId"), //租户id
-          prop: "tenantId",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: this.$t("notice.version"), //乐观锁
-          prop: "version",
-          span: 6,
-          on: {},
-        },
-      ],
       //新增/修改/详情数据
       formData: {
         id: null,
@@ -481,7 +197,7 @@ export default {
         isRead: null,
         status: null,
         remark: null,
-        receiver: null,
+        receiverList: [],
         creator: null,
         updater: null,
         createTime: null,
@@ -490,7 +206,18 @@ export default {
         tenantId: null,
         version: null,
       },
+      userList: [],
     };
+  },
+  created() {
+    this.userList = [
+      {
+        label: "全部",
+        value: "1",
+        id: "1",
+        children: this.getDictData("user"),
+      },
+    ];
   },
   methods: {
     //1.查询
@@ -550,7 +277,7 @@ export default {
     //通过id获取详情
     detail(id) {
       this.$service.functional.notice.detail({ id }).then((res) => {
-        this.formData = res.data;
+        this.formData = { ...res.data, receiverList: [res.data.receiver] };
       });
     },
     //批量删除
@@ -586,7 +313,7 @@ export default {
         isRead: null,
         status: null,
         remark: null,
-        receiver: null,
+        receiverList: [],
         creator: null,
         updater: null,
         createTime: null,
@@ -599,6 +326,101 @@ export default {
     //多选
     selection(list) {
       this.checkList = list;
+    },
+  },
+  computed: {
+    //查询表单基础参数
+    queryParams() {
+      return [
+        {
+          type: "input",
+          label: this.$t("notice.noticeName"), //消息名称
+          prop: "noticeName",
+          span: 6,
+          attributes: {},
+          on: {},
+        },
+        {
+          type: "select",
+          label: this.$t("notice.type"), //类型
+          prop: "type",
+          options: this.getDictData("notice_type"),
+          span: 6,
+          attributes: {},
+          on: {},
+        },
+        {
+          type: "select",
+          label: this.$t("notice.isRead"), //是否已读
+          prop: "isRead",
+          options: this.getDictData("isRead"),
+          span: 6,
+          attributes: {},
+          on: {},
+        },
+        {
+          type: "select",
+          label: this.$t("notice.receiver"), //接收人
+          prop: "receiver",
+          span: 6,
+          options: this.getDictData("user"),
+        },
+      ];
+    },
+    //新增表单基础参数
+    formParams() {
+      return [
+        {
+          type: "input",
+          label: this.$t("notice.noticeName"), //消息名称
+          prop: "noticeName",
+          span: 6,
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("notice.pushModule"), //推送模块
+          prop: "pushModule",
+          span: 6,
+          on: {},
+        },
+        {
+          type: "select",
+          label: this.$t("notice.type"), //类型
+          prop: "type",
+          options: this.getDictData("notice_type"),
+          span: 6,
+          on: {},
+        },
+        {
+          type: "select",
+          label: this.$t("notice.isRead"), //是否已读
+          prop: "isRead",
+          options: this.getDictData("isRead"),
+          span: 6,
+          on: {},
+        },
+        {
+          type: "selectTree",
+          label: this.$t("notice.receiver"), //接收人
+          prop: "receiverList",
+          options: this.userList,
+          attributes: {
+            multiple: true,
+          },
+          span: 24,
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("notice.noticeContent"), //消息内容
+          prop: "noticeContent",
+          attributes: {
+            type: "textarea",
+            autosize: { minRows: 4, maxRows: 4 },
+          },
+        },
+      ];
     },
   },
 };

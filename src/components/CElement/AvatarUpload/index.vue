@@ -9,6 +9,7 @@
       :before-upload="beforeAvatarUpload"
       :on-error="handleUploadError"
       :data="uploadData"
+      :headers="headers"
       v-bind="$attrs"
       v-on="$listeners"
     >
@@ -20,6 +21,7 @@
 
 <script>
 import baseParams from "./mixins/index";
+import { getToken } from "@/utils/auth";
 
 export default {
   name: "AvatarUpload",
@@ -29,6 +31,7 @@ export default {
       imageUrl: this.value,
       fileUrl: process.env.VUE_APP_FILE_API,
       baseUrl: process.env.VUE_APP_BASE_API + "/file/upload", // 请求地址
+      headers: { Authorization: getToken() }, // 设置上传的请求头部
     };
   },
   methods: {

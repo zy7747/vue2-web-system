@@ -2,7 +2,13 @@
 <template>
   <div>
     <template v-for="(item, index) in options">
-      <el-tag v-if="item?.color" :type="item?.color" :key="index">
+      <el-tag
+        v-bind="$attrs"
+        v-on="$listeners"
+        v-if="item?.color"
+        :type="item?.color"
+        :key="index"
+      >
         {{ item?.label }}
       </el-tag>
       <span :key="index" v-else>{{ item?.label }}</span>

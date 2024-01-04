@@ -1,11 +1,11 @@
 <!--  -->
 <template>
-  <div style="margin-left: 5px">
+  <div class="user-box">
     <el-dropdown @command="handleCommand" trigger="hover">
       <div class="avatar-wrapper cursor">
         <img class="avatar" :src="fileUrl + userInfo.avatar" />
         <p style="font-weight: 520; color: #108adc">
-          {{ userInfo.user }}
+          <dv-decoration-7> {{ userInfo.user }} </dv-decoration-7>
         </p>
       </div>
 
@@ -80,6 +80,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.user-box {
+  padding-top: 3px;
+  margin-left: 5px;
+}
 .action {
   width: 100%;
   height: 100%;

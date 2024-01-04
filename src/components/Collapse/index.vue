@@ -134,5 +134,7 @@ export default {
 
 .content {
   padding: 15px 20px 0;
+  // max-height: 210px;
+  // overflow-y: auto;
 }
 </style>

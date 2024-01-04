@@ -9,6 +9,7 @@
       :data="uploadData"
       :on-error="handleUploadError"
       :on-exceed="handleExceed"
+      :on-progress="handleProgress"
       :on-success="handleUploadSuccess"
       :show-file-list="false"
       :headers="headers"
@@ -24,12 +25,16 @@
       <!-- 上传提示 -->
       <div class="el-upload__tip" slot="tip" v-if="showTip">
         请上传
+
         <template v-if="fileSize">
-          大小不超过 <b style="color: #f56c6c">{{ fileSize }}MB</b>
+          大小不超过
+          <b style="color: #f56c6c">{{ fileSize }}MB</b>
         </template>
+
         <template v-if="fileType">
           格式为 <b style="color: #f56c6c">{{ fileType.join("/") }}</b>
         </template>
+
         的文件
       </div>
     </el-upload>
@@ -37,9 +42,10 @@
     <!-- 文件列表 -->
     <transition-group
       v-if="isFileList"
-      class="upload-file-list el-upload-list el-upload-list--text"
+      class="upload-file-list"
       name="el-fade-in-linear"
       tag="ul"
+      ref="fileList"
     >
       <li
         class="el-upload-list__item ele-upload-list__item-content"
@@ -74,6 +80,7 @@
 
 <script>
 import { getToken } from "@/utils/auth";
+import Sortable from "sortablejs";
 
 export default {
   name: "FileUpload",
@@ -91,7 +98,7 @@ export default {
     // 数量限制
     limit: {
       type: Number,
-      default: 5,
+      default: 99,
     },
     // 大小限制(MB)
     fileSize: {
@@ -131,6 +138,23 @@ export default {
         return {};
       },
     },
+    isRowDrop: {
+      text: "是否可拖拽排序",
+      type: [Boolean],
+      default: () => {
+        return false;
+      },
+    },
+    sortRow: {
+      text: "可拖拽排序的字段",
+      type: String,
+      default: "sort",
+    },
+  },
+  mounted() {
+    if (this.isRowDrop) {
+      this.rowDrop();
+    }
   },
   data() {
     return {
@@ -152,8 +176,7 @@ export default {
           const list = Array.isArray(val) ? val : this.value.split(",");
           // 然后将数组转为对象数组
           this.fileList = list.map((item) => {
-            item = { name: item.name, url: item.url };
-            return item;
+            return { ...item, name: item.name, url: item.url };
           });
         } else {
           this.fileList = [];
@@ -209,6 +232,11 @@ export default {
       this.filename = file.name;
       return true;
     },
+    //文件上传进度条
+    handleProgress(event, file, fileList) {
+      // 上传进度的回调函数
+      console.log(event.percent);
+    },
     // 文件个数超出
     handleExceed() {
       this.$modal.msgError(`上传文件数量不能超过 ${this.limit} 个!`);
@@ -224,7 +252,7 @@ export default {
         this.uploadList.push({ name: this.filename, url: res.data.url });
         this.filename = undefined;
         this.uploadedSuccessfully();
-        this.$emit("handleUploadSuccess", res, file);
+        this.$emit("handleUploadSuccess", res.data, file);
       } else {
         this.number--;
         this.$modal.closeLoading();
@@ -257,14 +285,20 @@ export default {
         return name;
       }
     },
-    // 对象转成指定字符串分隔
-    listToString(list, separator) {
-      let strs = "";
-      separator = separator || ",";
-      for (let i in list) {
-        strs += list[i].url + separator;
-      }
-      return strs != "" ? strs.substr(0, strs.length - 1) : "";
+    // 拖拽排序
+    rowDrop() {
+      const el = this.$refs.fileList.$el;
+
+      Sortable.create(el, {
+        onEnd: (evt) => {
+          const targetRow = this.value.splice(evt.oldIndex, 1)[0];
+          this.value.splice(evt.newIndex, 0, targetRow);
+
+          for (let index in this.value) {
+            this.$set(this.value[index], [this.sortRow], parseInt(index) + 1);
+          }
+        },
+      });
     },
   },
 };

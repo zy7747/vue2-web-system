@@ -13,7 +13,9 @@
     "detail": "detail",
     "delete": "delete",
     "cancel": "cancel",
-    "drop to sort": "drop to sort"
+    "drop to sort": "drop to sort",
+    "show": "show",
+    "back": "back"
   },
   "form": {
     "please input": "please input",
@@ -35,10 +37,7 @@
     "creator": "creator",
     "updater": "updater",
     "createTime": "createTime",
-    "updateTime": "updateTime",
-    "isDeleted": "isDeleted",
-    "tenantId": "tenantId",
-    "version": "version"
+    "updateTime": "updateTime"
   },
   "person": {
     "person": "person",
@@ -65,10 +64,7 @@
     "creator": "creator",
     "updater": "updater",
     "createTime": "createTime",
-    "updateTime": "updateTime",
-    "isDeleted": "isDeleted",
-    "tenantId": "tenantId",
-    "version": "version"
+    "updateTime": "updateTime"
   },
   "notice": {
     "notice": "notice",
@@ -84,10 +80,7 @@
     "creator": "creator",
     "updater": "updater",
     "createTime": "createTime",
-    "updateTime": "updateTime",
-    "isDeleted": "isDeleted",
-    "tenantId": "tenantId",
-    "version": "version"
+    "updateTime": "updateTime"
   },
   "role": {
     "role": "role",
@@ -99,10 +92,7 @@
     "creator": "creator",
     "updater": "updater",
     "createTime": "createTime",
-    "updateTime": "updateTime",
-    "isDeleted": "isDeleted",
-    "tenantId": "tenantId",
-    "version": "version"
+    "updateTime": "updateTime"
   },
   "menu": {
     "menu": "menu",
@@ -151,18 +141,19 @@
     "updater": "updater",
     "createTime": "createTime",
     "updateTime": "updateTime",
-    "isDeleted": "isDeleted",
-    "tenantId": "tenantId",
-    "version": "version",
+
     "show": "show"
   },
   "area": {
     "area": "area",
     "id": "id",
     "parentId": "parentId",
-    "areaName": "areaName",
-    "address": "address",
+    "name": "name",
+    "cname": "cname",
+    "fullName": "fullName",
+    "fullCname": "fullCname",
     "otherName": "otherName",
+    "address": "address",
     "type": "type",
     "code": "code",
     "axis": "axis",
@@ -200,9 +191,82 @@
     "creator": "creator",
     "updater": "updater",
     "createTime": "createTime",
-    "updateTime": "updateTime",
-    "isDeleted": "isDeleted",
-    "tenantId": "tenantId",
-    "version": "version"
+    "updateTime": "updateTime"
+  },
+  "file": {
+    "file": "file",
+    "id": "id",
+    "parentId": "parentId",
+    "fileName": "fileName",
+    "url": "url",
+    "fileType": "fileType",
+    "filePath": "filePath",
+    "fileSize": "fileSize",
+    "status": "status",
+    "remark": "remark",
+    "creator": "creator",
+    "updater": "updater",
+    "createTime": "createTime",
+    "updateTime": "updateTime"
+  },
+  "operationLog": {
+    "operationLog": "operationLog",
+    "id": "id",
+    "title": "title",
+    "module": "module",
+    "content": "content",
+    "type": "type",
+    "operateIp": "operateIp",
+    "operatePlace": "operatePlace",
+    "time": "time",
+    "errorMsg": "errorMsg",
+    "status": "status",
+    "remark": "remark",
+    "creator": "creator",
+    "updater": "updater",
+    "createTime": "createTime",
+    "updateTime": "updateTime"
+  },
+  "video": {
+    "video": "video",
+    "id": "id",
+    "parentId": "parentId",
+    "videoName": "videoName",
+    "title": "title",
+    "type": "type",
+    "region": "region",
+    "url": "url",
+    "picture": "picture",
+    "videoType": "videoType",
+    "profile": "profile",
+    "label": "label",
+    "author": "author",
+    "season": "season",
+    "episode": "episode",
+    "playNum": "playNum",
+    "isCollection": "isCollection",
+    "duration": "duration",
+    "createYear": "createYear",
+    "status": "status",
+    "remark": "remark",
+    "creator": "creator",
+    "updater": "updater",
+    "createTime": "createTime",
+    "updateTime": "updateTime"
+  },
+  "job": {
+    "job": "job",
+    "id": "id",
+    "jobName": "jobName",
+    "jobCode": "jobCode",
+    "startTime": "startTime",
+    "executeCount": "executeCount",
+    "executeInterval": "executeInterval",
+    "status": "status",
+    "remark": "remark",
+    "creator": "creator",
+    "updater": "updater",
+    "createTime": "createTime",
+    "updateTime": "updateTime"
   }
 }

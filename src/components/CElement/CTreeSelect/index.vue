@@ -12,6 +12,7 @@
       v-model="selectValue"
       :options="options"
       :max-height="200"
+      noResultsText=""
       :style="`width:${width};min-width:${minWidth};`"
       v-bind="$attrs"
       :normalizer="(node) => normalizer(node, $attrs.id, $attrs.label)"
@@ -71,6 +72,7 @@ export default {
 ::v-deep .vue-treeselect__control {
   line-height: 32px !important;
   height: 32px !important;
+  overflow: hidden;
 }
 
 ::v-deep .vue-treeselect__input {

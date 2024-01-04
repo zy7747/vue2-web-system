@@ -176,17 +176,19 @@ export default {
         {
           label: this.$t("role.createTime"), //创建时间
           prop: "createTime",
-          width: 150,
+          width: 200,
           sortable: true,
         },
         {
           label: this.$t("role.updateTime"), //更新时间
           prop: "updateTime",
           sortable: true,
+          width: 200,
         },
         {
           type: "action",
           fixed: "right",
+          "min-width": 150,
         },
       ],
       //数据

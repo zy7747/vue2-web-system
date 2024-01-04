@@ -40,6 +40,7 @@
 
 <script>
 import STable from "./table/index.vue";
+//import STable from "./table/vxe-table.vue";
 import baseParams from "./mixins/index";
 
 export default {

@@ -15,9 +15,6 @@
       :props="defaultProps"
       :filter-node-method="filterNode"
       show-checkbox
-      check-strictly
-      @check-change="checkChange"
-      @check="check"
     />
   </div>
 </template>
@@ -51,7 +48,6 @@ export default {
   data() {
     return {
       filterText: "",
-      checkNodeStatus: false,
     };
   },
   methods: {
@@ -59,56 +55,6 @@ export default {
     filterNode(value, data) {
       if (!value) return true;
       return data.title.indexOf(value) !== -1;
-    },
-    checkChange(data, check) {
-      this.checkNodeStatus = check;
-      // 父节点操作
-      if (data.parentId !== null) {
-        if (check === true) {
-          // 如果选中，设置父节点为选中
-          this.$refs.elTree.setChecked(data.parentId, true);
-        } else {
-          // 如果取消选中，检查父节点是否该取消选中（可能仍有子节点为选中状态）
-          var parentNode = this.$refs.elTree.getNode(data.parentId);
-          var parentHasCheckedChild = false;
-
-          for (
-            var i = 0, parentChildLen = parentNode.childNodes.length;
-            i < parentChildLen;
-            i++
-          ) {
-            if (parentNode.childNodes[i].checked === true) {
-              parentHasCheckedChild = true;
-              break;
-            }
-          }
-
-          if (!parentHasCheckedChild)
-            this.$refs.elTree.setChecked(data.parentId, false);
-        }
-      }
-
-      // 子节点操作，如果取消选中，取消子节点选中
-      if (data.children != null && check === false) {
-        data.children.forEach((item, index) => {
-          var childNode = this.$refs.elTree.getNode(data.children[index].id);
-          if (childNode.checked === true) {
-            this.$refs.elTree.setChecked(childNode.data.id, false);
-          }
-        });
-      }
-    },
-    check(data) {
-      // 全选子节点操作，当选择中子节点切子节点有children
-      if (data.children != null && this.checkNodeStatus === true) {
-        data.children.forEach((item, index) => {
-          this.$refs.elTree.setChecked(item.id, true);
-
-          if (item.children) {
-            this.check(item);
-          }
-        });
-      }
     },
     getCheckedKeys() {
       return this.$refs.elTree.getCheckedKeys();

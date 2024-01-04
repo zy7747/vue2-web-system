@@ -71,6 +71,22 @@
             />
           </template>
         </CCard>
+
+        <CCard title="用户权限">
+          <template slot="body">
+            <c-tree
+              ref="tree"
+              :tree="permissionList"
+              :defaultProps="{
+                children: 'children',
+                label: 'name',
+              }"
+              :filter-node-method="filterNode"
+              :default-checked-keys="permissionCheckList"
+              node-key="id"
+            />
+          </template>
+        </CCard>
       </template>
     </CDialog>
   </div>
@@ -96,6 +112,10 @@ export default {
       checkList: [],
       //角色列表
       roleList: [],
+      //权限列表
+      permissionList: [],
+      //权限选中列表
+      permissionCheckList: [],
       // 查询数据
       queryData: {
         id: null,
@@ -206,8 +226,7 @@ export default {
           span: 8,
           attributes: {
             uploadData: {
-              path: "/资源管理器/用户头像",
-              parentId: "1708477176327725057",
+              parentId: "1738503824435138562",
             },
           },
         },
@@ -277,7 +296,7 @@ export default {
           prop: "roles",
           span: 24,
           options: this.roleList,
-          rules: [{ required: true, message: "角色不能为空", trigger: "blur" }],
+          //rules: [{ required: true, message: "角色不能为空", trigger: "blur" }],
           attributes: {
             multiple: true,
           },
@@ -289,12 +308,10 @@ export default {
       return [
         {
           type: "selection",
-          width: 55,
         },
         {
           label: this.$t("system.no"), //序号
           type: "index",
-          width: 55,
         },
         {
           label: this.$t("user.avatar"), //头像
@@ -368,10 +385,9 @@ export default {
           sortable: true,
         },
         {
-          label: this.$t("system.action"), //操作
           type: "action",
           fixed: "right",
-          width: 180,
+          "min-width": 150,
         },
       ];
     },
@@ -387,6 +403,12 @@ export default {
         .then((res) => {
           return res.data;
         });
+    },
+    //查询权限
+    queryPermission() {
+      return this.$service.configuration.permission.list().then((res) => {
+        this.permissionList = this.$handleTree(res.data);
+      });
     },
     //通过接口请求的下拉
     serviceDict() {
@@ -422,16 +444,25 @@ export default {
     handleConfirm() {
       // 新增
       this.$refs.form.validate().then((valid) => {
+        const permissions = this.$refs.tree.getCheckedKeys();
+
         if (valid) {
-          this.$service.user.user.saveList([this.formData]).then((res) => {
-            if (res.code === 200) {
-              this.$message.success("提交成功");
-              this.search();
-              this.$refs.dialog.handleClose();
-            } else {
-              this.$message.warning(res.message);
-            }
-          });
+          this.$service.user.user
+            .saveList([
+              {
+                ...this.formData,
+                permissions,
+              },
+            ])
+            .then((res) => {
+              if (res.code === 200) {
+                this.$message.success("提交成功");
+                this.search();
+                this.$refs.dialog.handleClose();
+              } else {
+                this.$message.warning(res.message);
+              }
+            });
         }
       });
     },
@@ -464,6 +495,8 @@ export default {
       this.$service.user.user.detail({ id }).then((res) => {
         if (res.code === 200) {
           this.formData = res.data;
+          this.permissionCheckList = res.data.permissions;
+          this.queryPermission();
         } else {
           this.$message.warning(res.message);
         }
@@ -482,6 +515,8 @@ export default {
     },
     // 重置新增修改表单数据
     resetForm() {
+      this.permissionCheckList = [];
+
       this.$set(this, "formData", {
         id: null,
         uid: null,
@@ -506,6 +541,11 @@ export default {
     //多选
     selection(list) {
       this.checkList = list;
+    },
+    //搜索框过滤
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.title.indexOf(value) !== -1;
     },
   },
 };

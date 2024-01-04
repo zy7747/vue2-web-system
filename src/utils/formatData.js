@@ -74,7 +74,12 @@ export function handleTree(data, rootId, id, parentId, children) {
       //返回每一项的子级数组
       return father[id] === child[parentId];
     });
-    branchArr.length > 0 ? (father.children = branchArr) : "";
+    if (branchArr.length > 0) {
+      father.children = branchArr;
+      father.handleChildren = true;
+    } else {
+      father.handleChildren = false;
+    }
 
     //返回第一层
     return father[parentId] === rootId;

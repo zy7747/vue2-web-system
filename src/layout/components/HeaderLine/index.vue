@@ -20,6 +20,11 @@
     <div class="user">
       <User />
     </div>
+
+    <!-- 电量 -->
+    <div class="user">
+      <Battery />
+    </div>
   </div>
 </template>
 
@@ -28,6 +33,7 @@ import Language from "./components/Language";
 import User from "./components/User";
 import Theme from "./components/Theme";
 import Message from "./Message";
+import Battery from "./components/Battery";
 
 export default {
   name: "HeaderLine",
@@ -36,6 +42,7 @@ export default {
     Theme,
     Language,
     Message,
+    Battery,
   },
 };
 </script>

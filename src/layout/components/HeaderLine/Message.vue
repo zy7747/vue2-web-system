@@ -16,15 +16,15 @@
       <div class="notice">
         <el-tabs v-model="activeName">
           <el-tab-pane label="通知" name="通知">
-            <Notice :list="noticeList" />
+            <MessageBox @reload="getNotice" :list="noticeList" />
           </el-tab-pane>
 
           <el-tab-pane label="邮件" name="邮件">
-            <Mail :list="mailList" />
+            <MessageBox @reload="getNotice" :list="mailList" />
           </el-tab-pane>
 
           <el-tab-pane label="公告" name="公告">
-            <Announcement :list="announcementList" />
+            <MessageBox @reload="getNotice" :list="announcementList" />
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -33,16 +33,12 @@
 </template>
 
 <script>
-import Mail from "./components/Mail";
-import Notice from "./components/Notice";
-import Announcement from "./components/Announcement";
+import MessageBox from "./components/MessageBox";
 import { getWebsocket } from "@/utils/websocket";
 
 export default {
   components: {
-    Mail,
-    Notice,
-    Announcement,
+    MessageBox,
   },
   created() {
     this.userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -93,8 +89,7 @@ export default {
 
 <style lang="scss" scoped>
 .notice {
-  width: 300px;
-  height: 500px;
+  width: 500px;
 }
 
 .el-badge__content.is-dot {

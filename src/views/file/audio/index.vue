@@ -465,7 +465,6 @@ export default {
           span: 6,
           attributes: {
             uploadData: {
-              path: "/资源管理器/音频封面",
               parentId: "1719598971615318017",
             },
           },

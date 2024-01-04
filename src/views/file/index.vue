@@ -2,135 +2,158 @@
 <template>
   <div class="fileView">
     <!-- 搜索栏 -->
-    <div class="header">{{ fileName === "" ? "文件管理" : fileName }}</div>
+    <div class="header">
+      {{ !nodeInfo.fileName ? "文件管理" : nodeInfo.fileName }}
+    </div>
+    <!-- 主视图 -->
     <div class="main">
-      <!-- 主视图 -->
-      <div class="view">
-        <!-- 树形 -->
-        <div
-          class="catalog"
-          @click="clearId"
-          @contextmenu.prevent.stop="treeOtherClick"
+      <!-- 树形 -->
+      <div
+        class="catalog"
+        @click="clearId"
+        @contextmenu.prevent.stop="treeOtherClick"
+      >
+        <c-input
+          prefix-icon="el-icon-search"
+          placeholder="目录搜索"
+          v-model="filterText"
+        />
+        <el-tree
+          :data="folderList"
+          :props="defaultProps"
+          @node-click="nodeClick"
+          :filter-node-method="filterNode"
+          node-key="id"
+          ref="tree"
         >
-          <c-input
-            prefix-icon="el-icon-search"
-            placeholder="目录搜索"
-            v-model="filterText"
-          />
-          <el-tree
-            :data="folderList"
-            :props="defaultProps"
-            @node-click="nodeClick"
-            :filter-node-method="filterNode"
-            node-key="id"
-            ref="tree"
-          >
-            <template v-slot="{ node }">
-              <span
-                class="node-item"
-                @contextmenu.prevent.stop="
-                  (event) => treeClick(event, node.data)
-                "
-              >
-                <span class="node-icon">
-                  <img
-                    style="width: 20px"
-                    src="@/assets/images/file/folder.png"
-                    alt=""
-                  />
-                </span>
-                <span>{{ node.label }}</span>
-              </span>
-            </template>
-          </el-tree>
-        </div>
-        <!-- 文件窗口 -->
-        <div
-          class="right"
-          @contextmenu.prevent.stop="(event) => rightClick(event)"
-          @click="closeMenu()"
-        >
-          <div class="breadcrumb">
-            <div style="display: flex; align-items: center">
-              <el-page-header @back="goBack"> </el-page-header>
-              <el-breadcrumb separator="/">
-                <el-breadcrumb-item>
-                  <a
-                    href="JavaScript:void(0)"
-                    @click="clearId()"
-                    class="breadcrumb-item"
-                    >{{ "根目录" }}</a
-                  >
-                </el-breadcrumb-item>
-                <el-breadcrumb-item
-                  v-for="(item, index) in folderPath"
-                  :key="index"
-                >
-                  <a
-                    href="JavaScript:void(0)"
-                    @click="folderPathChange(item)"
-                    class="breadcrumb-item"
-                    >{{ item }}</a
-                  >
-                </el-breadcrumb-item>
-              </el-breadcrumb>
-            </div>
-            <c-input
-              prefix-icon="el-icon-search"
-              placeholder="文件搜索"
-              v-model="filterFile"
-            />
-          </div>
-          <!-- 文件 -->
-          <div class="files" @dragover.prevent @drop="handleDrop">
-            <ul
-              v-if="fileFilterList.length > 0"
-              class="list-box"
-              v-infinite-scroll="load"
+          <template v-slot="{ node }">
+            <span
+              class="node-item"
+              @contextmenu.prevent.stop="(event) => treeClick(event, node.data)"
             >
-              <li
-                class="item"
-                v-for="item in fileFilterList"
-                :key="item.id"
-                @dblclick="openFile(item)"
-                @contextmenu.prevent.stop="(event) => fileClick(item, event)"
-                @click="closeMenu(item)"
+              <span class="node-icon">
+                <img
+                  style="width: 20px"
+                  src="@/assets/images/file/folder.png"
+                  alt=""
+                />
+              </span>
+              <span>{{ node.label }}</span>
+            </span>
+          </template>
+        </el-tree>
+      </div>
+      <!-- 文件窗口 -->
+      <div class="window">
+        <!-- 顶部操作 -->
+        <div class="breadcrumbBox">
+          <div style="display: flex; align-items: center">
+            <el-page-header @back="goBack"> </el-page-header>
+            <el-breadcrumb separator="/">
+              <el-breadcrumb-item>
+                <a
+                  href="JavaScript:void(0)"
+                  @click="clearId()"
+                  class="breadcrumb-item"
+                  >{{ "根目录" }}</a
+                >
+              </el-breadcrumb-item>
+              <el-breadcrumb-item
+                v-for="(item, index) in folderPath"
+                :key="index"
               >
-                <div class="picture-box">
-                  <div class="picture">
-                    <el-image
-                      v-if="
-                        item.fileType === 'jpg' ||
-                        item.fileType === 'png' ||
-                        item.fileType === 'gif'
-                      "
-                      style="width: 100px; height: 100px"
-                      :src="fileIcon(item)"
-                      :preview-src-list="[fileUrl + item.filePath]"
-                    >
-                    </el-image>
-                    <img
-                      v-else
-                      style="width: 100%"
-                      :src="fileIcon(item)"
-                      alt=""
-                    />
-                  </div>
-                </div>
-                <div class="fileName">
-                  <span class="container" :title="item.fileName">
-                    {{ item.fileName }}
-                  </span>
-                </div>
-              </li>
-            </ul>
-
-            <el-empty v-else description="文件夹里空空如也"></el-empty>
+                <a
+                  href="JavaScript:void(0)"
+                  @click="folderPathChange(item)"
+                  class="breadcrumb-item"
+                  >{{ item }}</a
+                >
+              </el-breadcrumb-item>
+            </el-breadcrumb>
           </div>
+
+          <c-input
+            style="width: 300px"
+            prefix-icon="el-icon-search"
+            placeholder="文件搜索"
+            v-model="filterFile"
+          />
         </div>
+        <!-- 切换栏 -->
+        <el-tabs type="border-card" tab-position="top">
+          <el-tab-pane label="卡片">
+            <div
+              class="right"
+              @contextmenu.prevent.stop="(event) => rightClick(event)"
+              @click="closeMenu()"
+            >
+              <!-- 文件 -->
+              <div class="files" @dragover.prevent @drop="handleDrop">
+                <ul
+                  v-if="fileFilterList.length > 0"
+                  class="list-box"
+                  v-infinite-scroll="load"
+                >
+                  <li
+                    class="item"
+                    v-for="item in fileFilterList"
+                    :key="item.id"
+                    @dblclick="openFile(item)"
+                    @contextmenu.prevent.stop="
+                      (event) => fileClick(item, event)
+                    "
+                    @click="closeMenu(item)"
+                  >
+                    <div class="picture-box">
+                      <div class="picture">
+                        <el-image
+                          v-if="
+                            item.fileType === 'jpg' ||
+                            item.fileType === 'png' ||
+                            item.fileType === 'gif'
+                          "
+                          style="width: 100px; height: 100px"
+                          :src="fileIcon(item)"
+                          :preview-src-list="[fileUrl + item.filePath]"
+                        >
+                        </el-image>
+                        <img
+                          v-else
+                          style="width: 100%"
+                          :src="fileIcon(item)"
+                          alt=""
+                        />
+                      </div>
+                    </div>
+                    <div class="fileName">
+                      <span class="container" :title="item.fileName">
+                        {{ item.fileName }}
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+
+                <el-empty v-else description="文件夹里空空如也"></el-empty>
+              </div>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="视图">
+            <div class="right">
+              <CTable
+                ref="table"
+                :hasDetailLine="false"
+                @deleteLine="deleteFolder"
+                @editLine="updateFolder"
+                :table-column="tableColumn"
+                :table-data="fileFilterList"
+              />
+            </div>
+          </el-tab-pane>
+        </el-tabs>
       </div>
     </div>
 
+    <!-- 新增/修改文件夹 -->
     <CDialog
       ref="createFolder"
       :title="title"
@@ -142,76 +165,88 @@
       </template>
     </CDialog>
 
-    <CDialog
-      ref="updateFolder"
-      title="修改文件夹"
-      width="500px"
-      @handleConfirm="updateConfirm"
-    >
-      <template slot="body">
-        <CForm ref="form" :form-data="updateParams" :form-params="formParams" />
-      </template>
-    </CDialog>
-
     <!-- 右键事件 -->
-    <ul
-      v-show="visible"
-      :style="{ left: left + 'px', top: top + 'px' }"
-      class="contextmenu"
-    >
-      <li v-if="isFolder" @click="openFile(fileClickData)">
-        <i class="el-icon-folder-opened"></i> 打开
-      </li>
-      <li v-if="!isFolder" @click="openFile(fileClickData)">
-        <i class="el-icon-download"></i> 下载
-      </li>
-      <li @click="updateFolder(fileClickData)">
-        <i class="el-icon-edit-outline"></i> 重命名
-      </li>
-      <li><i class="el-icon-document-copy"></i> 复制</li>
-      <li><i class="el-icon-scissors"></i> 剪切</li>
-      <li><i class="el-icon-tickets"></i> 粘贴</li>
-      <li @click="deleteFolder(fileClickData)">
-        <i class="el-icon-delete"></i> 删除
-      </li>
-    </ul>
+    <div>
+      <ul
+        v-show="visible"
+        :style="{ left: left + 'px', top: top + 'px' }"
+        class="contextmenu"
+      >
+        <li v-if="isFolder" @click="openFile(fileClickData)">
+          <i class="el-icon-folder-opened"></i>
+          <span> 打开</span>
+        </li>
+        <li v-if="!isFolder" @click="openFile(fileClickData)">
+          <i class="el-icon-download"></i>
+          <span> 下载</span>
+        </li>
+        <li @click="updateFolder(fileClickData)">
+          <i class="el-icon-edit-outline"></i>
+          <span> 重命名</span>
+        </li>
+        <li>
+          <i class="el-icon-document-copy"></i>
+          <span> 复制</span>
+        </li>
+        <li>
+          <i class="el-icon-scissors"></i>
+          <span> 剪切</span>
+        </li>
+        <li>
+          <i class="el-icon-tickets"></i>
+          <span> 粘贴</span>
+        </li>
+        <li @click="deleteFolder(fileClickData)">
+          <i class="el-icon-delete"></i>
+          <span> 删除</span>
+        </li>
+      </ul>
 
-    <ul
-      v-show="visible2"
-      :style="{ left: left + 'px', top: top + 'px' }"
-      class="contextmenu"
-    >
-      <li @click="createFolder">
-        <i class="el-icon-circle-plus-outline"></i> 新建
-      </li>
-      <li @click="fileUpload"><i class="el-icon-upload2"></i> 上传</li>
-    </ul>
+      <ul
+        v-show="visible2"
+        :style="{ left: left + 'px', top: top + 'px' }"
+        class="contextmenu"
+      >
+        <li @click="createFolder">
+          <i class="el-icon-circle-plus-outline"></i>
+          <span> 新建</span>
+        </li>
+        <li @click="fileUpload">
+          <i class="el-icon-upload2"></i>
+          <span> 上传</span>
+        </li>
+      </ul>
 
-    <ul
-      v-show="visible3"
-      :style="{ left: left + 'px', top: top + 'px' }"
-      class="contextmenu"
-    >
-      <li @click="addFolder">
-        <i class="el-icon-circle-plus-outline"></i> 新增
-      </li>
-      <li @click="updateFolder(folderClickData)">
-        <i class="el-icon-edit-outline"></i> 重命名
-      </li>
-      <li @click="deleteFolder(folderClickData)">
-        <i class="el-icon-delete"></i> 删除
-      </li>
-    </ul>
+      <ul
+        v-show="visible3"
+        :style="{ left: left + 'px', top: top + 'px' }"
+        class="contextmenu"
+      >
+        <li @click="addFolder">
+          <i class="el-icon-circle-plus-outline"></i>
+          <span> 新增</span>
+        </li>
+        <li @click="updateFolder(folderClickData)">
+          <i class="el-icon-edit-outline"></i>
+          <span> 重命名</span>
+        </li>
+        <li @click="deleteFolder(folderClickData)">
+          <i class="el-icon-delete"></i>
+          <span> 删除</span>
+        </li>
+      </ul>
 
-    <ul
-      v-show="visible4"
-      :style="{ left: left + 'px', top: top + 'px' }"
-      class="contextmenu"
-    >
-      <li @click="addFolder">
-        <i class="el-icon-circle-plus-outline"></i> 新增
-      </li>
-    </ul>
+      <ul
+        v-show="visible4"
+        :style="{ left: left + 'px', top: top + 'px' }"
+        class="contextmenu"
+      >
+        <li @click="addFolder">
+          <i class="el-icon-circle-plus-outline"></i>
+          <span> 新增</span>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -221,22 +256,32 @@ export default {
   data() {
     return {
       title: "创建文件夹",
-      filterText: "", //过滤字段
-      filterFile: "", //过滤文件列表
-      fileList: [], //文件列表
-      folderList: [], //文件夹列表
+      filterText: "", //树形过滤关键字
+      filterFile: "", //过滤文件关键字
+      fileList: [], //过滤后文件列表
+      folderList: [], //正常文件夹列表
+      parentInfo: {}, //当前选中节点父节点信息
+      nodeInfo: {}, //当前选中节点信息
+      fileClickData: {}, //文件右键事件参数
+      folderClickData: {}, //文件夹右键参数
+      top: 0, //右键菜单位置
+      left: 0, //右键菜单位置
+      visible: false, //右键菜单显示隐藏
+      visible2: false, //右键菜单显示隐藏
+      visible3: false, //右键树形菜单显示隐藏
+      visible4: false, //右键树形菜单显示隐藏
+      fileUrl: process.env.VUE_APP_FILE_API, //基础文件url
+      isFolder: null, //点的是文件夹还是文件
+      count: 32, //默认显示文件数量
       //菜单树形显示字段
       defaultProps: {
         children: "children",
         label: "fileName",
       },
-      id: null, //当前选中节点id
-      path: null, //当前选中节点路径
-      fileName: "", //当前选中节点名称
       formData: {
         fileName: null,
-      }, //新增文件夹数据
-      updateParams: {}, //修改文件夹数据
+      },
+      //新增文件夹表单数据
       formParams: [
         {
           type: "input",
@@ -246,18 +291,85 @@ export default {
           on: {},
         },
       ],
-      parentInfo: {}, //父节点信息
-      top: 0, //右键菜单位置
-      left: 0, //右键菜单位置
-      visible: false, //右键菜单显示隐藏
-      visible2: false, //右键菜单显示隐藏
-      visible3: false, //右键树形菜单显示隐藏
-      visible4: false, //右键树形菜单显示隐藏
-      folderClickData: {}, //文件夹右键参数
-      fileClickData: {}, //文件右键事件参数
-      fileUrl: process.env.VUE_APP_FILE_API, //基础url
-      isFolder: null, //点的是文件夹还是文件
-      count: 32,
+      //表列基础参数
+      tableColumn: [
+        {
+          type: "selection",
+          width: 55,
+        },
+        {
+          label: this.$t("system.no"), //序号
+          type: "index",
+          width: 55,
+        },
+        {
+          label: this.$t("file.fileName"), //文件名称
+          prop: "fileName",
+          width: 150,
+          sortable: true,
+        },
+        {
+          label: this.$t("file.url"), //url地址
+          prop: "url",
+          width: 150,
+          sortable: true,
+        },
+        {
+          label: this.$t("file.fileType"), //文件类型
+          prop: "fileType",
+          width: 110,
+          sortable: true,
+        },
+        {
+          label: this.$t("file.filePath"), //文件路径
+          prop: "filePath",
+          sortable: true,
+        },
+        {
+          label: this.$t("file.fileSize"), //文件大小
+          prop: "fileSize",
+          width: 120,
+          sortable: true,
+          formatter: (row, value) => {
+            if (value) {
+              return Number(value / 1024).toFixed(2) + "KB";
+            } else {
+              return null;
+            }
+          },
+        },
+        // {
+        //   label: this.$t("file.status"), //状态
+        //   prop: "status",
+        //   width: 150,
+        //   sortable: true,
+        // },
+        // {
+        //   label: this.$t("file.remark"), //备注
+        //   prop: "remark",
+        //   width: 150,
+        //   sortable: true,
+        // },
+        {
+          label: this.$t("file.creator"), //创建人
+          prop: "creator",
+          width: 120,
+          sortable: true,
+          translation: "user",
+        },
+        {
+          label: this.$t("file.createTime"), //创建时间
+          prop: "createTime",
+          width: 150,
+          sortable: true,
+        },
+        {
+          label: this.$t("system.action"), //操作
+          type: "action",
+          fixed: "right",
+          width: 150,
+        },
+      ],
     };
   },
   created() {
@@ -283,11 +395,13 @@ export default {
     },
     //查询文件夹内容
     queryFile() {
-      return this.$service.file.file.fileList({ id: this.id }).then((res) => {
-        const fileList = res.data;
+      return this.$service.file.file
+        .fileList({ id: this.nodeInfo.id })
+        .then((res) => {
+          const fileList = res.data;
 
-        this.$set(this, "fileList", fileList);
-      });
+          this.$set(this, "fileList", fileList);
+        });
     },
     //搜索框过滤
     filterNode(value, data) {
@@ -322,37 +436,41 @@ export default {
     },
     //确认新增文件夹
     handleConfirm() {
-      // 新增
-      this.$service.file.file
-        .createFolder({
-          ...this.formData,
-          fileType: "folder",
-          parentId: this.id,
-        })
-        .then((res) => {
-          if (res.code === 200) {
-            this.$message.success("提交成功");
-            this.query();
-            this.$refs.createFolder.handleClose();
-          } else {
-            this.$message.warning(res.message);
-          }
-        });
+      if (!this.formData.id) {
+        // 新增
+        this.$service.file.file
+          .createFolder({
+            ...this.formData,
+            fileType: "folder",
+            parentId: this.nodeInfo.id,
+          })
+          .then((res) => {
+            if (res.code === 200) {
+              this.$message.success("提交成功");
+              this.query();
+              this.$refs.createFolder.handleClose();
+            } else {
+              this.$message.warning(res.message);
+            }
+          });
+      } else {
+        this.updateConfirm();
+      }
     },
     //确认修改文件夹
     updateConfirm() {
-      const newPath = this.updateParams.filePath.split("/");
+      const newPath = this.formData.filePath.split("/");
       let updateParam;
       if (newPath.length > 2) {
         newPath.pop();
         updateParam = {
-          ...this.updateParams,
-          filePath: newPath.join("/") + "/" + this.updateParams.fileName,
+          ...this.formData,
+          filePath: newPath.join("/") + "/" + this.formData.fileName,
         };
       } else {
         updateParam = {
-          ...this.updateParams,
-          filePath: "/" + this.updateParams.fileName,
+          ...this.formData,
+          filePath: "/" + this.formData.fileName,
         };
       }
 
@@ -360,35 +478,56 @@ export default {
         if (res.code === 200) {
           this.$message.success("提交成功");
           this.query();
-          this.$refs.updateFolder.handleClose();
+          this.$refs.createFolder.handleClose();
         } else {
           this.$message.warning(res.message);
         }
       });
     },
-    //新增文件夹弹窗
+    //文件窗口新增文件夹弹窗
     createFolder() {
+      this.title = "新建文件夹";
       this.$set(this.formData, "fileName", "");
       this.$refs.createFolder.handleOpen();
     },
-    //新增文件夹
+    //修改文件夹名称
+    updateFolder(folderClickData) {
+      this.title = "修改文件夹";
+      this.formData = JSON.parse(JSON.stringify(folderClickData));
+      this.$refs.createFolder.handleOpen();
+    },
+    //树形新增文件夹
     addFolder() {
+      this.title = "新建文件夹";
       this.$set(this.formData, "fileName", "");
       this.$refs.createFolder.handleOpen();
-      this.id = this.folderClickData.id;
+      this.nodeInfo.id = JSON.parse(JSON.stringify(this.folderClickData.id));
     },
     //点击节点
     nodeClick(data) {
-      this.id = data.id;
-      this.path = data.filePath;
-      this.fileName = data.fileName;
+      this.nodeInfo = data;
       this.queryFile();
     },
     //清除节点信息
     clearId() {
-      this.id = null;
-      this.path = null;
-      this.fileName = "";
+      this.nodeInfo = {
+        id: null,
+        parentId: null,
+        fileName: null,
+        url: null,
+        fileType: null,
+        filePath: null,
+        fileSize: null,
+        status: null,
+        remark: null,
+        creator: null,
+        updater: null,
+        createTime: null,
+        updateTime: null,
+        isDeleted: null,
+        tenantId: null,
+        version: null,
+      };
       this.queryFile();
     },
     //打开文件或者文件夹
@@ -418,30 +557,19 @@ export default {
     },
     //退后
     goBack() {
-      if (this.id === null) {
+      if (this.nodeInfo.id === null) {
         this.clearId();
       } else {
-        this.$service.file.file.getFileParent({ id: this.id }).then((res) => {
-          if (res.message === "根目录") {
-            this.clearId();
-          } else {
-            this.nodeClick(res.data);
-          }
-        });
+        this.$service.file.file
+          .getFileParent({ id: this.nodeInfo.id })
+          .then((res) => {
+            if (res.message === "根目录") {
+              this.clearId();
+            } else {
+              this.nodeClick(res.data);
+            }
+          });
       }
-    },
-    // 开始拖拽
-    start(event) {
-      console.log(event, this.fileList);
-    },
-    // 结束拖拽
-    end(event) {
-      // event.item  拖拽的本身
-      // event.to      拖拽的目标列表
-      // event.from    拖拽之前的列表
-      // event.oldIndex    拖拽前的位置
-      // event.newIndex    拖拽后的位置
-      console.log(event, this.fileList);
     },
     //右键事件
     fileClick(item, event) {
@@ -527,11 +655,6 @@ export default {
     fileUpload() {
       this.$refs.fileUpload.handleClick();
     },
-    //修改文件夹名称
-    updateFolder(folderClickData) {
-      this.updateParams = JSON.parse(JSON.stringify(folderClickData));
-      this.$refs.updateFolder.handleOpen();
-    },
     //上传成功刷新列表
     handleUploadSuccess(res, file) {
       this.queryFile();
@@ -545,7 +668,7 @@ export default {
         const formData = new FormData();
 
         formData.append("file", files[i]);
-        formData.append("path", this.uploadData.path);
+        formData.append("filePath", this.uploadData.filePath);
         formData.append("parentId", this.uploadData.parentId);
 
         this.$service.file.file.upload(formData).then((res) => {
@@ -553,19 +676,21 @@ export default {
         });
       }
     },
+    //懒加载
     load() {
       this.count += 8;
     },
   },
   computed: {
     uploadData() {
-      return { path: this.path, parentId: this.id };
+      return { filePath: this.nodeInfo.filePath, parentId: this.nodeInfo.id };
     },
     //路径
     folderPath() {
       let folderPath = [];
-      if (this.path) {
-        folderPath = this.path.split("/");
+
+      if (this.nodeInfo.filePath) {
+        folderPath = this.nodeInfo.filePath.split("/");
         folderPath.shift();
       }
       return folderPath;
@@ -625,165 +750,133 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.header {
-  display: flex;
-  align-items: center;
-  padding-left: 15px;
-  background-color: rgb(22, 131, 189);
-  color: #fff;
-  font-size: 14px;
-  font-weight: 550;
-  width: 100%;
-  height: 50px;
-}
-
-.main {
-  width: 100%;
-  overflow: hidden;
-  padding: 15px 15px;
-  background-color: #fff;
-  .view {
+.fileView {
+  position: relative;
+  .header {
     display: flex;
-    width: 100%;
-    height: 660px;
-  }
-
-  .toolbar {
-    display: flex;
-    overflow: hidden;
-    justify-content: space-between;
     align-items: center;
-    width: 100%;
-    height: 40px;
-    margin-bottom: 5px;
-    .leftButton {
-      display: flex;
-      align-items: center;
-      width: 300px;
-      height: 100%;
-    }
-
-    .title {
-      width: 200px;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      color: #3b4255;
-    }
-
-    .action {
-      width: 300px;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-    }
-  }
-
-  .catalog {
-    width: 15%;
-    .el-tree {
-      overflow: auto;
-      margin-top: 8px;
-      border-right: 1px solid #f1f2f3;
-      height: calc(100% - 5%);
-    }
-  }
-
-  .right {
     padding-left: 15px;
-    width: 85%;
-    .breadcrumb {
+    background-color: rgb(22, 131, 189);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 550;
+    width: 100%;
+    height: 50px;
+  }
+
+  .main {
+    display: flex;
+    width: 100%;
+    overflow: hidden;
+    padding: 15px 15px;
+    height: 740px;
+    background-color: #fff;
+
+    .catalog {
+      width: 15%;
+      margin-right: 1%;
+      height: 100%;
+      .el-tree {
+        overflow: auto;
+        margin-top: 8px;
+        border-right: 1px solid #f1f2f3;
+        height: calc(100% - 5%);
+      }
+    }
+
+    .window {
+      width: 84%;
+    }
+
+    .breadcrumbBox {
       display: flex;
       align-items: center;
       justify-content: space-between;
       height: 30px;
       width: 100%;
-
+      margin-bottom: 5px;
       .breadcrumb-item:hover {
         cursor: pointer;
         color: #1683bd;
       }
     }
 
-    .list-box {
-      width: 100%;
-      overflow: auto;
-      height: 650px;
-      display: flex;
-      flex-wrap: wrap;
-      align-content: flex-start;
-      .item {
-        position: relative;
-        margin: 5px;
-        width: 150px;
-        height: 170px;
-        overflow: hidden;
-        margin-right: 10px;
-        .picture-box {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          width: 100%;
-          height: 75%;
+    .right {
+      padding-left: 15px;
+
+      .list-box {
+        width: 100%;
+        overflow: auto;
+        height: 600px;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        .item {
+          position: relative;
+          margin: 5px;
+          width: 150px;
+          height: 170px;
           overflow: hidden;
-          .picture {
-            width: 100px;
-            height: 100px;
-            overflow: hidden;
-          }
-        }
-
-        .fileName {
-          padding: 0 30px;
-          width: 100%;
-          height: 15%;
-          display: flex;
-          justify-content: center;
-
-          .container {
+          margin-right: 10px;
+          .picture-box {
+            display: flex;
+            justify-content: center;
             align-items: center;
-            font-size: 12px;
-            height: 100%;
-            white-space: nowrap; /* 文字不换行 */
-            overflow: hidden; /* 溢出隐藏 */
-            text-overflow: ellipsis; /* 以省略号显示溢出部分 */
+            width: 100%;
+            height: 75%;
+            overflow: hidden;
+            .picture {
+              width: 100px;
+              height: 100px;
+              overflow: hidden;
+            }
+          }
+
+          .fileName {
+            padding: 0 30px;
+            width: 100%;
+            height: 15%;
+            display: flex;
+            justify-content: center;
+
+            .container {
+              align-items: center;
+              font-size: 12px;
+              height: 100%;
+              white-space: nowrap; /* 文字不换行 */
+              overflow: hidden; /* 溢出隐藏 */
+              text-overflow: ellipsis; /* 以省略号显示溢出部分 */
+            }
           }
         }
-      }
 
-      .item:hover {
-        background-color: #e6f1ff;
-        border: 1px solid #cddef5;
+        .item:hover {
+          background-color: #e6f1ff;
+          border: 1px solid #cddef5;
+        }
       }
     }
-  }
 
-  .node-item {
-    width: 150px;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    .node-icon {
+    .node-item {
+      width: 150px;
+      font-size: 14px;
       display: flex;
       align-items: center;
-      margin-right: 5px;
+      .node-icon {
+        display: flex;
+        align-items: center;
+        margin-right: 5px;
+      }
+    }
+
+    .selected {
+      opacity: 0.5;
+      pointer-events: none;
+      background-color: #e6f1ff;
+      border: 1px solid #cddef5;
+      z-index: 2;
     }
   }
-
-  .selected {
-    opacity: 0.5;
-    pointer-events: none;
-    background-color: #e6f1ff;
-    border: 1px solid #cddef5;
-    z-index: 2;
-  }
-}
-
-.fileView {
-  position: relative;
 }
 
 //右键弹窗菜单

@@ -1,11 +1,11 @@
 <!--  -->
 <template>
-  <div v-if="!item.visible">
+  <div v-if="item.visible">
     <template
       v-if="
         hasOneShowingChild(item.children, item) &&
         (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
-        !item.alwaysShow
+        item.alwaysShow
       "
     >
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">

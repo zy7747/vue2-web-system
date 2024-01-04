@@ -99,6 +99,7 @@
               v-if="item.type === 'dateTimePicker'"
               v-bind="item.attributes"
               v-model="formData[item.prop]"
+              @Change="changeDateTimePicker(item.prop, item.propEnd, formData)"
               v-on="item.on"
             />
             <!-- 图片上传 -->

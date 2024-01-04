@@ -2,7 +2,12 @@
 <template>
   <div class="STable">
     <!-- 表格 -->
-    <el-form ref="tableForm" :model="formData" :rules="rules">
+    <el-form
+      ref="tableForm"
+      :model="formData"
+      :rules="rules"
+      :validate-on-rule-change="false"
+    >
       <el-table
         border
         :stripe="stripe"
@@ -24,13 +29,14 @@
             v-if="item.type === 'index' || item.type === 'selection'"
             v-bind="{
               ...item,
-              align: item.align ? item.align : 'center',
+              align: 'center',
+              width: 55,
             }"
             :key="index"
             fixed="left"
           />
 
-          <!-- 需要用到插槽的表单 -->
+          <!-- 其他 -->
           <el-table-column
             v-else-if="item.show == undefined ? true : item.show"
             v-bind="{
@@ -278,8 +284,18 @@
 
               <!-- 正常栏位 -->
               <template v-else>
+                <div v-if="item.formatter">
+                  {{
+                    item.formatter(
+                      scope.row,
+                      scope.row[item.prop],
+                      scope.$index,
+                      item
+                    )
+                  }}
+                </div>
                 <!-- 值是数组，切需要翻译的 -->
-                <div v-if="item.isArrayValue" style="dict-tag-list">
+                <div v-else-if="item.isArrayValue" style="dict-tag-list">
                   <dict-tag
                     v-for="itemValue in scope.row[item.prop]"
                     :key="itemValue"

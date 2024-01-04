@@ -43,5 +43,12 @@ export default {
         return "请输入";
       },
     },
+    loadIconList: {
+      text: "需要加载的图标列表",
+      type: [Array],
+      default: () => {
+        return ["menuIcon"];
+      },
+    },
   },
 };

@@ -14,7 +14,7 @@
 
     <!-- 表单栏 -->
     <el-tabs type="border-card">
-      <el-tab-pane label="菜单">
+      <el-tab-pane :label="$t('menu.menu')">
         <Toolbar
           :hasImport="true"
           :delete-btn="{
@@ -38,10 +38,18 @@
           @addLine="addLine"
           @deleteLines="deleteLines"
         />
+
+        <!-- :tree-config="{
+            transform: true,
+            rowField: 'id',
+            parentField: 'parentId',
+          }" -->
         <CTable
           ref="table"
+          lazy
           row-key="id"
-          :tree-props="{ children: 'children' }"
+          :tree-props="{ children: 'children', hasChildren: 'id' }"
+          :load="load"
           :permission="{
             edit: ['configuration:menu:edit'],
             delete: ['configuration:menu:delete'],
@@ -68,7 +76,7 @@
           </template>
 
           <template slot="icon" slot-scope="{ scope }">
-            <div style="width: 100px; font-size: 30px">
+            <div style="font-size: 30px">
               <svg-icon
                 :icon-class="scope.row.icon ? scope.row.icon : ''"
                 class="icon"
@@ -110,9 +118,6 @@
 <script>
 export default {
   name: "Menu",
-  created() {
-    this.query();
-  },
   data() {
     return {
       //弹框标题
@@ -122,7 +127,8 @@ export default {
       //多选
       checkList: [],
       //树形列表
-      treeList: [],
+      menuList: [],
+      menuTree: [],
       //查询表单基础参数
       queryParams: [
         {
@@ -324,7 +330,7 @@ export default {
           label: this.$t("menu.parentId"), //父节点id
           prop: "parentId",
           span: 24,
-          options: this.tableData,
+          options: this.menuTree,
           show: this.formData.type !== "system",
           attributes: {
             label: "title",
@@ -456,15 +462,14 @@ export default {
         .list(this.queryData)
         .then((res) => {
           const menu = res.data;
+
           menu.sort((a, b) => a.sort - b.sort);
 
-          // const menuList = menu;
+          this.menuTree = this.$handleTree(menu);
+          this.tableData = menu.filter((item) => !item.parentId);
+          this.menuList = menu;
 
-          // this.tableData = res.data.filter((item) => !item.parentId);
-
-          // this.treeList = menuList;
-
-          this.tableData = this.$handleTree(menu);
+          // this.tableData = menu;
         });
     },
     //新增
@@ -498,8 +503,8 @@ export default {
             .then((res) => {
               if (res.code === 200) {
                 this.$message.success("提交成功");
-                this.search();
                 this.$refs.dialog.handleClose();
+                this.refreshTree(this.formData.parentId);
               } else {
                 this.$message.warning(res.message);
               }
@@ -512,7 +517,7 @@ export default {
       this.$service.configuration.menu.delete([row]).then((res) => {
         if (res.code === 200) {
           this.$message.success("删除成功");
-          this.search();
+          this.refreshTree(row.parentId);
         } else {
           this.$message.warning(res.message);
         }
@@ -567,9 +572,9 @@ export default {
         permission: null,
         level: null,
         sort: null,
-        visible: 0,
-        keepAlive: 0,
-        alwaysShow: 0,
+        visible: 1,
+        keepAlive: 1,
+        alwaysShow: 1,
         icon: null,
         description: null,
         meta: null,
@@ -598,8 +603,22 @@ export default {
         }
       }
     },
-    load(tree, treeNode, resolve) {
-      resolve(this.treeList.filter((item) => item.parentId == tree.id));
+    load(row, treeNode, resolve) {
+      resolve(this.menuList.filter((item) => item.parentId == row.id));
+    },
+    refreshTree(id) {
+      this.$service.configuration.menu.list(this.queryData).then((res) => {
+        const menu = res.data;
+
+        menu.sort((a, b) => a.sort - b.sort);
+
+        this.$set(
+          this.$refs.table.$refs.STable.$refs.eTable.store.states
+            .lazyTreeNodeMap,
+          id,
+          menu.filter((item) => item.parentId == id)
+        );
+      });
     },
   },
 };

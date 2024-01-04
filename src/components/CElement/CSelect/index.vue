@@ -16,9 +16,17 @@
         change: onChange,
       }"
     >
-      <template v-for="item in options">
-        <el-option :key="item.value" :label="item.label" :value="item.value" />
-      </template>
+      <vxe-list auto-resize :data="options" :scroll-y="{ enabled: true }">
+        <template #default="{ items }">
+          <template v-for="item in items">
+            <el-option
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </template>
+        </template>
+      </vxe-list>
     </el-select>
   </div>
 </template>

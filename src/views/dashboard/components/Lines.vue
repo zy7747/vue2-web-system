@@ -8,7 +8,7 @@ import * as echarts from "echarts";
 
 export default {
   methods: {
-    createdLines({ title }) {
+    createdLines({ title, xAxis, series }) {
       this.$nextTick(() => {
         var myChart = echarts.init(this.$refs.line);
         myChart.setOption({
