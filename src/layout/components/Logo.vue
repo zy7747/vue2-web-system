@@ -6,9 +6,10 @@
         <img class="logoPng" src="@/assets/images/logo/logo.png" alt="" />
       </div>
       <div class="appTitle">
-        <dv-decoration-11 style="width: 250px; height: 40px">
+        <!-- <dv-decoration-11 style="width: 250px; height: 40px">
           <span class="title">{{ appTitle }}</span>
-        </dv-decoration-11>
+        </dv-decoration-11> -->
+        <span class="title">{{ appTitle }}</span>
       </div>
     </div>
   </div>
@@ -36,7 +37,7 @@ export default {
   justify-content: center;
   align-items: center;
   .main {
-    width: 150px;
+    width: 240px;
     height: 30px;
     display: flex;
     cursor: pointer;
@@ -62,12 +63,16 @@ export default {
     }
 
     .appTitle {
+      padding: 5px 15px;
       display: flex;
       justify-content: center;
       align-items: center;
       font-size: 14px;
-      width: 120px;
+      width: 200px;
       height: 30px;
+      background: url("@/assets/images/button/输入框.png") no-repeat center;
+      background-size: 100% 30px;
+      background-position: 0;
     }
   }
 }
