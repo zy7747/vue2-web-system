@@ -6,4 +6,4 @@ git commit -am "$timer"
 
 git push
 
-git build:prod
+git run build build:prod
