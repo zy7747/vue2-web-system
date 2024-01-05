@@ -5,3 +5,5 @@ git add .
 git commit -am "$timer"
 
 git push
+
+git build:prod
