@@ -5,5 +5,4 @@ git add .
 git commit -am "$timer"
 
 git push
-
-git run build build:prod
+pnpm run build build:prod
