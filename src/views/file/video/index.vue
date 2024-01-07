@@ -23,11 +23,6 @@
           :delete-btn="{
             disabled: checkList.length === 0,
           }"
-          :hasImport="true"
-          :imports="{
-            url: '/video/import',
-            data: {},
-          }"
           :exports="{
             api: $service.file.video.export,
             fileName: '视频',
@@ -36,12 +31,22 @@
           :permission="{
             add: ['file:video:add'],
             delete: ['file:video:delete'],
-            imports: ['file:video:import'],
             exports: ['file:video:export'],
           }"
           @addLine="addLine"
           @deleteLines="deleteLines"
-        />
+        >
+          <template slot="default">
+            <c-button
+              type="warning"
+              icon="el-icon-upload2"
+              class="btn"
+              plain
+              text="批量导入"
+              @click="imports"
+            />
+          </template>
+        </Toolbar>
         <CTable
           ref="table"
           :permission="{
@@ -67,7 +72,7 @@
       @handleConfirm="handleConfirm"
     >
       <template slot="body">
-        <Collapse title="视频集" :isSearch="false">
+        <Collapse title="视频集" isExpand :isSearch="false">
           <template slot="content">
             <CForm
               :disabled="title === '详情'"
@@ -83,7 +88,7 @@
         <CCard title="视频列表" v-if="this.formData.id">
           <template slot="body">
             <div class="videoList">
-              <FileUpload
+              <UploadVideo
                 isRowDrop
                 sortRow="episode"
                 v-model="videoList"
@@ -91,7 +96,7 @@
                 btnName="视频上传"
                 :fileType="['mp4']"
                 :uploadData="uploadData"
-                @handleUploadSuccess="handleUploadSuccess"
+                :formData="formData"
                 @handleDelete="handleDelete"
               />
             </div>
@@ -100,6 +105,46 @@
       </template>
     </CDialog>
 
+    <!-- 批量导入界面 -->
+    <CDialog
+      ref="importDialog"
+      :has-check="false"
+      title="批量导入"
+      width="1200px"
+    >
+      <template slot="body">
+        <Collapse title="视频集" isExpand :isSearch="false">
+          <template slot="content">
+            <CForm
+              ref="form"
+              :form-data="importFormData"
+              :form-params="importFormParams"
+            />
+          </template>
+        </Collapse>
+
+        <div style="margin-top: 10px; width: 100%"></div>
+
+        <CCard title="视频列表">
+          <template slot="body">
+            <div class="videoList">
+              <ImportUploadVideo
+                isRowDrop
+                sortRow="episode"
+                v-model="importList"
+                ref="fileUpload"
+                btnName="视频导入"
+                :fileType="['mp4']"
+                :uploadData="importUploadData"
+                :formData="importFormData"
+              />
+            </div>
+          </template>
+        </CCard>
+      </template>
+    </CDialog>
+
+    <!-- 视频浏览界面 -->
     <CDialog ref="videoView" title="视频观看" width="1000px" :has-check="false">
       <template slot="body">
         <VideoPlayer ref="VideoPlayer" :videoInfo="videoInfo"></VideoPlayer>
@@ -127,10 +172,17 @@
   </div>
 </template>
 <script>
+import UploadVideo from "./components/UploadVideo";
+import ImportUploadVideo from "./components/ImportUploadVideo";
+
 export default {
   name: "VideoPage",
   created() {
     this.serviceDict();
+  },
+  components: {
+    UploadVideo,
+    ImportUploadVideo,
   },
   data() {
     return {
@@ -140,6 +192,7 @@ export default {
       //多选
       checkList: [],
       fileData: [],
+      importList: [],
       action: 0,
       //弹框类型
       dialogType: "",
@@ -450,6 +503,36 @@ export default {
         version: null,
         isCollection: null,
       },
+      //批量导入数据
+      importFormData: {
+        id: null,
+        parentId: null,
+        videoName: null,
+        title: null,
+        type: null,
+        region: null,
+        url: null,
+        picture: null,
+        videoType: null,
+        profile: null,
+        label: null,
+        author: null,
+        season: null,
+        episode: null,
+        duration: null,
+        playNum: null,
+        status: null,
+        remark: null,
+        creator: null,
+        updater: null,
+        createYear: null,
+        createTime: null,
+        updateTime: null,
+        isDeleted: null,
+        tenantId: null,
+        version: null,
+        isCollection: 0,
+      },
       videoList: [],
       videoInfo: {},
       fileList: [],
@@ -623,10 +706,64 @@ export default {
         },
       ];
     },
+    //批量导入基础参数
+    importFormParams() {
+      return [
+        {
+          type: "selectTree",
+          label: "视频保存路径",
+          prop: "savePath",
+          span: 24,
+          options: this.fileData,
+          attributes: {
+            label: "label",
+            id: "value",
+          },
+          rules: [
+            {
+              required: true,
+              message: "视频保存路径不能为空",
+              trigger: "blur",
+            },
+          ],
+        },
+        {
+          type: "select",
+          label: this.$t("video.type"), //视频分类
+          prop: "type",
+          span: 8,
+          options: this.getDictData("video_category"),
+          on: {},
+        },
+        {
+          type: "select",
+          label: this.$t("video.videoType"), //视频类型
+          prop: "videoType",
+          span: 8,
+          options: this.getDictData("video_type"),
+          on: {},
+        },
+        {
+          type: "select",
+          label: this.$t("video.region"), //视频地区
+          prop: "region",
+          span: 8,
+          options: this.getDictData("video_area"),
+          on: {},
+        },
+      ];
+    },
     uploadData() {
-      //如果是集合的都有一个父级目录
       if (this.formData.id) {
         const item = this.fileList.find((i) => i.id === this.formData.savePath);
+        return { path: item.filePath, parentId: item.id };
+      }
+    },
+    importUploadData() {
+      if (this.importFormData.savePath) {
+        const item = this.fileList.find(
+          (i) => i.id === this.importFormData.savePath
+        );
         return { path: item.filePath, parentId: item.id };
       }
     },
@@ -695,44 +832,34 @@ export default {
             savePath = fileRes.data.id;
           }
 
-          //如果是修改则直接走变更
-          this.$service.file.video
-            .saveList([
+          let queryData = [];
+
+          //集合与非集合的保存数据
+          if (this.formData.isCollection === 0) {
+            queryData = [
               { ...this.formData, episode: this.videoList.length, savePath },
-              ...this.videoList,
-            ])
-            .then((res) => {
-              if (res.code === 200) {
-                this.$message.success("提交成功");
-                this.search();
-                this.$refs.dialog.handleClose();
-              } else {
-                this.$message.warning(res.message);
-              }
-            });
+            ];
+          } else {
+            queryData = [
+              { ...this.formData, episode: this.videoList.length, savePath },
+              ...this.videoList.map((item, index) => {
+                return { ...item, episode: index + 1 };
+              }),
+            ];
+          }
+
+          //如果是修改则直接走变更
+          this.$service.file.video.saveList(queryData).then((res) => {
+            if (res.code === 200) {
+              this.$message.success("提交成功");
+              this.search();
+              this.$refs.dialog.handleClose();
+            } else {
+              this.$message.warning(res.message);
+            }
+          });
         }
       });
-    },
-    //文件上传成功
-    handleUploadSuccess(data, file) {
-      let formData = [];
-      //如果提交的不是集合url存在头数据当中
-      if (!this.formData.isCollection) {
-        formData = [{ ...this.formData, url: data.filePath, episode: 1 }];
-      } else {
-        //如果提交的是集合则创建一个新文件夹，url存在子数据当中
-        formData = [
-          {
-            parentId: this.formData.id,
-            url: data.filePath,
-            videoName: data.fileName,
-            episode: this.videoList.length,
-          },
-        ];
-      }
-
-      this.$service.file.video.saveList(formData);
-      this.detail(this.formData.id);
     },
     //删除
     deleteLine(row, index) {
@@ -741,8 +868,8 @@ export default {
       });
     },
     //删除上传
-    handleDelete(index) {
-      this.$service.file.video.delete([this.videoList[index]]).then((res) => {
+    handleDelete(row) {
+      this.$service.file.video.delete([row]).then((res) => {
         this.detail(this.formData.id);
       });
     },
@@ -830,6 +957,39 @@ export default {
     //多选
     selection(list) {
       this.checkList = list;
+    },
+    imports() {
+      this.$set(this, "importFormData", {
+        id: null,
+        parentId: null,
+        videoName: null,
+        title: null,
+        type: null,
+        region: null,
+        url: null,
+        picture: null,
+        videoType: null,
+        profile: null,
+        label: null,
+        author: null,
+        season: null,
+        episode: null,
+        duration: null,
+        playNum: null,
+        status: null,
+        remark: null,
+        creator: null,
+        updater: null,
+        createYear: null,
+        createTime: null,
+        updateTime: null,
+        isDeleted: null,
+        tenantId: null,
+        version: null,
+        isCollection: 0,
+      });
+      this.importList = [];
+      this.$refs.importDialog.handleOpen();
     },
   },
 };

@@ -58,9 +58,9 @@
             :loading="exportLoading"
             v-hasPermission="permission.exports"
           />
+          <slot name="default" />
         </div>
       </div>
-      <div class="right"></div>
     </div>
   </div>
 </template>

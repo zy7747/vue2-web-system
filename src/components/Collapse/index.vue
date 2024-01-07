@@ -2,7 +2,7 @@
 <template>
   <div>
     <el-collapse v-model="activeNames">
-      <el-collapse-item name="1">
+      <el-collapse-item name="first">
         <template slot="title">
           <div class="header" @click="stopProp">
             <span class="title"> {{ title }}<slot name="title" /> </span>
@@ -72,10 +72,17 @@ export default {
         return true;
       },
     },
+    isExpand: {
+      text: "是否展开",
+      type: [Boolean],
+      default: () => {
+        return false;
+      },
+    },
   },
   data() {
     return {
-      activeNames: [],
+      activeNames: this.isExpand ? ["first"] : [],
     };
   },
   methods: {

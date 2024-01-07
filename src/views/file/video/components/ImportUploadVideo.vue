@@ -6,14 +6,13 @@
       :before-upload="handleBeforeUpload"
       :file-list="fileList"
       :limit="limit"
-      :data="uploadData"
+      :data="importUploadData"
       :on-error="handleUploadError"
       :on-exceed="handleExceed"
       :on-success="handleUploadSuccess"
       :on-remove="handleDelete"
       :show-file-list="true"
       :headers="headers"
-      class="upload-file-uploader"
       ref="fileUpload"
       v-bind="$attrs"
       v-on="$listeners"
@@ -66,7 +65,7 @@ export default {
     // 大小限制(MB)
     fileSize: {
       type: Number,
-      default: 1000,
+      default: 9999,
     },
     // 文件类型, 例如['png', 'jpg', 'jpeg']
     fileType: {
@@ -90,11 +89,6 @@ export default {
       type: Boolean,
       default: true,
     },
-    // 是否显示文件列表
-    isFileList: {
-      type: Boolean,
-      default: true,
-    },
     uploadData: {
       type: [String, Object, Array],
       default: () => {
@@ -112,6 +106,13 @@ export default {
       text: "可拖拽排序的字段",
       type: String,
       default: "sort",
+    },
+    formData: {
+      text: "表头数据",
+      type: Object,
+      default: () => {
+        return {};
+      },
     },
   },
   mounted() {
@@ -131,6 +132,7 @@ export default {
         UserId: this.$store.getters.userId,
       }, // 设置上传的请求头部
       fileList: [],
+      importUploadData: { path: "", parentId: "" },
     };
   },
   watch: {
@@ -160,12 +162,7 @@ export default {
     },
   },
   methods: {
-    handleClick() {
-      this.$nextTick(() => {
-        this.$refs.fileUpload.$refs["upload-inner"].handleClick();
-      });
-    },
-    // 上传前校检格式和大小
+    // 上传前校检格式和大小 并生成一个文件夹存放
     handleBeforeUpload(file) {
       // 校检文件类型
       if (this.fileType) {
@@ -194,9 +191,24 @@ export default {
         }
       }
 
-      this.number++;
-      this.filename = file.name;
-      return true;
+      //生成文件存放路径
+      return this.handleConfirm(file).then((res) => {
+        this.importUploadData.parentId = res.data.id;
+        this.importUploadData.path = res.data.filePath;
+        this.number++;
+        this.filename = file.name;
+        return true;
+      });
+    },
+
+    //生成保存文件夹
+    handleConfirm(file) {
+      //生成一个文件夹存放视频
+      return this.$service.file.file.createFolder({
+        fileName: this.getFileName(file.name),
+        fileType: "folder",
+        parentId: this.formData.savePath,
+      });
     },
     // 文件个数超出
     handleExceed() {
@@ -204,24 +216,17 @@ export default {
     },
     // 上传失败
     handleUploadError(err) {
-      this.$modal.msgError("上传图片失败，请重试");
+      this.$modal.msgError(err, "上传失败，请重试");
     },
     // 上传成功回调
-    handleUploadSuccess(res, file) {
+    async handleUploadSuccess(res, file) {
       if (res.code === 200) {
-        this.uploadList.push({
-          name: this.filename,
+        this.uploadSuccess({
+          filename: file.name,
           url: res.data.url,
+          status: file.status,
+          savePath: res.data.parentId,
         });
-
-        this.$emit("handleUploadSuccess", {
-          filename: this.filename,
-          url: res.data.url,
-          index: this.fileList.length,
-        });
-
-        this.filename = undefined;
-        this.uploadedSuccessfully();
       } else {
         this.number--;
 
@@ -230,17 +235,36 @@ export default {
         this.uploadedSuccessfully();
       }
     },
-    // 删除文件
-    handleDelete(file, fileList) {
-      this.$service.file.file.delete([file]).then((res) => {
-        this.$emit("handleDelete", file);
-        this.$emit("input", this.fileList);
+    //文件上传成功
+    uploadSuccess({ filename, url, status, savePath }) {
+      const videoName = this.getFileName(filename);
+
+      let formData = [
+        {
+          ...this.formData,
+          title: videoName,
+          videoName,
+          url,
+          status,
+          savePath,
+          episode: 1,
+        },
+      ];
+
+      this.$service.file.video.saveList(formData).then((res) => {
+        this.uploadList.push({ ...res.data[0], name: videoName });
+        this.filename = undefined;
+
+        this.uploadedSuccessfully();
       });
     },
+    // 删除文件
+    handleDelete(file) {},
     // 上传结束处理
     uploadedSuccessfully() {
       if (this.number > 0 && this.uploadList.length === this.number) {
         this.fileList = this.fileList.concat(this.uploadList);
+
         this.uploadList = [];
         this.number = 0;
         this.$emit("input", this.fileList);
@@ -248,8 +272,8 @@ export default {
     },
     // 获取文件名称
     getFileName(name) {
-      if (name && name.indexOf("/") > -1) {
-        return name.slice(name.lastIndexOf("/") + 1);
+      if (name && name.indexOf(".") > -1) {
+        return name.split(".")[0];
       } else {
         return name;
       }
