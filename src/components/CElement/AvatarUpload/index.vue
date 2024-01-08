@@ -41,6 +41,7 @@ export default {
         this.$set(this, "imageUrl", res.data.filePath);
         this.$modal.closeLoading();
       } else {
+        this.$modal.closeLoading();
         this.$modal.msgError(res.message);
       }
     },

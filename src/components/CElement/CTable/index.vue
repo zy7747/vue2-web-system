@@ -79,10 +79,11 @@ export default {
     //2.修改分页数据时候触发
     pagination({ page, limit }) {
       this.page = page;
+      this.limit = limit;
       this.queryTableData(page, limit);
     },
     //3.请求表单数据
-    queryTableData(page = 1, size = 10) {
+    queryTableData(page = this.page, size = this.limit) {
       this.loading = true;
 
       this.query(page, size)
