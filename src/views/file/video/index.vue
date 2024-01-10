@@ -654,7 +654,7 @@ export default {
         },
         {
           type: "avatarUpload",
-          llabel: this.$t("video.picture"), //视频图片
+          label: this.$t("video.picture"), //视频图片
           prop: "picture",
           span: 6,
           attributes: {

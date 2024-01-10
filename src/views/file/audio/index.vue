@@ -2,7 +2,11 @@
 <template>
   <div>
     <!-- 搜索栏 -->
-    <Collapse :title="'音频'" @reset="resetQueryData" @search="search">
+    <Collapse
+      :title="$t('audio.audio')"
+      @reset="resetQueryData"
+      @search="search"
+    >
       <template slot="content">
         <CForm
           ref="queryForm"
@@ -13,20 +17,35 @@
     </Collapse>
     <!-- 表单栏 -->
     <el-tabs type="border-card">
-      <el-tab-pane label="音频">
+      <el-tab-pane :label="$t('audio.audio')">
         <Toolbar
           :delete-btn="{
             disabled: checkList.length === 0,
+          }"
+          :hasImport="true"
+          :imports="{
+            url: '/audio/import',
+            data: {},
           }"
           :exports="{
             api: $service.file.audio.export,
             fileName: '音频',
             data: {},
           }"
+          :permission="{
+            add: ['file:audio:add'],
+            delete: ['file:audio:delete'],
+            imports: ['file:audio:import'],
+            exports: ['file:audio:export'],
+          }"
           @addLine="addLine"
           @deleteLines="deleteLines"
         />
         <CTable
+          :permission="{
+            edit: ['file:audio:edit'],
+            delete: ['file:audio:delete'],
+          }"
           ref="table"
           :query="query"
           :table-column="tableColumn"
@@ -41,33 +60,19 @@
     <CDialog
       ref="dialog"
       :title="title"
-      width="1000px"
-      :has-check="title !== '详情'"
+      width="800px"
+      :has-check="dialogType !== 'detail'"
       @handleConfirm="handleConfirm"
     >
       <template slot="body">
-        <CCard title="音频">
+        <CCard :title="$t('audio.audio')">
           <template slot="body">
             <CForm
               ref="form"
-              :disabled="title === '详情'"
+              :disabled="dialogType === 'detail'"
               :form-data="formData"
               :form-params="formParams"
-            >
-              <template slot="url">
-                <FileUpload
-                  v-model="formData.url"
-                  ref="fileUpload"
-                  btnName="音频上传"
-                  :fileType="['mp3']"
-                  :uploadData="{
-                    path: '/音频',
-                    parentId: '1709204168643567618',
-                  }"
-                  @handleDelete="handleDelete"
-                ></FileUpload>
-              </template>
-            </CForm>
+            />
           </template>
         </CCard>
       </template>
@@ -76,17 +81,22 @@
 </template>
 <script>
 export default {
+  name: "Audio",
   data() {
     return {
       //弹框标题
       title: "",
+      //弹框类型
+      dialogType: "",
       //多选
       checkList: [],
+      fileList: [],
+      fileData: [],
       //查询表单基础参数
       queryParams: [
         {
           type: "input",
-          label: "音频名称",
+          label: this.$t("audio.audioName"), //音频名称
           prop: "audioName",
           span: 6,
           attributes: {},
@@ -94,7 +104,7 @@ export default {
         },
         {
           type: "input",
-          label: "音频分类",
+          label: this.$t("audio.type"), //音频分类
           prop: "type",
           span: 6,
           attributes: {},
@@ -102,7 +112,7 @@ export default {
         },
         {
           type: "input",
-          label: "音频地区",
+          label: this.$t("audio.region"), //音频地区
           prop: "region",
           span: 6,
           attributes: {},
@@ -110,15 +120,15 @@ export default {
         },
         {
           type: "input",
-          label: "音频类型",
-          prop: "videoType",
+          label: this.$t("audio.audioType"), //音频类型
+          prop: "audioType",
           span: 6,
           attributes: {},
           on: {},
         },
         {
           type: "input",
-          label: "标签",
+          label: this.$t("audio.label"), //标签
           prop: "label",
           span: 6,
           attributes: {},
@@ -126,7 +136,7 @@ export default {
         },
         {
           type: "input",
-          label: "歌手名称",
+          label: this.$t("audio.singer"), //歌手名称
           prop: "singer",
           span: 6,
           attributes: {},
@@ -134,7 +144,7 @@ export default {
         },
         {
           type: "input",
-          label: "作词",
+          label: this.$t("audio.lyricist"), //作词
           prop: "lyricist",
           span: 6,
           attributes: {},
@@ -142,39 +152,24 @@ export default {
         },
         {
           type: "input",
-          label: "作曲",
+          label: this.$t("audio.composing"), //作曲
           prop: "composing",
           span: 6,
           attributes: {},
           on: {},
         },
-        {
-          type: "input",
-          label: "状态",
-          prop: "status",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
-        {
-          type: "input",
-          label: "创作年份",
-          prop: "createYear",
-          span: 6,
-          attributes: {},
-          on: {},
-        },
       ],
-      //数据
+      //查询数据
       queryData: {
         id: null,
         audioName: null,
         title: null,
         type: null,
+        savePath: null,
         region: null,
-        url: [],
+        url: null,
         picture: null,
-        videoType: null,
+        audioType: null,
         profile: null,
         label: null,
         singer: null,
@@ -182,8 +177,6 @@ export default {
         composing: null,
         lyrics: null,
         duration: null,
-        starsNum: null,
-        collectionNum: null,
         playNum: null,
         status: null,
         remark: null,
@@ -200,306 +193,157 @@ export default {
       tableColumn: [
         {
           type: "selection",
-          width: 55,
         },
         {
-          label: "序号",
+          label: this.$t("system.no"), //序号
           type: "index",
-          width: 55,
         },
         {
-          label: "音频名称",
+          label: this.$t("audio.audioName"), //音频名称
           prop: "audioName",
           width: 150,
           sortable: true,
         },
         {
-          label: "音频标题",
+          label: this.$t("audio.title"), //音频标题
           prop: "title",
           width: 150,
           sortable: true,
         },
         {
-          label: "音频分类",
+          label: this.$t("audio.type"), //音频分类
           prop: "type",
-          translation: "audio_type",
           width: 150,
           sortable: true,
         },
         {
-          label: "音频地区",
+          label: this.$t("audio.region"), //音频地区
           prop: "region",
           width: 150,
-          translation: "video_area",
           sortable: true,
         },
         {
-          label: "url地址",
+          label: this.$t("audio.url"), //url地址
           prop: "url",
           width: 150,
           sortable: true,
         },
+        // {
+        //   label: this.$t("audio.picture"), //音频图片
+        //   prop: "picture",
+        //   width: 150,
+        //   sortable: true,
+        // },
         {
-          label: "音频图片",
-          prop: "picture",
+          label: this.$t("audio.audioType"), //音频类型
+          prop: "audioType",
           width: 150,
           sortable: true,
         },
         {
-          label: "音频类型",
-          prop: "videoType",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: "音频简介",
-          prop: "profile",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: "标签",
+          label: this.$t("audio.label"), //标签
           prop: "label",
           width: 150,
           sortable: true,
         },
         {
-          label: "歌手名称",
+          label: this.$t("audio.singer"), //歌手名称
           prop: "singer",
           width: 150,
           sortable: true,
         },
         {
-          label: "作词",
+          label: this.$t("audio.lyricist"), //作词
           prop: "lyricist",
           width: 150,
           sortable: true,
         },
         {
-          label: "作曲",
+          label: this.$t("audio.composing"), //作曲
           prop: "composing",
           width: 150,
           sortable: true,
         },
         {
-          label: "歌词",
+          label: this.$t("audio.lyrics"), //歌词
           prop: "lyrics",
           width: 150,
           sortable: true,
         },
         {
-          label: "时长",
+          label: this.$t("audio.duration"), //时长
           prop: "duration",
           width: 150,
           sortable: true,
         },
         {
-          label: "点赞量",
-          prop: "starsNum",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: "收藏量",
-          prop: "collectionNum",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: "播放量",
+          label: this.$t("audio.playNum"), //播放量
           prop: "playNum",
           width: 150,
           sortable: true,
         },
         {
-          label: "状态",
+          label: this.$t("audio.status"), //状态
           prop: "status",
           width: 150,
           sortable: true,
-          translation: "video_status",
         },
         {
-          label: "备注",
+          label: this.$t("audio.remark"), //备注
           prop: "remark",
           width: 150,
           sortable: true,
         },
         {
-          label: "创建人",
+          label: this.$t("audio.creator"), //创建人
           prop: "creator",
           width: 150,
           sortable: true,
-          translation: "user",
         },
         {
-          label: "更新人",
+          label: this.$t("audio.updater"), //更新人
           prop: "updater",
           width: 150,
           sortable: true,
-          translation: "user",
         },
         {
-          label: "创作年份",
+          label: this.$t("audio.createYear"), //创作年份
           prop: "createYear",
           width: 150,
           sortable: true,
         },
         {
-          label: "创建时间",
+          label: this.$t("audio.createTime"), //创建时间
           prop: "createTime",
           width: 150,
           sortable: true,
         },
         {
-          label: "更新时间",
+          label: this.$t("audio.updateTime"), //更新时间
           prop: "updateTime",
           width: 150,
           sortable: true,
         },
         {
-          label: "操作",
           type: "action",
           fixed: "right",
-          width: 160,
+          width: 200,
         },
       ],
       //表格数据
       tableData: [],
-      //新增表单基础参数
-      formParams: [
-        {
-          type: "input",
-          label: "音频名称",
-          prop: "audioName",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: "音频标题",
-          prop: "title",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "select",
-          label: "音频地区",
-          prop: "region",
-          options: this.getDictData("video_area"),
-          span: 6,
-          on: {},
-        },
-        {
-          type: "select",
-          label: "状态",
-          prop: "status",
-          span: 6,
-          options: this.getDictData("video_status"),
-          on: {},
-        },
-        {
-          type: "input",
-          label: "音频类型",
-          prop: "videoType",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "select",
-          label: "音频分类",
-          prop: "type",
-          options: this.getDictData("audio_type"),
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: "标签",
-          prop: "label",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "datePicker",
-          label: "创作年份",
-          prop: "createYear",
-          span: 6,
-          attributes: {
-            format: "yyyy-MM-dd",
-            valueFormat: "yyyy-MM-dd",
-          },
-          on: {},
-        },
-        {
-          type: "input",
-          label: "歌手名称",
-          prop: "singer",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: "作词",
-          prop: "lyricist",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: "作曲",
-          prop: "composing",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "input",
-          label: "歌词",
-          prop: "lyrics",
-          span: 6,
-          on: {},
-        },
-        {
-          type: "avatarUpload",
-          label: "音频图片",
-          prop: "picture",
-          span: 6,
-          attributes: {
-            uploadData: {
-              parentId: "1719598971615318017",
-            },
-          },
-          on: {},
-        },
-        {
-          type: "input",
-          label: "音频简介",
-          prop: "profile",
-          span: 18,
-          attributes: {
-            type: "textarea",
-            autosize: { minRows: 8, maxRows: 8 },
-          },
-          on: {},
-        },
-        {
-          type: "custom",
-          label: "url地址",
-          prop: "url",
-          componentName: "url",
-          span: 24,
-          on: {},
-        },
-      ],
+
       //新增/修改/详情数据
       formData: {
         id: null,
         audioName: null,
         title: null,
         type: null,
+        savePath: null,
         region: null,
-        url: [],
+        url: null,
         picture: null,
-        videoType: null,
+        audioType: null,
         profile: null,
         label: null,
         singer: null,
@@ -507,8 +351,6 @@ export default {
         composing: null,
         lyrics: null,
         duration: null,
-        starsNum: null,
-        collectionNum: null,
         playNum: null,
         status: null,
         remark: null,
@@ -523,7 +365,22 @@ export default {
       },
     };
   },
+  created() {
+    this.serviceDict();
+  },
   methods: {
+    //通过接口请求的下拉
+    serviceDict() {
+      //获取文件树列表
+      this.getServiceData([
+        { serviceCode: "getFileList", params: { fileType: "folder" } },
+      ]).then((res) => {
+        //平铺的数据
+        this.fileList = res.getFileList;
+        //树形数据
+        this.fileData = this.$handleTree(res.getFileList);
+      });
+    },
     //1.查询
     query(page, size) {
       return this.$service.file.audio
@@ -535,18 +392,21 @@ export default {
     //新增
     addLine() {
       this.title = "新增";
+      this.dialogType = "add";
       this.resetForm();
       this.$refs.dialog.handleOpen();
     },
     //编辑
     editLine(row, index) {
       this.title = "编辑";
+      this.dialogType = "edit";
       this.detail(row.id);
       this.$refs.dialog.handleOpen();
     },
     //详情
     detailLine(row, index) {
       this.title = "详情";
+      this.dialogType = "detail";
       this.detail(row.id);
       this.$refs.dialog.handleOpen();
     },
@@ -560,43 +420,38 @@ export default {
               this.$message.success("提交成功");
               this.search();
               this.$refs.dialog.handleClose();
-            } else {
-              this.$message.warning(res.message);
             }
           });
         }
       });
     },
-    //删除
-    deleteLine(row, index) {
-      this.$service.file.audio.delete([row]).then((res) => {
-        this.search();
-      });
-    },
     //通过id获取详情
     detail(id) {
       this.$service.file.audio.detail({ id }).then((res) => {
-        this.formData = res.data;
+        if (res.code === 200) {
+          this.formData = res.data;
+        }
+      });
+    },
+    //删除
+    deleteLine(row) {
+      this.$service.file.audio.delete([row]).then((res) => {
+        if (res.code === 200) {
+          this.$message.success("删除成功");
+          this.search();
+        }
       });
     },
     //批量删除
     deleteLines() {
-      this.$modal
-        .confirm("是否删除")
-        .then(() => {
-          this.$service.file.audio.delete(this.checkList).then((res) => {
+      this.$modal.confirm("是否删除").then(() => {
+        this.$service.file.audio.delete(this.checkList).then((res) => {
+          if (res.code === 200) {
+            this.$message.success("删除成功");
             this.search();
-          });
-        })
-        .catch(() => {});
-    },
-    //删除上传
-    handleDelete(index) {
-      this.$service.file.audio
-        .delete([this.formData.url[index]])
-        .then((res) => {
-          this.detail(this.formData.id);
+          }
         });
+      });
     },
     //搜索
     search() {
@@ -611,15 +466,16 @@ export default {
     },
     //重置新增修改表单数据
     resetForm() {
-      this.$set(this, "formData", {
+      this.formData = {
         id: null,
         audioName: null,
         title: null,
         type: null,
+        savePath: null,
         region: null,
         url: null,
         picture: null,
-        videoType: null,
+        audioType: null,
         profile: null,
         label: null,
         singer: null,
@@ -627,8 +483,6 @@ export default {
         composing: null,
         lyrics: null,
         duration: null,
-        starsNum: null,
-        collectionNum: null,
         playNum: null,
         status: null,
         remark: null,
@@ -640,11 +494,145 @@ export default {
         isDeleted: null,
         tenantId: null,
         version: null,
-      });
+      };
     },
     //多选
     selection(list) {
       this.checkList = list;
+    },
+  },
+  computed: {
+    //新增表单基础参数
+    formParams() {
+      return [
+        {
+          type: "selectTree",
+          label: this.$t("audio.savePath"), //音频存储节点
+          prop: "savePath",
+          options: this.fileData,
+          attributes: {
+            label: "label",
+            id: "value",
+          },
+          rules: [
+            {
+              required: true,
+              message: "视频保存路径不能为空",
+              trigger: "blur",
+            },
+          ],
+          span: 12,
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("audio.audioName"), //音频名称
+          prop: "audioName",
+          span: 6,
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("audio.title"), //音频标题
+          prop: "title",
+          span: 6,
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("audio.type"), //音频分类
+          prop: "type",
+          options: this.getDictData("audio_type"),
+          span: 6,
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("audio.region"), //音频地区
+          prop: "region",
+          options: this.getDictData("audio_type"),
+          span: 6,
+          on: {},
+        },
+
+        {
+          type: "input",
+          label: this.$t("audio.audioType"), //音频类型
+          prop: "audioType",
+          span: 6,
+          on: {},
+        },
+
+        // {
+        //   type: "input",
+        //   label: this.$t("audio.label"), //标签
+        //   prop: "label",
+        //   span: 6,
+        //   on: {},
+        // },
+        {
+          type: "input",
+          label: this.$t("audio.singer"), //歌手名称
+          prop: "singer",
+          span: 6,
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("audio.lyricist"), //作词
+          prop: "lyricist",
+          span: 6,
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("audio.composing"), //作曲
+          prop: "composing",
+          span: 6,
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("audio.status"), //状态
+          prop: "status",
+          span: 6,
+          on: {},
+        },
+        {
+          type: "datePicker",
+          label: this.$t("audio.createYear"), //创作年份
+          prop: "createYear",
+          span: 6,
+          attributes: {
+            format: "yyyy-MM-dd",
+            valueFormat: "yyyy-MM-dd",
+          },
+          on: {},
+        },
+        {
+          type: "avatarUpload",
+          label: this.$t("audio.picture"), //音频图片
+          prop: "picture",
+          span: 6,
+          attributes: {
+            uploadData: {
+              parentId: "1738494567264088065",
+            },
+          },
+          on: {},
+        },
+        {
+          type: "input",
+          label: this.$t("audio.profile"), //音频简介
+          prop: "profile",
+          span: 18,
+          attributes: {
+            type: "textarea",
+            autosize: { minRows: 4, maxRows: 4 },
+          },
+          on: {},
+        },
+      ];
     },
   },
 };
