@@ -81,6 +81,7 @@ export default {
   display: flex;
   align-content: center;
   border-top: 1px solid #e3e3e3;
+  height: 50px;
   .dialog-footer {
     display: flex;
   }
@@ -91,7 +92,7 @@ export default {
 }
 
 .body {
-  max-height: 550px;
+  max-height: 85vh;
   overflow: auto;
 }
 </style>

@@ -22,7 +22,6 @@
           :delete-btn="{
             disabled: checkList.length === 0,
           }"
-          :hasImport="true"
           :imports="{
             url: '/audio/import',
             data: {},
@@ -40,7 +39,18 @@
           }"
           @addLine="addLine"
           @deleteLines="deleteLines"
-        />
+        >
+          <template slot="default">
+            <c-button
+              type="warning"
+              icon="el-icon-upload2"
+              class="btn"
+              plain
+              text="批量导入"
+              @click="imports"
+            />
+          </template>
+        </Toolbar>
         <CTable
           :permission="{
             edit: ['file:audio:edit'],
@@ -56,6 +66,7 @@
         />
       </el-tab-pane>
     </el-tabs>
+
     <!-- 新增/编辑/详情弹框 -->
     <CDialog
       ref="dialog"
@@ -75,11 +86,83 @@
             />
           </template>
         </CCard>
+
+        <div style="margin-top: 10px; width: 100%"></div>
+
+        <CCard title="音频列表">
+          <template slot="body">
+            <div class="videoList">
+              <UploadAudio
+                v-model="formData.url"
+                ref="fileUpload"
+                btnName="音频上传"
+                :fileType="['mp3']"
+                :uploadData="uploadData"
+                :formData="formData"
+                @handleDelete="handleDelete"
+              />
+            </div>
+          </template>
+        </CCard>
+      </template>
+    </CDialog>
+
+    <!-- 批量导入界面 -->
+    <CDialog
+      ref="importDialog"
+      :has-check="false"
+      title="批量导入"
+      width="1200px"
+    >
+      <template slot="body">
+        <Collapse title="音频集" isExpand :isSearch="false">
+          <template slot="content">
+            <CForm
+              ref="form"
+              :form-data="importFormData"
+              :form-params="importFormParams"
+            />
+          </template>
+        </Collapse>
+
+        <div style="margin-top: 10px; width: 100%"></div>
+
+        <CCard title="视频列表">
+          <template slot="body">
+            <div class="videoList">
+              <ImportUploadAudio
+                isRowDrop
+                sortRow="episode"
+                v-model="importList"
+                ref="fileUpload"
+                btnName="音频导入"
+                :fileType="['mp3']"
+                :uploadData="importUploadData"
+                :formData="importFormData"
+              />
+            </div>
+          </template>
+        </CCard>
+      </template>
+    </CDialog>
+
+    <!-- 音频播放界面 -->
+    <CDialog ref="audioView" title="听歌" width="1000px" :has-check="false">
+      <template slot="body">
+        <audio
+          ref="audioPlayer"
+          class="audio"
+          style="width: 100%"
+          controls
+        ></audio>
       </template>
     </CDialog>
   </div>
 </template>
 <script>
+import UploadAudio from "./components/UploadAudio";
+import ImportUploadAudio from "./components/ImportUploadAudio";
+
 export default {
   name: "Audio",
   data() {
@@ -88,10 +171,12 @@ export default {
       title: "",
       //弹框类型
       dialogType: "",
+      fileUrl: process.env.VUE_APP_FILE_API,
       //多选
       checkList: [],
       fileList: [],
       fileData: [],
+      importList: [],
       //查询表单基础参数
       queryParams: [
         {
@@ -161,7 +246,6 @@ export default {
       ],
       //查询数据
       queryData: {
-        id: null,
         audioName: null,
         title: null,
         type: null,
@@ -203,6 +287,10 @@ export default {
           prop: "audioName",
           width: 150,
           sortable: true,
+          type: "link",
+          click: (row, index) => {
+            this.audioPlay(row);
+          },
         },
         {
           label: this.$t("audio.title"), //音频标题
@@ -332,10 +420,36 @@ export default {
       ],
       //表格数据
       tableData: [],
-
       //新增/修改/详情数据
       formData: {
-        id: null,
+        audioName: null,
+        title: null,
+        type: null,
+        savePath: null,
+        region: null,
+        url: null,
+        picture: null,
+        audioType: null,
+        profile: null,
+        label: null,
+        singer: null,
+        lyricist: null,
+        composing: null,
+        lyrics: null,
+        duration: null,
+        playNum: null,
+        status: null,
+        remark: null,
+        creator: null,
+        updater: null,
+        createYear: null,
+        createTime: null,
+        updateTime: null,
+        isDeleted: null,
+        tenantId: null,
+        version: null,
+      },
+      importFormData: {
         audioName: null,
         title: null,
         type: null,
@@ -364,6 +478,10 @@ export default {
         version: null,
       },
     };
+  },
+  components: {
+    UploadAudio,
+    ImportUploadAudio,
   },
   created() {
     this.serviceDict();
@@ -442,6 +560,9 @@ export default {
         }
       });
     },
+    handleDelete() {
+      this.formData.url = null;
+    },
     //批量删除
     deleteLines() {
       this.$modal.confirm("是否删除").then(() => {
@@ -467,7 +588,6 @@ export default {
     //重置新增修改表单数据
     resetForm() {
       this.formData = {
-        id: null,
         audioName: null,
         title: null,
         type: null,
@@ -499,6 +619,47 @@ export default {
     //多选
     selection(list) {
       this.checkList = list;
+    },
+    imports() {
+      this.$set(this, "importFormData", {
+        audioName: null,
+        title: null,
+        type: null,
+        savePath: null,
+        region: null,
+        url: null,
+        picture: null,
+        audioType: null,
+        profile: null,
+        label: null,
+        singer: null,
+        lyricist: null,
+        composing: null,
+        lyrics: null,
+        duration: null,
+        playNum: null,
+        status: null,
+        remark: null,
+        creator: null,
+        updater: null,
+        createYear: null,
+        createTime: null,
+        updateTime: null,
+        isDeleted: null,
+        tenantId: null,
+        version: null,
+      });
+      this.importList = [];
+      this.$refs.importDialog.handleOpen();
+    },
+    audioPlay(row) {
+      this.$refs.audioView.handleOpen();
+      this.$nextTick(() => {
+        this.$refs.audioPlayer.src = JSON.parse(
+          JSON.stringify(this.fileUrl + row?.url)
+        );
+        this.$refs.audioPlayer.load();
+      });
     },
   },
   computed: {
@@ -539,7 +700,7 @@ export default {
           on: {},
         },
         {
-          type: "input",
+          type: "select",
           label: this.$t("audio.type"), //音频分类
           prop: "type",
           options: this.getDictData("audio_type"),
@@ -547,18 +708,19 @@ export default {
           on: {},
         },
         {
-          type: "input",
+          type: "select",
           label: this.$t("audio.region"), //音频地区
           prop: "region",
-          options: this.getDictData("audio_type"),
+          options: this.getDictData("audio_region"),
           span: 6,
           on: {},
         },
 
         {
-          type: "input",
+          type: "select",
           label: this.$t("audio.audioType"), //音频类型
           prop: "audioType",
+          options: this.getDictData("audio_type"),
           span: 6,
           on: {},
         },
@@ -592,9 +754,10 @@ export default {
           on: {},
         },
         {
-          type: "input",
+          type: "select",
           label: this.$t("audio.status"), //状态
           prop: "status",
+          options: this.getDictData("audio_status"),
           span: 6,
           on: {},
         },
@@ -633,6 +796,68 @@ export default {
           on: {},
         },
       ];
+    },
+    importFormParams() {
+      return [
+        {
+          type: "selectTree",
+          label: this.$t("audio.savePath"), //音频存储节点
+          prop: "savePath",
+          options: this.fileData,
+          attributes: {
+            label: "label",
+            id: "value",
+          },
+          rules: [
+            {
+              required: true,
+              message: "视频保存路径不能为空",
+              trigger: "blur",
+            },
+          ],
+          span: 12,
+          on: {},
+        },
+        {
+          type: "select",
+          label: this.$t("audio.type"), //音频分类
+          prop: "type",
+          options: this.getDictData("audio_type"),
+          span: 6,
+          on: {},
+        },
+        {
+          type: "select",
+          label: this.$t("audio.region"), //音频地区
+          prop: "region",
+          options: this.getDictData("audio_region"),
+          span: 6,
+          on: {},
+        },
+        {
+          type: "select",
+          label: this.$t("audio.status"), //状态
+          prop: "status",
+          options: this.getDictData("audio_status"),
+          span: 6,
+          on: {},
+        },
+      ];
+    },
+    uploadData() {
+      if (this.formData.savePath) {
+        const item = this.fileList.find((i) => i.id === this.formData.savePath);
+        return { path: item.filePath, parentId: item.id };
+      }
+    },
+    importUploadData() {
+      if (this.importFormData.savePath) {
+        const item = this.fileList.find(
+          (i) => i.id === this.importFormData.savePath
+        );
+        console.log(333, item);
+        return { path: item.filePath, parentId: item.id };
+      }
     },
   },
 };
