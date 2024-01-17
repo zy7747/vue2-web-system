@@ -368,26 +368,26 @@ export default {
     },
   },
   methods: {
-    selectFn(row, index, item) {},
+    selectFn(row, index) {},
     //多选
     handleSelectionChange(val) {
       this.$emit("handleSelectionChange", val);
     },
     //编辑
-    editLine(row, index, item) {
-      this.$emit("editLine", row, index, item);
+    editLine(row, index) {
+      this.$emit("editLine", row, index);
     },
     //保存
-    saveLine(row, index, item) {
-      this.$emit("saveLine", row, index, item);
+    saveLine(row, index) {
+      this.$emit("saveLine", row, index);
     },
     //详情
-    detailLine(row, index, item) {
-      this.$emit("detailLine", row, index, item);
+    detailLine(row, index) {
+      this.$emit("detailLine", row, index);
     },
     //删除
-    deleteLine(row, index, item) {
-      this.$emit("deleteLine", row, index, item);
+    deleteLine(row, index) {
+      this.$emit("deleteLine", row, index);
     },
     //新建表单
     createForm(createData = {}) {
@@ -407,29 +407,29 @@ export default {
       }
     },
     //编辑表单
-    editForm(row, index, item) {
+    editForm(row, index) {
       if (this.editLineIndex !== null) {
         this.$message.warning("请先保存数据");
       } else {
         this.formData = row;
         this.oldData = JSON.parse(JSON.stringify(row));
         this.editLineIndex = index;
-        this.$emit("editForm", row, index, item);
+        this.$emit("editForm", row, index);
       }
     },
     //保存表单
-    saveForm(row, index, item) {
+    saveForm(row, index) {
       this.$refs.tableForm
         .validate()
         .then(() => {
-          this.$emit("saveForm", row, index, item);
+          this.$emit("saveForm", row, index);
         })
         .catch(() => {
           this.$message.error("校验不通过");
         });
     },
     //取消
-    cancel(row, index, item) {
+    cancel(row, index) {
       if (!row.id) {
         this.tableData.splice(0, 1);
         this.editLineIndex = null;
@@ -439,7 +439,7 @@ export default {
         this.editLineIndex = null;
         this.formData = {};
       }
-      this.$emit("cancelForm", row, index, item);
+      this.$emit("cancelForm", row, index);
     },
     //是否是表单
     isForm(index) {
