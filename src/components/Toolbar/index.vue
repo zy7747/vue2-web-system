@@ -4,61 +4,77 @@
     <div class="header">
       <div class="left">
         <div class="button">
-          <!-- 新增 -->
-          <c-button
-            v-if="hasAdd"
-            type="primary"
-            class="btn"
-            :text="$t('system.add')"
-            plain
-            v-bind="addBtn"
-            icon="el-icon-plus"
-            @click="addLine"
-            v-hasPermission="permission.add"
-          />
-          <!-- 批量删除 -->
-          <c-button
-            v-if="hasDelete"
-            type="danger"
-            icon="el-icon-delete"
-            class="btn"
-            :text="$t('system.deleteMore')"
-            plain
-            v-bind="deleteBtn"
-            @click="deleteLines"
-            v-hasPermission="permission.delete"
-          />
-          <!-- 导入 -->
-          <el-upload
-            :action="baseUrl + imports.url"
-            :data="imports.data"
-            :show-file-list="false"
-            :headers="headers"
-          >
+          <template v-for="item in tools">
+            <!-- 新增 -->
             <c-button
-              v-if="hasImport"
-              type="info"
-              plain
+              v-if="item.type === 'add'"
+              type="primary"
               class="btn"
-              icon="el-icon-upload2"
-              :text="$t('system.import')"
-              :loading="importLoading"
-              v-hasPermission="permission.imports"
+              icon="el-icon-plus"
+              :text="$t('system.add')"
+              plain
+              v-bind="item.options"
+              v-on="item.on"
+              v-hasPermission="item.permission"
             />
-          </el-upload>
-          <!-- 导出 -->
-          <c-button
-            v-if="hasExport"
-            type="warning"
-            icon="el-icon-download"
-            class="btn"
-            plain
-            :text="$t('system.export')"
-            @click="exportExcel"
-            :loading="exportLoading"
-            v-hasPermission="permission.exports"
-          />
-          <slot name="default" />
+            <!-- 批量删除 -->
+            <c-button
+              v-else-if="item.type === 'remove'"
+              type="danger"
+              icon="el-icon-delete"
+              class="btn"
+              :text="$t('system.deleteMore')"
+              plain
+              v-bind="item.options"
+              @click="remove(item.on.click)"
+              v-hasPermission="item.permission"
+            />
+            <!-- 导入 -->
+
+            <template v-else-if="item.type === 'import'">
+              <input
+                v-show="false"
+                ref="file"
+                type="file"
+                name="file"
+                @change="UploadFile(item.options)"
+              />
+
+              <c-button
+                type="info"
+                plain
+                ref="importBtn"
+                class="btn"
+                icon="el-icon-upload2"
+                v-bind="item.options"
+                :text="$t('system.import')"
+                @click="importExcel(item.options)"
+                v-hasPermission="item.permission"
+              />
+            </template>
+
+            <!-- 导出 -->
+            <c-button
+              v-else-if="item.type === 'export'"
+              type="warning"
+              icon="el-icon-download"
+              class="btn"
+              plain
+              :text="$t('system.export')"
+              @click="exportExcel(item.options)"
+              v-hasPermission="item.permission"
+            />
+
+            <c-button
+              v-else
+              :icon="item.icon"
+              class="btn"
+              :text="item.text"
+              v-bind="item.options"
+              v-on="item.on"
+              v-hasPermission="item.permission"
+            />
+          </template>
         </div>
       </div>
     </div>
@@ -66,124 +82,56 @@
 </template>
 
 <script>
-import { getToken } from "@/utils/auth";
-
 export default {
-  data() {
-    return {
-      importLoading: false,
-      exportLoading: false,
-      baseUrl: process.env.VUE_APP_BASE_API, // 请求地址
-      headers: { Authorization: "Bearer " + getToken() },
-    };
-  },
   props: {
-    hasAdd: {
-      text: "是否需要新增按钮",
-      type: [Boolean],
+    tools: {
+      text: "操作按钮",
+      type: [Array],
       default: () => {
-        return true;
-      },
-    },
-    hasDelete: {
-      text: "是否需要批量删除按钮",
-      type: [Boolean],
-      default: () => {
-        return true;
-      },
-    },
-    hasExport: {
-      text: "是否需要导出按钮",
-      type: [Boolean],
-      default: () => {
-        return true;
-      },
-    },
-    hasImport: {
-      text: "是否需要导入按钮",
-      type: [Boolean],
-      default: () => {
-        return false;
-      },
-    },
-    addBtn: {
-      text: "新增按钮权限/禁用状态",
-      type: [Object],
-      default: () => {
-        return {};
-      },
-    },
-    deleteBtn: {
-      text: "删除按钮权限/禁用状态",
-      type: [Object],
-      default: () => {
-        return {};
-      },
-    },
-    imports: {
-      text: "导入参数",
-      type: [Object],
-      default: () => {
-        return {
-          url: "",
-          data: {},
-        };
-      },
-    },
-    exports: {
-      text: "导出参数",
-      type: [Object],
-      default: () => {
-        return {
-          api: () => {},
-          fileName: null,
-          data: {},
-        };
-      },
-    },
-    permission: {
-      text: "按钮权限配置",
-      type: [Object],
-      default: () => {
-        return {
-          add: [],
-          delete: [],
-          imports: [],
-          exports: [],
-        };
+        return [];
       },
     },
   },
   methods: {
-    //新增
-    addLine() {
-      this.$emit("addLine");
-    },
-    //删除
-    deleteLines() {
-      this.$emit("deleteLines");
-    },
     //导出
-    exportExcel() {
-      //Loading...
-      this.exportLoading = true;
-      this.exports
+    exportExcel(options) {
+      options
         .api()
         .then((res) => {
-          this.$download.excel(res, this.exports.fileName);
-          //Loading...
-          this.exportLoading = false;
+          this.$download.excel(res, options.fileName);
+
           this.$message.success("导出成功");
         })
         .catch(() => {
-          //Loading...
-          this.exportLoading = false;
           this.$message.error("导出失败");
         });
     },
-    //导入
+    remove(remove) {
+      this.$modal.confirm("是否删除").then(() => {
+        remove();
+      });
+    },
     importExcel() {
-      this.$emit("importExcel");
+      this.$refs.file[0].click();
+    },
+    //导入
+    UploadFile(options) {
+      const files = this.$refs.file[0].files;
+      for (let i = 0; i < files.length; i++) {
+        const formData = new FormData();
+
+        formData.append("file", files[i]);
+
+        options
+          .api(formData)
+          .then(() => {
+            this.$message.success("导入成功");
+            options.success();
+          })
+          .catch(() => {
+            this.$message.error("导入失败");
+          });
+      }
     },
   },
 };

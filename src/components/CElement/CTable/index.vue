@@ -1,130 +1,124 @@
 <!--  -->
 <template>
-  <div class="CTable">
-    <!-- 基础表单 -->
-    <STable
-      ref="STable"
-      :table-data="cTableData"
-      :table-column="tableColumn"
-      :loading="loading"
-      v-bind="$attrs"
-      v-on="$listeners"
-    >
-      <!-- 自定义组件 -->
+  <div>
+    <Toolbar v-if="tableOption.tools" :tools="tableOption.tools" />
+
+    <BTable ref="table" v-bind="tableOption">
       <template
-        v-for="item in tableColumn"
-        :slot="item.componentName"
-        slot-scope="{ scope }"
+        v-for="item in tableSlot()"
+        :slot="item.setSlot"
+        slot-scope="{ row, index }"
       >
-        <slot :name="item.componentName" :scope="scope" />
+        <slot :name="item.getSlot" :row="row" :index="index" />
       </template>
+    </BTable>
 
-      <!-- 自定义按钮 -->
-      <template slot="action" slot-scope="{ scope }">
-        <slot name="action" :scope="scope" />
+    <!-- 新增/编辑/详情弹框 -->
+    <CDialog
+      v-if="tableOption.dialogConfig"
+      ref="dialog"
+      @handleConfirm="tableOption.dialogConfig?.handleConfirm()"
+      v-bind="tableOption?.dialogConfig"
+    >
+      <template slot="body">
+        <CCard :title="tableOption.dialogConfig?.title">
+          <template slot="body">
+            <CForm
+              ref="form"
+              :disabled="!tableOption.dialogConfig?.['has-check']"
+              :form-data="tableOption.dialogConfig?.formData"
+              :form-params="tableOption.dialogConfig?.formParams"
+            >
+              <template :slot="item.setSlot" v-for="item in dialogForm()">
+                <slot :name="item.getSlot" />
+              </template>
+            </CForm>
+          </template>
+        </CCard>
+
+        <template v-for="item in dialogBody()">
+          <div style="margin-top: 5px; width: 100%"></div>
+          <slot :name="item.getSlot" />
+        </template>
       </template>
-    </STable>
-
-    <!-- 分页 -->
-    <div class="pagination">
-      <pagination
-        v-if="hasPagination && total > 0"
-        :total="total"
-        :page.sync="page"
-        :limit.sync="limit"
-        @pagination="pagination"
-      />
-    </div>
+    </CDialog>
   </div>
 </template>
 
 <script>
-import STable from "./table/el-table";
-//import STable from "./table/vxe-table";
-import baseParams from "./mixins/index";
+import BTable from "./table";
 
 export default {
   name: "CTable",
   components: {
-    STable,
+    BTable,
   },
-  mixins: [baseParams],
-  data() {
-    return {
-      page: 1,
-      limit: 10,
-      total: 0,
-      loading: false,
-      cTableData: this.tableData,
-    };
-  },
-  watch: {
-    tableData(val) {
-      this.cTableData = val;
+  props: {
+    tableOption: {
+      text: "表格配置",
+      type: [Array, Object, Function],
+      default: () => {
+        return {};
+      },
     },
-  },
-  created() {
-    // 判断是不是请求，是的话进来会加载一次
-    if (this.query) {
-      this.queryTableData();
-    }
   },
   methods: {
-    //1.刷新表单时候重置页数和条数
-    refreshTable(page = 1, total = 0) {
-      this.page = page;
-      this.total = total;
-      this.queryTableData();
-    },
-    //2.修改分页数据时候触发
-    pagination({ page, limit }) {
-      this.page = page;
-      this.limit = limit;
-      this.queryTableData(page, limit);
-    },
-    //3.请求表单数据
-    queryTableData(page = this.page, size = this.limit) {
-      this.loading = true;
-
-      this.query(page, size)
-        .then((data) => {
-          if (data) {
-            //条数
-            this.total = data?.total;
-            //修改数据
-            this.cTableData = data?.list;
-            //请求结束
-            this.loading = false;
-          } else {
-            this.loading = false;
-          }
-        })
-        .catch(() => {
-          this.loading = false;
-          this.total = 0;
-          this.cTableData = [];
-        });
-    },
     //新增行
     createForm(createData) {
-      this.$refs.STable.createForm(createData);
+      this.$refs.table.createForm(createData);
     },
-    //保存行
-    saveForm() {
-      this.$emit("saveForm", row, index, item);
+    //table插槽
+    tableSlot() {
+      const arr = [];
+      Object.keys(this.$scopedSlots).forEach((key) => {
+        if (key.indexOf("table_") !== -1) {
+          arr.push({ setSlot: key.replace("table_", ""), getSlot: key });
+        }
+      });
+
+      return arr;
+    },
+    dialogForm() {
+      const arr = [];
+      Object.keys(this.$scopedSlots).forEach((key) => {
+        if (key.indexOf("dialog_form_") !== -1) {
+          arr.push({ setSlot: key.replace("dialog_form_", ""), getSlot: key });
+        }
+      });
+      return arr;
+    },
+    dialogBody() {
+      const arr = [];
+
+      Object.keys(this.$scopedSlots).forEach((key) => {
+        if (key.indexOf("dialog_body") !== -1) {
+          arr.push({ setSlot: "dialog_body", getSlot: key });
+        }
+      });
+
+      return arr;
+    },
+    dialogOpen() {
+      this.$refs.dialog.handleOpen();
+    },
+    dialogClose() {
+      this.$refs.dialog.handleClose();
+    },
+    //搜索
+    search() {
+      this.$refs.table.refreshTable();
     },
     //重置table表单数据
     refreshForm() {
-      this.$refs.STable.refreshForm();
+      this.$refs.table.refreshForm();
+    },
+    //重置搜索表单数据
+    resetQueryData() {
+      //刷新表格
+      this.$refs.table.refreshTable();
     },
   },
 };
 </script>
 
-<style lang="scss" scoped>
-.pagination {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-}
-</style>
+<style lang="scss" scoped></style>

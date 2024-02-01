@@ -4,6 +4,7 @@
     <el-button
       :style="`color:${color}`"
       :size="size"
+      v-show="show"
       v-bind="$attrs"
       v-on="$listeners"
       v-hasPermission="hasPermission"

@@ -298,5 +298,20 @@
     "isDeleted": "isDeleted",
     "tenantId": "tenantId",
     "version": "version"
+  },
+  "page": {
+    "page": "page",
+    "id": "id",
+    "menuId": "menuId",
+    "content": "content",
+    "status": "status",
+    "remark": "remark",
+    "creator": "creator",
+    "updater": "updater",
+    "createTime": "createTime",
+    "updateTime": "updateTime",
+    "isDeleted": "isDeleted",
+    "tenantId": "tenantId",
+    "version": "version"
   }
 }

@@ -139,14 +139,7 @@
           </el-tab-pane>
           <el-tab-pane label="视图">
             <div class="right">
-              <CTable
-                ref="table"
-                :hasDetailLine="false"
-                @deleteLine="deleteFolder"
-                @editLine="updateFolder"
-                :table-column="tableColumn"
-                :table-data="fileFilterList"
-              />
+              <CTable ref="tableRef" :tableOption="tableConfig" />
             </div>
           </el-tab-pane>
         </el-tabs>
@@ -289,85 +282,6 @@ export default {
           prop: "fileName",
           span: 24,
           on: {},
-        },
-      ],
-      //表列基础参数
-      tableColumn: [
-        {
-          type: "selection",
-          width: 55,
-        },
-        {
-          label: this.$t("system.no"), //序号
-          type: "index",
-          width: 55,
-        },
-        {
-          label: this.$t("file.fileName"), //文件名称
-          prop: "fileName",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: this.$t("file.url"), //url地址
-          prop: "url",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: this.$t("file.fileType"), //文件类型
-          prop: "fileType",
-          width: 110,
-          sortable: true,
-        },
-        {
-          label: this.$t("file.filePath"), //文件路径
-          prop: "filePath",
-          sortable: true,
-        },
-        {
-          label: this.$t("file.fileSize"), //文件大小
-          prop: "fileSize",
-          width: 120,
-          sortable: true,
-          formatter: (row, value) => {
-            if (value) {
-              return Number(value / 1024).toFixed(2) + "KB";
-            } else {
-              return null;
-            }
-          },
-        },
-        // {
-        //   label: this.$t("file.status"), //状态
-        //   prop: "status",
-        //   width: 150,
-        //   sortable: true,
-        // },
-        // {
-        //   label: this.$t("file.remark"), //备注
-        //   prop: "remark",
-        //   width: 150,
-        //   sortable: true,
-        // },
-        {
-          label: this.$t("file.creator"), //创建人
-          prop: "creator",
-          width: 120,
-          sortable: true,
-          translation: "user",
-        },
-        {
-          label: this.$t("file.createTime"), //创建时间
-          prop: "createTime",
-          width: 150,
-          sortable: true,
-        },
-        {
-          label: this.$t("system.action"), //操作
-          type: "action",
-          fixed: "right",
-          width: 150,
         },
       ],
     };
@@ -684,6 +598,102 @@ export default {
   computed: {
     uploadData() {
       return { filePath: this.nodeInfo.filePath, parentId: this.nodeInfo.id };
+    },
+    tableConfig() {
+      const self = this;
+      return {
+        tableType: "vxeTable",
+        title: self.$t("video.video"),
+        tableColumn: [
+          {
+            type: "selection",
+            width: 55,
+          },
+          {
+            label: this.$t("system.no"), //序号
+            type: "index",
+            width: 55,
+          },
+          {
+            label: this.$t("file.fileName"), //文件名称
+            prop: "fileName",
+            width: 200,
+            sortable: true,
+          },
+          {
+            label: this.$t("file.url"), //url地址
+            prop: "url",
+            width: 250,
+            sortable: true,
+          },
+          {
+            label: this.$t("file.fileType"), //文件类型
+            prop: "fileType",
+            width: 110,
+            sortable: true,
+          },
+          {
+            label: this.$t("file.filePath"), //文件路径
+            prop: "filePath",
+            sortable: true,
+            width: 250,
+          },
+          {
+            label: this.$t("file.fileSize"), //文件大小
+            prop: "fileSize",
+            width: 120,
+            sortable: true,
+            formatter: (row, value) => {
+              if (value) {
+                return Number(value / 1024 / 1024).toFixed(2) + "MB";
+              } else {
+                return null;
+              }
+            },
+          },
+          {
+            label: this.$t("file.creator"), //创建人
+            prop: "creator",
+            width: 120,
+            sortable: true,
+            translation: "user",
+          },
+          {
+            label: this.$t("file.createTime"), //创建时间
+            prop: "createTime",
+            width: 150,
+            sortable: true,
+          },
+          {
+            label: this.$t("system.action"), //操作
+            type: "action",
+            fixed: "right",
+            width: 150,
+          },
+        ],
+        actions: [
+          {
+            type: "edit",
+            permission: [],
+            click({ row, index }) {
+              self.updateFolder(row);
+            },
+          },
+          {
+            type: "remove",
+            permission: [],
+            click({ row, index }) {
+              self.$service.file.file.delete([row]).then((res) => {
+                if (res.code === 200) {
+                  self.$message.success("删除成功");
+                  self.$refs.tableRef.search();
+                }
+              });
+            },
+          },
+        ],
+        tableData: this.fileFilterList,
+      };
     },
     //路径
     folderPath() {

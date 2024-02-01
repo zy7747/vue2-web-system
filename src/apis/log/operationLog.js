@@ -36,4 +36,11 @@ export default {
     blob: true,
     text: "操作日志导出",
   },
+  import: {
+    url: "/operationLog/import",
+    method: "post",
+    app: "operationLog",
+    blob: true,
+    text: "操作日志导出",
+  },
 };

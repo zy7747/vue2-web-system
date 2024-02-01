@@ -20,6 +20,8 @@ import CDatePicker from "./CElement/CDatePicker/index.vue";
 import CTimePicker from "./CElement/CTimePicker/index.vue";
 import CDateTimePicker from "./CElement/CDateTimePicker/index.vue";
 import CTreeSelect from "./CElement/CTreeSelect/index.vue";
+import CPage from "./CElement/CPage/index.vue";
+import CGrid from "./CElement/CGrid/index.vue";
 
 import IconSelect from "./IconSelect/index.vue";
 import VideoPlayer from "./VideoPlayer/index.vue";
@@ -37,6 +39,7 @@ Vue.component("CInput", CInput);
 Vue.component("CSelect", CSelect);
 Vue.component("CButton", CButton);
 Vue.component("CSwitch", CSwitch);
+
 Vue.component("CCheckbox", CCheckbox);
 Vue.component("CRadio", CRadio);
 Vue.component("CNumber", CNumber);
@@ -45,7 +48,10 @@ Vue.component("CTimePicker", CTimePicker);
 Vue.component("CDateTimePicker", CDateTimePicker);
 
 Vue.component("CForm", CForm);
+Vue.component("CPage", CPage);
+Vue.component("CGrid", CGrid);
 Vue.component("CTree", CTree);
+
 Vue.component("CCard", CCard);
 Vue.component("Toolbar", Toolbar);
 Vue.component("CTable", CTable);
@@ -58,6 +64,7 @@ Vue.component("IconSelect", IconSelect);
 Vue.component("VideoPlayer", VideoPlayer);
 Vue.component("FileUpload", FileUpload);
 Vue.component("AvatarUpload", AvatarUpload);
+
 Vue.component("DictTag", DictTag);
 Vue.component("CTreeSelect", CTreeSelect);
 Vue.component("DraggableResizable", DraggableResizable);

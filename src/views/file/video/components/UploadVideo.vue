@@ -1,10 +1,15 @@
 <template>
   <div class="upload-file">
+    <c-input
+      placeholder="输入关键字进行过滤"
+      v-model="filterText"
+      style="margin-bottom: 15px"
+    />
     <el-upload
       multiple
       :action="baseUrl"
       :before-upload="handleBeforeUpload"
-      :file-list="fileList"
+      :file-list="filterList"
       :limit="limit"
       :data="uploadData"
       :on-error="handleUploadError"
@@ -124,6 +129,7 @@ export default {
     return {
       filename: undefined,
       number: 0,
+      filterText: "",
       uploadList: [],
       fileUrl: process.env.VUE_APP_FILE_API,
       baseUrl: process.env.VUE_APP_BASE_API + "/file/upload", // 请求地址
@@ -132,6 +138,7 @@ export default {
         UserId: this.$store.getters.userId,
       }, // 设置上传的请求头部
       fileList: [],
+      filterList: [],
     };
   },
   watch: {
@@ -145,6 +152,7 @@ export default {
           this.fileList = list.map((item) => {
             return { ...item, name: item.name, url: item.url };
           });
+          this.filterList = JSON.parse(JSON.stringify(this.fileList));
         } else {
           this.fileList = [];
           return [];
@@ -152,6 +160,13 @@ export default {
       },
       deep: true,
       immediate: true,
+    },
+    filterText(val) {
+      if (!val || val === "") {
+        this.filterList = JSON.parse(JSON.stringify(this.fileList));
+        return;
+      }
+      this.filterList = this.filterNode(val, this.fileList);
     },
   },
   computed: {
@@ -193,6 +208,13 @@ export default {
       this.number++;
       this.filename = file.name;
       return true;
+    },
+    //搜索框过滤
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.filter((item) => {
+        return item.name.indexOf(value) !== -1;
+      });
     },
     // 文件个数超出
     handleExceed() {
@@ -290,4 +312,10 @@ export default {
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+::v-deep .el-upload-list {
+  max-height: 150px !important;
+  overflow: auto !important;
+  transition: none;
+}
+</style>

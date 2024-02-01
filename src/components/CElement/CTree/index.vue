@@ -44,6 +44,13 @@ export default {
         return [];
       },
     },
+    filterName: {
+      text: "过滤字段",
+      type: [String],
+      default: () => {
+        return null;
+      },
+    },
   },
   data() {
     return {
@@ -54,7 +61,7 @@ export default {
     //搜索框过滤
     filterNode(value, data) {
       if (!value) return true;
-      return data.title.indexOf(value) !== -1;
+      return data[this.filterName]?.indexOf(value) !== -1;
     },
     getCheckedKeys() {
       return this.$refs.elTree.getCheckedKeys();

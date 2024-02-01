@@ -6,9 +6,11 @@
       :visible.sync="visible"
       :width="width"
       :modal="false"
+      v-bind="$attrs"
+      v-on="$listeners"
       :close-on-click-modal="false"
       :destroy-on-close="destroyOnClose"
-      style="z-index: 9"
+      style="z-index: 99"
     >
       <div class="body">
         <slot name="body" />
@@ -38,6 +40,11 @@ import baseParams from "./mixins/index";
 
 export default {
   mixins: [baseParams],
+  data() {
+    return {
+      visible: false,
+    };
+  },
   methods: {
     handleOpen() {
       this.visible = true;
@@ -92,7 +99,7 @@ export default {
 }
 
 .body {
-  max-height: 85vh;
+  max-height: 65vh;
   overflow: auto;
 }
 </style>

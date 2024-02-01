@@ -21,6 +21,13 @@ export default {
         return "mini";
       },
     },
+    show: {
+      text: "是否显示",
+      type: [Boolean, Function],
+      default: () => {
+        return true;
+      },
+    },
     color: {
       text: "按钮颜色",
       type: [String],

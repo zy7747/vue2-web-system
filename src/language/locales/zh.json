@@ -293,5 +293,20 @@
     "isDeleted": "是否删除",
     "tenantId": "租户id",
     "version": "乐观锁"
+  },
+  "page": {
+    "page": "页面配置",
+    "id": "id",
+    "menuId": "页面id",
+    "content": "页面内容",
+    "status": "状态",
+    "remark": "备注",
+    "creator": "创建人",
+    "updater": "更新人",
+    "createTime": "创建时间",
+    "updateTime": "更新时间",
+    "isDeleted": "是否删除",
+    "tenantId": "租户id",
+    "version": "乐观锁"
   }
 }

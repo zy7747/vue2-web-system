@@ -154,20 +154,14 @@ export default {
 <style lang="scss" scoped>
 .CForm {
   width: 100%;
-  // ::v-deep .el-input__inner {
-  //   background-color: #212147 !important;
-  //   color: #fff !important;
-  //   font-weight: 520 !important;
-  // }
-}
-.el-col {
-  padding: 0 15px;
   overflow: hidden;
+}
+::v-deep .el-col {
+  padding: 0 15px;
 }
 
 ::v-deep .el-form-item__label {
   padding: 0;
   font-weight: 550;
-  // line-height: 20px;
 }
 </style>

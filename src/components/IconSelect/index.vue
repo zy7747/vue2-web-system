@@ -5,6 +5,7 @@
       width="460"
       trigger="click"
       @show="reset()"
+      style="z-index: 99999"
     >
       <div class="icon-body">
         <vxe-list height="300" :data="iconList" :scroll-y="{ enabled: true }">
@@ -87,6 +88,7 @@ export default {
     },
     reset() {
       this.name = "";
+
       const iconList = icons(this.loadIconList);
       this.iconList = this.splitIntoGroups(iconList);
     },

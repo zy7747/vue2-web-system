@@ -9,7 +9,13 @@ export default {
     url: "/dict/list",
     method: "get",
     app: "dict",
-    text: "字典列表",
+    text: "字典子集列表",
+  },
+  list: {
+    url: "/dict/list",
+    method: "get",
+    app: "dict",
+    text: "字典汇总列表",
   },
   dictSubList: {
     url: "/dict/subList",
