@@ -8,8 +8,11 @@
             <c-tree
               ref="tree"
               :tree="menuList"
-              :defaultProps="defaultProps"
-              :filter-node-method="filterNode"
+              :defaultProps="{
+                children: 'children',
+                label: 'title',
+              }"
+              filterName="title"
               :default-checked-keys="menuCheckList"
               node-key="id"
             />
@@ -35,16 +38,12 @@ export default {
       queryData: {
         roleName: null,
         roleCode: null,
-        permission: null,
         status: null,
-        sort: null,
         remark: null,
         creator: null,
         updater: null,
         createTime: null,
         updateTime: null,
-        isDeleted: null,
-        tenantId: null,
       },
       //新增/修改/详情数据
       formData: {
@@ -57,22 +56,12 @@ export default {
         updater: null,
         createTime: null,
         updateTime: null,
-        isDeleted: null,
-        tenantId: null,
-        version: null,
       },
       //表格数据
       tableData: [],
       //菜单树形
       menuList: [],
       menuCheckList: [],
-      //过滤字段
-      filterText: "",
-      //菜单树形显示字段
-      defaultProps: {
-        children: "children",
-        label: "title",
-      },
     };
   },
   computed: {
@@ -88,8 +77,6 @@ export default {
               label: this.$t("role.roleName"), //角色名称
               prop: "roleName",
               span: 6,
-              attributes: {},
-              on: {},
             },
             {
               type: "select",
@@ -97,8 +84,6 @@ export default {
               prop: "status",
               options: this.getDictData("role_status"),
               span: 6,
-              attributes: {},
-              on: {},
             },
           ],
         },
@@ -175,7 +160,7 @@ export default {
             tools: [
               {
                 type: "add",
-                permission: ["user:person:add"],
+                permission: ["configuration:role:add"],
                 on: {
                   click() {
                     self.title = "新增";
@@ -188,30 +173,28 @@ export default {
               },
               {
                 type: "remove",
-                permission: ["user:person:delete"],
+                permission: ["configuration:role:delete"],
                 options: {
                   disabled: self.checkList.length === 0,
                 },
                 on: {
                   click() {
-                    self.$modal.confirm("是否删除").then(() => {
-                      self.$service.configuration.role
-                        .delete(self.checkList)
-                        .then((res) => {
-                          if (res.code === 200) {
-                            self.$message.success("删除成功");
-                            self.$refs.pageRef.search();
-                          } else {
-                            self.$message.warning(res.message);
-                          }
-                        });
-                    });
+                    self.$service.configuration.role
+                      .delete(self.checkList)
+                      .then((res) => {
+                        if (res.code === 200) {
+                          self.$message.success("删除成功");
+                          self.$refs.pageRef.search();
+                        } else {
+                          self.$message.warning(res.message);
+                        }
+                      });
                   },
                 },
               },
               {
                 type: "import",
-                permission: ["user:person:import"],
+                permission: ["configuration:role:import"],
                 options: {
                   api() {
                     return self.$service.configuration.role.import();
@@ -220,19 +203,19 @@ export default {
               },
               {
                 type: "export",
-                permission: ["user:person:export"],
+                permission: ["configuration:role:export"],
                 options: {
                   api() {
                     return self.$service.configuration.role.export();
                   },
-                  fileName: "地区",
+                  fileName: this.$t("role.role"),
                 },
               },
             ],
             actions: [
               {
                 type: "edit",
-                permission: [],
+                permission: ["configuration:role:edit"],
                 click({ row, index }) {
                   self.title = "编辑";
                   self.dialogType = "edit";
@@ -242,7 +225,7 @@ export default {
               },
               {
                 type: "detail",
-                permission: [],
+                permission: ["configuration:role:detail"],
                 click({ row, index }) {
                   self.title = "详情";
                   self.dialogType = "detail";
@@ -252,7 +235,7 @@ export default {
               },
               {
                 type: "remove",
-                permission: [],
+                permission: ["configuration:role:delete"],
                 click({ row, index }) {
                   self.$service.configuration.role.delete([row]).then((res) => {
                     if (res.code === 200) {
@@ -280,16 +263,19 @@ export default {
               "has-check": this.dialogType !== "detail",
               formData: this.formData,
               width: "1200px",
-              title: this.$t("menu.menu"),
+              title: this.$t("role.role"),
               handleConfirm() {
-                // 新增/修改
-                self.$service.configuration.role
-                  .saveList([self.formData])
+                const menuList = self.$refs.tree.getCheckedKeys();
+                // 新增
+                return self.$service.configuration.role
+                  .saveList([{ ...self.formData, menuList }])
                   .then((res) => {
                     if (res.code === 200) {
                       self.$message.success("提交成功");
                       self.$refs.pageRef.search();
                       self.$refs.pageRef.dialogClose();
+                    } else {
+                      self.$message.warning(res.message);
                     }
                   });
               },
@@ -306,7 +292,6 @@ export default {
                       trigger: "blur",
                     },
                   ],
-                  on: {},
                 },
                 {
                   type: "input",
@@ -320,7 +305,6 @@ export default {
                     },
                   ],
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "select",
@@ -335,14 +319,12 @@ export default {
                   ],
                   options: this.getDictData("role_status"),
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("role.remark"), //备注
                   prop: "remark",
                   span: 6,
-                  on: {},
                 },
               ],
             },
@@ -382,11 +364,6 @@ export default {
       return this.$service.configuration.menu.list().then((res) => {
         this.menuList = this.$handleTree(res.data);
       });
-    },
-    //搜索框过滤
-    filterNode(value, data) {
-      if (!value) return true;
-      return data.title.indexOf(value) !== -1;
     },
   },
 };

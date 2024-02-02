@@ -31,8 +31,6 @@ router.beforeEach(async (to, from, next) => {
         //重新获取基础数据
         await store.dispatch("UserInfo");
 
-        //router.addRoute(store.getters.routes);
-
         router.addRoutes(store.getters.routes);
         // hack方法 确保addRoutes已完成
         next({ ...to, replace: true });

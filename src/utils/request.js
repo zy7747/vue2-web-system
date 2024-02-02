@@ -32,7 +32,7 @@ service.interceptors.request.use(
 // response拦截器
 service.interceptors.response.use(
   async (response) => {
-    if (response.data.code !== 200) {
+    if (response.data.code !== 200 && response.data.message) {
       modal.notifyWarning(response.data.message);
     }
     switch (response.status) {

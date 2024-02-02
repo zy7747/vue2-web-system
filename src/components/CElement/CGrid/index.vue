@@ -109,7 +109,7 @@ export default {
                   api() {
                     return self.api.export();
                   },
-                  fileName: self.$t("operationLog.operationLog"),
+                  fileName: this.gridOption.title,
                 },
               },
             ],

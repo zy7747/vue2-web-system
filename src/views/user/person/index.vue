@@ -27,8 +27,6 @@ export default {
             label: this.$t("person.name"), //姓名
             prop: "name",
             span: 6,
-            attributes: {},
-            on: {},
           },
           {
             type: "select",
@@ -36,112 +34,84 @@ export default {
             prop: "sex",
             options: this.getDictData("user_sex"),
             span: 6,
-            attributes: {},
-            on: {},
           },
           {
             type: "input",
             label: this.$t("person.profession"), //职业
             prop: "profession",
             span: 6,
-            attributes: {},
-            on: {},
           },
           {
             type: "input",
             label: this.$t("person.nation"), //国家
             prop: "nation",
             span: 6,
-            attributes: {},
-            on: {},
           },
           {
             type: "input",
             label: this.$t("person.origin"), //籍贯
             prop: "origin",
             span: 6,
-            attributes: {},
-            on: {},
           },
           {
             type: "input",
             label: this.$t("person.address"), //住址
             prop: "address",
             span: 6,
-            attributes: {},
-            on: {},
           },
           {
             type: "input",
             label: this.$t("person.degree"), //最高学历
             prop: "degree",
             span: 6,
-            attributes: {},
-            on: {},
           },
           {
             type: "input",
             label: this.$t("person.height"), //身高
             prop: "height",
             span: 6,
-            attributes: {},
-            on: {},
           },
           {
             type: "input",
             label: this.$t("person.weight"), //体重
             prop: "weight",
             span: 6,
-            attributes: {},
-            on: {},
           },
           {
             type: "input",
             label: this.$t("person.age"), //年龄
             prop: "age",
             span: 6,
-            attributes: {},
-            on: {},
           },
           {
             type: "input",
             label: this.$t("person.idCard"), //身份证号码
             prop: "idCard",
             span: 6,
-            attributes: {},
-            on: {},
           },
           {
             type: "input",
             label: this.$t("person.phone"), //电话号码
             prop: "phone",
             span: 6,
-            attributes: {},
-            on: {},
           },
           {
             type: "input",
             label: this.$t("person.email"), //电子邮箱
             prop: "email",
             span: 6,
-            attributes: {},
-            on: {},
           },
           {
             type: "datePicker",
             label: this.$t("person.birthDate"), //出生日期
             prop: "birthDate",
             span: 6,
-            attributes: {},
-            on: {},
           },
           {
             type: "select",
             label: this.$t("person.status"), //状态
             prop: "status",
             span: 6,
-            attributes: {},
-            on: {},
           },
         ],
         tableColumn: [

@@ -100,7 +100,7 @@ export default {
 
       return {
         formConfig: {
-          title: self.$t("area.area"),
+          title: self.$t("menu.menu"),
           queryParams: [
             {
               type: "input",
@@ -142,7 +142,7 @@ export default {
               iconOpen: "vxe-icon-square-minus-fill",
               iconClose: "vxe-icon-square-plus-fill",
             },
-            title: self.$t("area.area"),
+            title: self.$t("menu.menu"),
             tableColumn: [
               {
                 type: "selection",
@@ -241,7 +241,7 @@ export default {
             tools: [
               {
                 type: "add",
-                permission: ["user:person:add"],
+                permission: ["configuration:menu:add"],
                 on: {
                   click() {
                     self.title = "新增";
@@ -253,44 +253,42 @@ export default {
               },
               {
                 type: "remove",
-                permission: ["user:person:delete"],
+                permission: ["configuration:menu:delete"],
                 options: {
                   disabled: self.checkList.length === 0,
                 },
                 on: {
                   click() {
-                    self.$modal.confirm("是否删除").then(() => {
-                      self.$service.configuration.menu
-                        .delete(self.checkList)
-                        .then((res) => {
-                          if (res.code === 200) {
-                            self.$message.success("删除成功");
-                            self.$refs.pageRef.search();
-                          } else {
-                            self.$message.warning(res.message);
-                          }
-                        });
-                    });
+                    self.$service.configuration.menu
+                      .delete(self.checkList)
+                      .then((res) => {
+                        if (res.code === 200) {
+                          self.$message.success("删除成功");
+                          self.$refs.pageRef.search();
+                        } else {
+                          self.$message.warning(res.message);
+                        }
+                      });
                   },
                 },
               },
               {
                 type: "import",
-                permission: ["user:person:import"],
+                permission: ["configuration:menu:import"],
                 options: {
                   api() {
-                    return self.$service.configuration.area.import();
+                    return self.$service.configuration.menu.import();
                   },
                 },
               },
               {
                 type: "export",
-                permission: ["user:person:export"],
+                permission: ["configuration:menu:export"],
                 options: {
                   api() {
-                    return self.$service.configuration.area.export();
+                    return self.$service.configuration.menu.export();
                   },
-                  fileName: "地区",
+                  fileName: self.$t("menu.menu"),
                 },
               },
             ],

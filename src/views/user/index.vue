@@ -344,7 +344,9 @@ export default {
                   .then((res) => {
                     if (res.code === 200) {
                       self.$message.success("提交成功");
+                      //刷新列表
                       self.$refs.pageRef.search();
+                      //关闭弹窗
                       self.$refs.pageRef.dialogClose();
                     }
                   });

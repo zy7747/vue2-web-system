@@ -23,7 +23,7 @@
         }"
         :scroll-y="{ enabled: true }"
         :column-config="{ resizable: true }"
-        @selection-change="handleSelectionChange"
+        @checkbox-change="handleSelectionChange"
       >
         <template v-for="(column, index) in tableColumn">
           <!-- 序号/多选 -->
@@ -252,8 +252,8 @@ export default {
   },
   methods: {
     //多选
-    handleSelectionChange(val) {
-      this.$emit("handleSelectionChange", val);
+    handleSelectionChange({ checked }) {
+      this.$attrs.options?.selection(checked);
     },
     isForm(index) {
       return this.editLineIndex === index;
