@@ -53,7 +53,7 @@ export default {
   props: {
     pageOption: {
       text: "页面数据",
-      type: [Array, Object, Function],
+      type: [Object, Function],
       default: () => {
         return {};
       },

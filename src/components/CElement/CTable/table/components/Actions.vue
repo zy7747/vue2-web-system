@@ -1,4 +1,3 @@
-<!--  -->
 <template>
   <!-- 可编辑状态的按钮 -->
   <div class="action">
@@ -57,6 +56,7 @@
 
 <script>
 export default {
+  name: "Actions",
   props: {
     isForm: {
       text: "是否是表单",

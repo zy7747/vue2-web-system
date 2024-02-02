@@ -28,6 +28,7 @@
 
 <script>
 export default {
+  name: "TranslationColumn",
   props: {
     row: {
       text: "行信息",

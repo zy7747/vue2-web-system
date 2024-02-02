@@ -35,6 +35,7 @@
 
 <script>
 export default {
+  name: "TableForm",
   props: {
     row: {
       text: "行信息",
