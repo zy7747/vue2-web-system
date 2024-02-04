@@ -69,6 +69,7 @@
               v-else
               :icon="item.icon"
               class="btn"
+              :type="item.type ? item.type : ''"
               :text="item.text"
               v-bind="item.options"
               v-on="item.on"

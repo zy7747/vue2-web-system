@@ -13,6 +13,7 @@
         align="center"
         size="small"
         stripe
+        ref="table"
         v-bind="$attrs"
         :max-height="maxHeight"
         :data="tableData"
@@ -31,14 +32,13 @@
             v-if="column.type === 'index'"
             v-bind="{
               ...column,
-              width: 100,
+              width: column.width ? column.width : 100,
               type: 'seq',
               field: column.prop,
               title: column.label,
             }"
             :key="index"
             fixed="left"
-            tree-node
           />
 
           <vxe-column
@@ -48,19 +48,6 @@
               width: 55,
               type: 'checkbox',
             }"
-            :key="index"
-            fixed="left"
-          />
-
-          <vxe-column
-            v-else-if="column.type === 'show'"
-            v-bind="{
-              ...column,
-              width: 55,
-              field: column.prop,
-              title: column.label,
-            }"
-            tree-node
             :key="index"
             fixed="left"
           />
@@ -155,14 +142,7 @@ export default {
       text: "最大高度",
       type: [String, Number],
       default: () => {
-        return "525px";
-      },
-    },
-    minHeight: {
-      text: "最小高度",
-      type: [String, Number],
-      default: () => {
-        return "525px";
+        return "550px";
       },
     },
     tableData: {
@@ -331,7 +311,7 @@ export default {
     },
     // 拖拽排序
     rowDrop() {
-      const el = this.$refs.eTable.$el.querySelectorAll(
+      const el = this.$refs.table.$el.querySelectorAll(
         ".el-table__body-wrapper > table > tbody"
       )[0];
 
@@ -385,6 +365,13 @@ export default {
   align-items: center;
 }
 
+::v-deep .slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100% !important;
+}
+
 ::v-deep .vxe-header--column {
   padding: 2px 0;
   color: aliceblue;
@@ -406,16 +393,6 @@ export default {
 
 .el-form-item.is-error {
   margin-bottom: 20px;
-}
-
-.link {
-  color: #45b3ee;
-  font-weight: 550;
-  width: 100%;
-}
-.link:hover {
-  color: #196a96;
-  text-decoration: underline;
 }
 
 .dict-tag-list {

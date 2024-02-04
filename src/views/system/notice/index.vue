@@ -71,8 +71,6 @@ export default {
               label: this.$t("notice.noticeName"), //消息名称
               prop: "noticeName",
               span: 6,
-              attributes: {},
-              on: {},
             },
             {
               type: "select",
@@ -80,8 +78,6 @@ export default {
               prop: "type",
               options: this.getDictData("notice_type"),
               span: 6,
-              attributes: {},
-              on: {},
             },
             {
               type: "select",
@@ -89,8 +85,6 @@ export default {
               prop: "isRead",
               options: this.getDictData("isRead"),
               span: 6,
-              attributes: {},
-              on: {},
             },
             {
               type: "select",
@@ -182,7 +176,7 @@ export default {
             tools: [
               {
                 type: "add",
-                permission: ["user:person:add"],
+                permission: ["functional:notice:add"],
                 on: {
                   click() {
                     self.title = "新增";
@@ -193,7 +187,7 @@ export default {
               },
               {
                 type: "remove",
-                permission: ["user:person:delete"],
+                permission: ["functional:notice:delete"],
                 options: {
                   disabled: self.checkList.length === 0,
                 },
@@ -216,7 +210,7 @@ export default {
               },
               {
                 type: "import",
-                permission: ["user:person:import"],
+                permission: ["functional:notice:import"],
                 options: {
                   api() {
                     return self.$service.functional.notice.import();
@@ -225,19 +219,19 @@ export default {
               },
               {
                 type: "export",
-                permission: ["user:person:export"],
+                permission: ["functional:notice:export"],
                 options: {
                   api() {
                     return self.$service.functional.notice.export();
                   },
-                  fileName: "地区",
+                  fileName: self.$t("notice.notice"),
                 },
               },
             ],
             actions: [
               {
                 type: "edit",
-                permission: [],
+                permission: ["functional:notice:edit"],
                 click({ row, index }) {
                   self.title = "编辑";
                   self.dialogType = "edit";
@@ -247,7 +241,6 @@ export default {
               },
               {
                 type: "detail",
-                permission: [],
                 click({ row, index }) {
                   self.title = "详情";
                   self.dialogType = "detail";
@@ -257,7 +250,7 @@ export default {
               },
               {
                 type: "remove",
-                permission: [],
+                permission: ["functional:notice:delete"],
                 click({ row, index }) {
                   self.$service.functional.notice.delete([row]).then((res) => {
                     if (res.code === 200) {

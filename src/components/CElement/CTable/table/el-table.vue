@@ -11,10 +11,9 @@
       <el-table
         border
         :stripe="stripe"
-        ref="eTable"
+        ref="table"
         v-bind="$attrs"
         :max-height="maxHeight"
-        :min-height="minHeight"
         :data="tableData"
         :style="`width:${width}`"
         v-loading="loading"
@@ -80,7 +79,7 @@
               />
 
               <CSlot
-                v-else-if="column.type && !isForm(scope.$index)"
+                v-else-if="column.type"
                 :row="scope.row"
                 :rowIndex="scope.$index"
                 :prop="column.prop"
@@ -118,19 +117,17 @@ import Operation from "./components/Operation";
 import TranslationColumn from "./components/TranslationColumn";
 
 export default {
+  mounted() {
+    if (this.isRowDrop) {
+      this.rowDrop();
+    }
+  },
   props: {
     maxHeight: {
       text: "最大高度",
       type: [String, Number],
       default: () => {
-        return "525px";
-      },
-    },
-    minHeight: {
-      text: "最小高度",
-      type: [String, Number],
-      default: () => {
-        return "525px";
+        return "600px";
       },
     },
     tableData: {
@@ -299,7 +296,7 @@ export default {
     },
     // 拖拽排序
     rowDrop() {
-      const el = this.$refs.eTable.$el.querySelectorAll(
+      const el = this.$refs.table.$el.querySelectorAll(
         ".el-table__body-wrapper > table > tbody"
       )[0];
 

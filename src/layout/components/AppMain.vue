@@ -32,4 +32,10 @@ export default {
   overflow-y: auto;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
+
+.app-main::-webkit-scrollbar {
+  width: 0; /* Chrome和Safari浏览器隐藏滚动条 */
+  height: 0;
+  background-color: transparent;
+}
 </style>

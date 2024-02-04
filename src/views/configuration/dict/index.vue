@@ -65,16 +65,12 @@ export default {
               label: this.$t("dict.dictName"), //字典名称
               prop: "dictName",
               span: 6,
-              attributes: {},
-              on: {},
             },
             {
               type: "input",
               label: this.$t("dict.dictCode"), //字典编码
               prop: "dictCode",
               span: 6,
-              attributes: {},
-              on: {},
             },
             {
               label: this.$t("dict.status"), //状态
@@ -82,8 +78,6 @@ export default {
               type: "select",
               options: this.getDictData("dict_status"),
               span: 6,
-              attributes: {},
-              on: {},
             },
           ],
         },
@@ -144,13 +138,13 @@ export default {
                 label: this.$t("dict.createTime"), //创建时间
                 prop: "createTime",
                 sortable: true,
-                width: 150,
+                width: 200,
               },
               {
                 label: this.$t("dict.updateTime"), //更新时间
                 prop: "updateTime",
                 sortable: true,
-                width: 150,
+                width: 200,
               },
               {
                 type: "action",
@@ -161,7 +155,7 @@ export default {
             tools: [
               {
                 type: "add",
-                permission: ["user:person:add"],
+                permission: ["configuration:dict:add"],
                 on: {
                   click() {
                     self.title = "新增";
@@ -173,42 +167,40 @@ export default {
               },
               {
                 type: "remove",
-                permission: ["user:person:delete"],
+                permission: ["configuration:dict:delete"],
                 options: {
                   disabled: self.checkList.length === 0,
                 },
                 on: {
                   click() {
-                    self.$modal.confirm("是否删除").then(() => {
-                      self.$service.configuration.dict
-                        .delete(self.checkList)
-                        .then((res) => {
-                          if (res.code === 200) {
-                            self.$message.success("删除成功");
-                            self.$refs.pageRef.search();
-                          } else {
-                            self.$message.warning(res.message);
-                          }
-                        });
-                    });
+                    self.$service.configuration.dict
+                      .delete(self.checkList)
+                      .then((res) => {
+                        if (res.code === 200) {
+                          self.$message.success("删除成功");
+                          self.$refs.pageRef.search();
+                        } else {
+                          self.$message.warning(res.message);
+                        }
+                      });
                   },
                 },
               },
               {
                 type: "import",
-                permission: ["user:person:import"],
+                permission: ["configuration:dict:import"],
                 options: {
                   api() {},
                 },
               },
               {
                 type: "export",
-                permission: ["user:person:export"],
+                permission: ["configuration:dict:export"],
                 options: {
                   api() {
                     return self.$service.configuration.dict.export();
                   },
-                  fileName: "个人中心",
+                  fileName: self.$t("dict.dict"),
                 },
               },
             ],

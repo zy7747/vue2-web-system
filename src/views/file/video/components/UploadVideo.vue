@@ -314,8 +314,12 @@ export default {
 
 <style scoped lang="scss">
 ::v-deep .el-upload-list {
-  max-height: 150px !important;
+  max-height: 300px !important;
   overflow: auto !important;
-  transition: none;
+  transition: none !important;
+}
+
+::v-deep .el-upload-list__item {
+  transition: none !important;
 }
 </style>

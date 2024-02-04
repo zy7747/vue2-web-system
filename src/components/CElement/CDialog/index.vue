@@ -63,6 +63,7 @@ export default {
 <style lang="scss" scoped>
 ::v-deep .el-dialog {
   border-radius: 15px;
+  margin-top: 3vh !important;
 }
 
 ::v-deep .el-dialog__title {
@@ -99,7 +100,7 @@ export default {
 }
 
 .body {
-  max-height: 65vh;
+  max-height: 75vh;
   overflow: auto;
 }
 </style>

@@ -13,7 +13,7 @@ import {
 } from "@/utils/formValidate";
 
 export default {
-  name: "OperationLog",
+  name: "Person",
   computed: {
     gridOption() {
       const self = this;

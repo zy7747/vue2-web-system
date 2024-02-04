@@ -7,9 +7,11 @@
       </template>
 
       <template slot="table_icon" slot-scope="{ row, index }">
-        <div style="width: 100px; font-size: 30px">
-          <svg-icon :icon-class="row.icon ? row.icon : ''" class="icon" />
-        </div>
+        <svg-icon
+          style="font-size: 30px"
+          :icon-class="row.icon ? row.icon : ''"
+          class="icon"
+        />
       </template>
     </CPage>
 
@@ -107,8 +109,6 @@ export default {
               label: this.$t("menu.title"), //菜单名
               prop: "title",
               span: 6,
-              attributes: {},
-              on: {},
             },
             {
               type: "select",
@@ -116,8 +116,6 @@ export default {
               prop: "type",
               options: this.getDictData("menu_type"),
               span: 6,
-              attributes: {},
-              on: {},
             },
             {
               label: this.$t("menu.status"), //状态
@@ -125,8 +123,6 @@ export default {
               type: "select",
               options: this.getDictData("menu_status"),
               span: 6,
-              attributes: {},
-              on: {},
             },
           ],
         },
@@ -149,15 +145,11 @@ export default {
                 width: 55,
               },
               {
-                label: this.$t("system.no"), //序号
-                type: "index",
-                width: 300,
-              },
-              {
                 label: this.$t("menu.sort"), //排序
                 prop: "sort",
                 width: 100,
                 sortable: true,
+                treeNode: true,
               },
               {
                 type: "custom",
@@ -189,7 +181,7 @@ export default {
               {
                 label: this.$t("menu.path"), //路由路径
                 prop: "path",
-                width: 200,
+                width: 150,
                 sortable: true,
               },
               {
@@ -295,7 +287,7 @@ export default {
             actions: [
               {
                 type: "add",
-                permission: [],
+                permission: ["configuration:menu:add"],
                 show({ row, index }) {
                   return row.type !== "button";
                 },
@@ -308,7 +300,7 @@ export default {
               },
               {
                 type: "config",
-                permission: [],
+                permission: ["configuration:menu:add"],
                 text: "配置",
                 icon: "el-icon-help",
                 show({ row, index }) {
@@ -323,7 +315,7 @@ export default {
               },
               {
                 type: "edit",
-                permission: [],
+                permission: ["configuration:menu:edit"],
                 click({ row, index }) {
                   self.title = "编辑";
                   self.dialogType = "edit";
@@ -333,7 +325,7 @@ export default {
               },
               {
                 type: "detail",
-                permission: [],
+                permission: ["configuration:menu:detail"],
                 click({ row, index }) {
                   self.title = "详情";
                   self.dialogType = "detail";
@@ -343,9 +335,9 @@ export default {
               },
               {
                 type: "remove",
-                permission: [],
+                permission: ["configuration:menu:delete"],
                 click({ row, index }) {
-                  self.$service.configuration.dict.delete([row]).then((res) => {
+                  self.$service.configuration.menu.delete([row]).then((res) => {
                     if (res.code === 200) {
                       self.$message.success("删除成功");
                       self.$refs.pageRef.search();
@@ -396,10 +388,6 @@ export default {
                   prop: "type",
                   span: 24,
                   options: this.getDictData("menu_type"),
-                  attributes: {},
-                  on: {
-                    change() {},
-                  },
                 },
                 {
                   type: "selectTree",
@@ -412,7 +400,6 @@ export default {
                     label: "title",
                     id: "id",
                   },
-                  on: {},
                 },
                 {
                   type: "custom",
@@ -421,8 +408,6 @@ export default {
                   show: this.formData.type !== "button",
                   componentName: "icon",
                   span: 12,
-                  attributes: {},
-                  on: {},
                 },
                 {
                   type: "input",
@@ -436,8 +421,6 @@ export default {
                     },
                   ],
                   span: 6,
-                  attributes: {},
-                  on: {},
                 },
                 {
                   type: "input",
@@ -452,8 +435,6 @@ export default {
                       trigger: "blur",
                     },
                   ],
-                  attributes: {},
-                  on: {},
                 },
                 {
                   type: "input",
@@ -468,8 +449,6 @@ export default {
                       trigger: "blur",
                     },
                   ],
-                  attributes: {},
-                  on: {},
                 },
                 {
                   type: "input",
@@ -484,16 +463,12 @@ export default {
                       trigger: "blur",
                     },
                   ],
-                  attributes: {},
-                  on: {},
                 },
                 {
                   type: "number",
                   label: this.$t("menu.sort"), //排序
                   prop: "sort",
                   span: 6,
-                  attributes: {},
-                  on: {},
                 },
 
                 {
@@ -501,8 +476,6 @@ export default {
                   label: this.$t("menu.permission"), //权限标识
                   prop: "permission",
                   span: 6,
-                  attributes: {},
-                  on: {},
                 },
                 {
                   type: "radio",
@@ -510,8 +483,6 @@ export default {
                   prop: "status",
                   options: this.getDictData("menu_status"),
                   span: 6,
-                  attributes: {},
-                  on: {},
                 },
                 {
                   type: "radio",
@@ -520,8 +491,6 @@ export default {
                   show: this.formData.type !== "button",
                   options: this.getDictData("isNo"),
                   span: 6,
-                  attributes: {},
-                  on: {},
                 },
                 {
                   type: "radio",
@@ -530,8 +499,6 @@ export default {
                   show: this.formData.type === "menu",
                   options: this.getDictData("isNo"),
                   span: 6,
-                  attributes: {},
-                  on: {},
                 },
                 {
                   type: "radio",
@@ -540,8 +507,6 @@ export default {
                   show: this.formData.type === "menu",
                   options: this.getDictData("isNo"),
                   span: 6,
-                  attributes: {},
-                  on: {},
                 },
               ],
             },

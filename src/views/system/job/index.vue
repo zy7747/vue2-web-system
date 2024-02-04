@@ -53,24 +53,18 @@ export default {
               label: this.$t("job.jobName"), //任务名称
               prop: "jobName",
               span: 6,
-              attributes: {},
-              on: {},
             },
             {
               type: "input",
               label: this.$t("job.jobCode"), //任务编码
               prop: "jobCode",
               span: 6,
-              attributes: {},
-              on: {},
             },
             {
               type: "input",
               label: this.$t("job.status"), //状态
               prop: "status",
               span: 6,
-              attributes: {},
-              on: {},
             },
           ],
         },
@@ -156,7 +150,7 @@ export default {
             tools: [
               {
                 type: "add",
-                permission: ["user:person:add"],
+                permission: ["system:job:add"],
                 on: {
                   click() {
                     self.title = "新增";
@@ -167,30 +161,28 @@ export default {
               },
               {
                 type: "remove",
-                permission: ["user:person:delete"],
+                permission: ["system:job:delete"],
                 options: {
                   disabled: self.checkList.length === 0,
                 },
                 on: {
                   click() {
-                    self.$modal.confirm("是否删除").then(() => {
-                      self.$service.system.job
-                        .delete(self.checkList)
-                        .then((res) => {
-                          if (res.code === 200) {
-                            self.$message.success("删除成功");
-                            self.$refs.pageRef.search();
-                          } else {
-                            self.$message.warning(res.message);
-                          }
-                        });
-                    });
+                    self.$service.system.job
+                      .delete(self.checkList)
+                      .then((res) => {
+                        if (res.code === 200) {
+                          self.$message.success("删除成功");
+                          self.$refs.pageRef.search();
+                        } else {
+                          self.$message.warning(res.message);
+                        }
+                      });
                   },
                 },
               },
               {
                 type: "import",
-                permission: ["user:person:import"],
+                permission: ["system:job:import"],
                 options: {
                   api() {
                     return self.$service.system.job.import();
@@ -199,19 +191,19 @@ export default {
               },
               {
                 type: "export",
-                permission: ["user:person:export"],
+                permission: ["system:job:export"],
                 options: {
                   api() {
                     return self.$service.system.job.export();
                   },
-                  fileName: "地区",
+                  fileName: self.$t("job.job"),
                 },
               },
             ],
             actions: [
               {
                 type: "edit",
-                permission: [],
+                permission: ["system:job:edit"],
                 click({ row, index }) {
                   self.title = "编辑";
                   self.dialogType = "edit";
@@ -221,7 +213,6 @@ export default {
               },
               {
                 type: "detail",
-                permission: [],
                 click({ row, index }) {
                   self.title = "详情";
                   self.dialogType = "detail";
@@ -231,7 +222,7 @@ export default {
               },
               {
                 type: "remove",
-                permission: [],
+                permission: ["system:job:delete"],
                 click({ row, index }) {
                   self.$service.system.job.delete([row]).then((res) => {
                     if (res.code === 200) {
@@ -259,7 +250,7 @@ export default {
               "has-check": this.dialogType !== "detail",
               formData: this.formData,
               width: "1200px",
-              title: this.$t("menu.menu"),
+              title: this.$t("job.job"),
               handleConfirm() {
                 // 新增/修改
                 self.$service.system.job
@@ -278,14 +269,12 @@ export default {
                   label: "任务名称",
                   prop: "jobName",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: "任务编码",
                   prop: "jobCode",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "datePicker",
@@ -297,39 +286,31 @@ export default {
                     valueFormat: "yyyy-MM-dd HH:mm:ss",
                   },
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "number",
                   label: "执行次数",
                   prop: "executeCount",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "number",
                   label: "执行间隔",
                   prop: "executeInterval",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: "备注",
                   prop: "remark",
                   span: 12,
-                  on: {},
                 },
                 {
                   type: "select",
                   label: "状态",
                   prop: "status",
-                  attributes: {
-                    // disabled: true,
-                  },
                   span: 6,
                   options: this.getDictData("job_status"),
-                  on: {},
                 },
               ],
             },

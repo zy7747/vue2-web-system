@@ -73,4 +73,8 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
+
+::v-deep .pagination-container {
+  padding: 10px 16px !important;
+}
 </style>

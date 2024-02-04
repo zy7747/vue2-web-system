@@ -7,9 +7,11 @@
       </template>
 
       <template slot="table_icon" slot-scope="{ row, index }">
-        <div style="width: 100px; font-size: 30px">
-          <svg-icon :icon-class="row.icon ? row.icon : ''" class="icon" />
-        </div>
+        <svg-icon
+          style="font-size: 30px"
+          :icon-class="row.icon ? row.icon : ''"
+          class="icon"
+        />
       </template>
     </CPage>
   </div>
@@ -202,18 +204,19 @@ export default {
                 type: "index",
               },
               {
+                label: this.$t("area.name"), //名称
+                prop: "name",
+                width: 200,
+                sortable: true,
+                treeNode: true,
+              },
+              {
                 label: this.$t("area.icon"), //地区图标
                 prop: "icon",
                 width: 150,
                 sortable: true,
                 type: "custom",
                 componentName: "icon",
-              },
-              {
-                label: this.$t("area.name"), //名称
-                prop: "name",
-                width: 150,
-                sortable: true,
               },
               {
                 label: this.$t("area.cname"), //中文名称
@@ -314,7 +317,7 @@ export default {
             tools: [
               {
                 type: "add",
-                permission: ["user:person:add"],
+                permission: ["configuration:area:add"],
                 on: {
                   click() {
                     self.title = "新增";
@@ -326,30 +329,28 @@ export default {
               },
               {
                 type: "remove",
-                permission: ["user:person:delete"],
+                permission: ["configuration:area:delete"],
                 options: {
                   disabled: self.checkList.length === 0,
                 },
                 on: {
                   click() {
-                    self.$modal.confirm("是否删除").then(() => {
-                      self.$service.configuration.dict
-                        .delete(self.checkList)
-                        .then((res) => {
-                          if (res.code === 200) {
-                            self.$message.success("删除成功");
-                            self.$refs.pageRef.search();
-                          } else {
-                            self.$message.warning(res.message);
-                          }
-                        });
-                    });
+                    self.$service.configuration.dict
+                      .delete(self.checkList)
+                      .then((res) => {
+                        if (res.code === 200) {
+                          self.$message.success("删除成功");
+                          self.$refs.pageRef.search();
+                        } else {
+                          self.$message.warning(res.message);
+                        }
+                      });
                   },
                 },
               },
               {
                 type: "import",
-                permission: ["user:person:import"],
+                permission: ["configuration:area:import"],
                 options: {
                   api() {
                     return self.$service.configuration.area.import();
@@ -358,19 +359,19 @@ export default {
               },
               {
                 type: "export",
-                permission: ["user:person:export"],
+                permission: ["configuration:area:export"],
                 options: {
                   api() {
                     return self.$service.configuration.area.export();
                   },
-                  fileName: "地区",
+                  fileName: self.$t("area.area"),
                 },
               },
             ],
             actions: [
               {
                 type: "edit",
-                permission: [],
+                permission: ["configuration:area:edit"],
                 click({ row, index }) {
                   self.title = "编辑";
                   self.dialogType = "edit";
@@ -380,7 +381,6 @@ export default {
               },
               {
                 type: "detail",
-                permission: [],
                 click({ row, index }) {
                   self.title = "详情";
                   self.dialogType = "detail";
@@ -390,7 +390,7 @@ export default {
               },
               {
                 type: "remove",
-                permission: [],
+                permission: ["configuration:area:delete"],
                 click({ row, index }) {
                   self.$service.configuration.dict.delete([row]).then((res) => {
                     if (res.code === 200) {
@@ -438,140 +438,120 @@ export default {
                   prop: "icon",
                   componentName: "icon",
                   span: 12,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.id"), //id
                   prop: "id",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.parentId"), //父节点id
                   prop: "parentId",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.name"), //名称
                   prop: "name",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.cname"), //中文名称
                   prop: "cname",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.fullName"), //全称
                   prop: "fullName",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.fullCname"), //中文全称
                   prop: "fullCname",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.otherName"), //别称
                   prop: "otherName",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.address"), //地址
                   prop: "address",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.type"), //区域类型
                   prop: "type",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.code"), //区域编码
                   prop: "code",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.axis"), //坐标
                   prop: "axis",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.acreage"), //面积
                   prop: "acreage",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.population"), //人口
                   prop: "population",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.climate"), //气候
                   prop: "climate",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.capital"), //首都
                   prop: "capital",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.sort"), //排序
                   prop: "sort",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.level"), //层级
                   prop: "level",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.status"), //状态
                   prop: "status",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("area.remark"), //备注
                   prop: "remark",
                   span: 6,
-                  on: {},
                 },
               ],
             },

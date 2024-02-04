@@ -113,4 +113,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+::v-deep .el-tabs__content {
+  padding: 0 10px !important;
+}
+</style>

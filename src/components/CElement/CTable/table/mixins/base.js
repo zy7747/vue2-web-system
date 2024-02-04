@@ -37,7 +37,7 @@ export default {
   data() {
     return {
       page: 1,
-      limit: 10,
+      limit: 20,
       total: 0,
       loading: false,
       cTableData: this.tableData,
@@ -80,8 +80,16 @@ export default {
             this.cTableData = data?.list;
             //请求结束
             this.loading = false;
+
+            if (this.tableType !== "vxeTable") {
+              this.$refs.basicTable.$refs.table.bodyWrapper.scrollTop = 0;
+            }
           } else {
             this.loading = false;
+
+            if (this.tableType !== "vxeTable") {
+              this.$refs.basicTable.$refs.table.bodyWrapper.scrollTop = 0;
+            }
           }
         })
         .catch(() => {

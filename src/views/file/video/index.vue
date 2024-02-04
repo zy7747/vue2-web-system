@@ -215,7 +215,6 @@ export default {
               prop: "videoName",
               span: 6,
               attributes: {},
-              on: {},
             },
             {
               type: "select",
@@ -224,7 +223,6 @@ export default {
               options: this.getDictData("video_category"),
               span: 6,
               attributes: {},
-              on: {},
             },
             {
               type: "select",
@@ -233,7 +231,6 @@ export default {
               options: this.getDictData("video_type"),
               span: 6,
               attributes: {},
-              on: {},
             },
             {
               type: "select",
@@ -242,7 +239,6 @@ export default {
               options: this.getDictData("video_area"),
               span: 6,
               attributes: {},
-              on: {},
             },
             {
               type: "select",
@@ -251,7 +247,6 @@ export default {
               options: this.getDictData("video_sort_way"),
               span: 6,
               attributes: {},
-              on: {},
             },
             {
               type: "input",
@@ -259,7 +254,6 @@ export default {
               prop: "label",
               span: 6,
               attributes: {},
-              on: {},
             },
             {
               type: "input",
@@ -267,7 +261,6 @@ export default {
               prop: "author",
               span: 6,
               attributes: {},
-              on: {},
             },
             {
               type: "select",
@@ -276,7 +269,6 @@ export default {
               span: 6,
               options: this.getDictData("video_status"),
               attributes: {},
-              on: {},
             },
             {
               type: "datePicker",
@@ -288,7 +280,6 @@ export default {
                 "value-format": "yyyy-MM",
                 format: "yyyy-MM",
               },
-              on: {},
             },
             {
               type: "dateTimePicker",
@@ -301,7 +292,6 @@ export default {
                 "value-format": "yyyy-MM",
                 format: "yyyy-MM",
               },
-              on: {},
             },
           ],
         },
@@ -322,14 +312,14 @@ export default {
                 label: this.$t("video.picture"), //视频图片
                 prop: "picture",
                 type: "picture",
-                width: 150,
+                width: 120,
                 sortable: true,
               },
               {
                 label: this.$t("video.videoName"), //视频名称
                 prop: "videoName",
                 type: "link",
-                width: 150,
+                width: 300,
                 sortable: true,
                 click: (row, index) => {
                   this.videoPlay(row.id);
@@ -338,89 +328,89 @@ export default {
               {
                 label: this.$t("video.title"), //视频标题
                 prop: "title",
-                width: 150,
+                width: 300,
                 sortable: true,
               },
               {
                 label: this.$t("video.type"), //视频分类
                 prop: "type",
                 translation: "video_category",
-                width: 150,
+                width: 120,
                 sortable: true,
               },
               {
                 label: this.$t("video.region"), //视频地区
                 prop: "region",
                 translation: "video_area",
-                width: 150,
+                width: 120,
                 sortable: true,
               },
               {
                 label: this.$t("video.videoType"), //视频类型
                 prop: "videoType",
                 translation: "video_type",
-                width: 150,
+                width: 120,
                 sortable: true,
               },
               {
                 label: this.$t("video.author"), //作者
                 prop: "author",
-                width: 150,
+                width: 120,
                 sortable: true,
               },
               {
                 label: this.$t("video.createYear"), //创作年份
                 prop: "createYear",
-                width: 150,
+                width: 120,
                 sortable: true,
               },
               {
                 label: this.$t("video.label"), //标签
                 prop: "label",
-                width: 150,
+                width: 120,
                 sortable: true,
               },
               {
                 label: this.$t("video.season"), //季
                 prop: "season",
-                width: 150,
+                width: 100,
                 sortable: true,
               },
               {
                 label: this.$t("video.episode"), //集
                 prop: "episode",
-                width: 150,
+                width: 100,
                 sortable: true,
               },
               {
                 label: this.$t("video.duration"), //时长
                 prop: "duration",
-                width: 150,
+                width: 100,
                 sortable: true,
               },
               {
                 label: "点赞量",
                 prop: "starsNum",
-                width: 150,
+                width: 100,
                 sortable: true,
               },
               {
                 label: "收藏量",
                 prop: "collectionNum",
-                width: 150,
+                width: 100,
                 sortable: true,
               },
               {
                 label: "播放量",
                 prop: "playNum",
-                width: 150,
+                width: 100,
                 sortable: true,
               },
 
               {
                 label: this.$t("video.status"), //状态
                 prop: "status",
-                width: 150,
+                width: 100,
                 sortable: true,
                 translation: "video_status",
               },
@@ -441,13 +431,13 @@ export default {
               {
                 label: this.$t("video.createTime"), //创建时间
                 prop: "createTime",
-                width: 150,
+                width: 300,
                 sortable: true,
               },
               {
                 label: this.$t("video.updateTime"), //更新时间
                 prop: "updateTime",
-                width: 150,
+                width: 300,
                 sortable: true,
               },
               {
@@ -460,7 +450,7 @@ export default {
             tools: [
               {
                 type: "add",
-                permission: ["user:person:add"],
+                permission: ["file:video:add"],
                 on: {
                   click() {
                     self.title = "新增";
@@ -473,51 +463,51 @@ export default {
               },
               {
                 type: "remove",
-                permission: ["user:person:delete"],
+                permission: ["file:video:delete"],
                 options: {
                   disabled: self.checkList.length === 0,
                 },
                 on: {
                   click() {
-                    self.$modal.confirm("是否删除").then(() => {
-                      self.$service.file.video
-                        .delete(self.checkList)
-                        .then((res) => {
-                          if (res.code === 200) {
-                            self.$message.success("删除成功");
-                            self.$refs.pageRef.search();
-                          } else {
-                            self.$message.warning(res.message);
-                          }
-                        });
-                    });
+                    self.$service.file.video
+                      .delete(self.checkList)
+                      .then((res) => {
+                        if (res.code === 200) {
+                          self.$message.success("删除成功");
+                          self.$refs.pageRef.search();
+                        } else {
+                          self.$message.warning(res.message);
+                        }
+                      });
                   },
                 },
               },
               {
-                type: "import",
-                permission: ["user:person:import"],
-                options: {
-                  api() {
-                    return self.$service.file.video.import();
+                text: "批量导入",
+                permission: ["file:video:import"],
+                icon: "el-icon-upload2",
+                type: "info",
+                on: {
+                  click() {
+                    self.imports();
                   },
                 },
               },
               {
                 type: "export",
-                permission: ["user:person:export"],
+                permission: ["file:video:export"],
                 options: {
                   api() {
                     return self.$service.file.video.export();
                   },
-                  fileName: "个人中心",
+                  fileName: self.$t("video.video"),
                 },
               },
             ],
             actions: [
               {
                 type: "edit",
-                permission: [],
+                permission: ["file:video:edit"],
                 click({ row, index }) {
                   self.title = "编辑";
                   self.dialogType = "edit";
@@ -528,7 +518,6 @@ export default {
               },
               {
                 type: "detail",
-                permission: [],
                 click({ row, index }) {
                   self.title = "详情";
                   self.dialogType = "detail";
@@ -539,7 +528,7 @@ export default {
               },
               {
                 type: "remove",
-                permission: [],
+                permission: ["file:video:delete"],
                 click({ row, index }) {
                   self.$service.file.video.delete([row]).then((res) => {
                     if (res.code === 200) {
@@ -585,7 +574,6 @@ export default {
                       trigger: "blur",
                     },
                   ],
-                  on: {},
                 },
                 {
                   type: "selectTree",
@@ -617,7 +605,6 @@ export default {
                       trigger: "blur",
                     },
                   ],
-                  on: {},
                 },
                 {
                   type: "input",
@@ -631,7 +618,6 @@ export default {
                       trigger: "blur",
                     },
                   ],
-                  on: {},
                 },
                 {
                   type: "select",
@@ -646,7 +632,6 @@ export default {
                     },
                   ],
                   options: this.getDictData("video_category"),
-                  on: {},
                 },
                 {
                   type: "select",
@@ -661,7 +646,6 @@ export default {
                     },
                   ],
                   options: this.getDictData("video_type"),
-                  on: {},
                 },
                 {
                   type: "select",
@@ -676,21 +660,18 @@ export default {
                     },
                   ],
                   options: this.getDictData("video_area"),
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("video.label"), //标签
                   prop: "label",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
                   label: this.$t("video.author"), //作者
                   prop: "author",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "select",
@@ -705,7 +686,6 @@ export default {
                     },
                   ],
                   options: this.getDictData("video_status"),
-                  on: {},
                 },
                 {
                   type: "avatarUpload",
@@ -717,7 +697,6 @@ export default {
                       parentId: "1738494567264088065",
                     },
                   },
-                  on: {},
                 },
 
                 {
@@ -729,14 +708,12 @@ export default {
                     format: "yyyy-MM-dd",
                     valueFormat: "yyyy-MM-dd",
                   },
-                  on: {},
                 },
                 {
                   type: "number",
                   label: this.$t("video.season"), //季
                   prop: "season",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "number",
@@ -746,7 +723,6 @@ export default {
                   },
                   prop: "episode",
                   span: 6,
-                  on: {},
                 },
                 {
                   type: "input",
@@ -757,7 +733,6 @@ export default {
                     type: "textarea",
                     autosize: { minRows: 4, maxRows: 4 },
                   },
-                  on: {},
                 },
               ],
             },
@@ -792,7 +767,6 @@ export default {
           prop: "type",
           span: 8,
           options: this.getDictData("video_category"),
-          on: {},
         },
         {
           type: "select",
@@ -800,7 +774,6 @@ export default {
           prop: "videoType",
           span: 8,
           options: this.getDictData("video_type"),
-          on: {},
         },
         {
           type: "select",
@@ -808,7 +781,6 @@ export default {
           prop: "region",
           span: 8,
           options: this.getDictData("video_area"),
-          on: {},
         },
       ];
     },
@@ -883,8 +855,8 @@ export default {
       this.$service.file.video.saveList(queryData).then((res) => {
         if (res.code === 200) {
           this.$message.success("提交成功");
-          this.search();
-          this.$refs.dialog.handleClose();
+          this.$refs.pageRef.search();
+          this.$refs.pageRef.dialogClose();
         } else {
           this.$message.warning(res.message);
         }
@@ -992,7 +964,7 @@ export default {
 <style lang="scss" scoped>
 .videoList {
   width: 100%;
-  max-height: 300px;
+  height: 400px;
   overflow: auto;
 }
 
