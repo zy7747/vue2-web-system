@@ -6,6 +6,7 @@
     "dev": "vue-cli-service serve --mode dev",
     "sit": "vue-cli-service serve --mode sit",
     "prod": "vue-cli-service serve --mode prod",
+    "sh:dev": "bash ./build/build.sh prod dev",
     "sh:prod": "bash ./build/build.sh prod prod",
     "build:dev": "vue-cli-service build --mode dev",
     "build:sit": "vue-cli-service build --mode sit",
