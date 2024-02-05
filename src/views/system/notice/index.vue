@@ -117,7 +117,7 @@ export default {
               {
                 label: this.$t("notice.noticeContent"), //消息内容
                 prop: "noticeContent",
-                width: 150,
+                width: 200,
                 sortable: true,
               },
               {
@@ -165,12 +165,13 @@ export default {
                 label: this.$t("notice.createTime"), //创建时间
                 prop: "createTime",
                 sortable: true,
+                width: 200,
               },
               {
                 label: this.$t("system.action"), //操作
                 type: "action",
                 fixed: "right",
-                width: 160,
+                width: 200,
               },
             ],
             tools: [

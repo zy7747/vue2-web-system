@@ -34,5 +34,3 @@ function doSomeThing() {
 }
 
 container.onmousemove = debounce(doSomeThing, 300, true);
-//注意这时候debounce的agruments装的是事件对象mousemove
-//这个true是为了一开始立即执行

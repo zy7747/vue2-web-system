@@ -123,22 +123,32 @@ export default {
       queryData: {
         id: null,
         parentId: null,
-        dictName: null,
-        dictCode: null,
-        dictType: null,
+        videoName: null,
+        title: null,
+        type: null,
+        region: null,
+        url: null,
+        picture: null,
+        videoType: null,
+        profile: null,
         label: null,
-        value: "",
-        color: null,
-        css: null,
-        sort: null,
-        params: null,
+        author: null,
+        sortWay: null,
+        season: null,
+        episode: null,
+        duration: null,
+        playNum: null,
         status: null,
         remark: null,
         creator: null,
         updater: null,
+        createYear: null,
         createTime: null,
         updateTime: null,
         isDeleted: null,
+        tenantId: null,
+        version: null,
+        isCollection: null,
       },
       //新增/修改/详情数据
       formData: {
@@ -246,7 +256,6 @@ export default {
               prop: "sortWay",
               options: this.getDictData("video_sort_way"),
               span: 6,
-              attributes: {},
             },
             {
               type: "input",
@@ -294,6 +303,7 @@ export default {
               },
             },
           ],
+          queryData: this.queryData,
         },
         tableConfig: [
           {
@@ -545,6 +555,7 @@ export default {
               },
             },
             query: (page, size) => {
+              console.log({ page, size, ...self.queryData });
               return self.$service.file.video
                 .page({ page, size, ...self.queryData })
                 .then((res) => {

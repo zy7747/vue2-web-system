@@ -22,11 +22,13 @@
           text="确定"
           icon="el-icon-circle-check"
           type="primary"
+          round
           @click="handleConfirm()"
         />
         <c-button
           text="取消"
-          style="margin-left: 5px"
+          round
+          style="margin-left: 10px"
           icon="el-icon-circle-close"
           @click="handleClose()"
         />

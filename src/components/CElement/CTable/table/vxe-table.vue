@@ -215,6 +215,8 @@ export default {
       oldData: {},
       //编辑的行的下标
       editLineIndex: null,
+      isEdit: false,
+      isAdd: false,
     };
   },
   computed: {
@@ -232,8 +234,8 @@ export default {
   },
   methods: {
     //多选
-    handleSelectionChange({ checked }) {
-      this.$attrs.options?.selection(checked);
+    handleSelectionChange(val) {
+      this.$attrs.options?.selection(val);
     },
     isForm(index) {
       return this.editLineIndex === index;
@@ -241,18 +243,20 @@ export default {
     //新建表单
     createForm(createData = {}) {
       if (this.tableData.length > 0) {
-        if (!this.tableData[0].id || this.editLineIndex !== null) {
+        if (this.editLineIndex !== null) {
           this.$message.warning("请先保存数据");
         } else {
           this.$emit("createForm");
           this.tableData.unshift(createData);
           this.formData = this.tableData[0];
           this.editLineIndex = 0;
+          this.isAdd = true;
         }
       } else {
         this.tableData.unshift(createData);
         this.formData = this.tableData[0];
         this.editLineIndex = 0;
+        this.isAdd = true;
       }
     },
     //编辑表单
@@ -263,18 +267,26 @@ export default {
         this.formData = row;
         this.oldData = JSON.parse(JSON.stringify(row));
         this.editLineIndex = index;
+        this.isEdit = true;
       }
     },
     //取消
     cancel({ row, index }) {
       //如果没保存数据取消删除行
-      if (!row.id) {
+      if (this.isAdd) {
         this.tableData.splice(0, 1);
         this.editLineIndex = null;
+        this.isAdd = false;
         this.formData = {};
       } else {
-        this.$set(this.tableData, this.editLineIndex, this.oldData);
+        this.$set(
+          this.tableData,
+          this.editLineIndex,
+          JSON.parse(JSON.stringify(this.oldData))
+        );
+        this.oldData = {};
         this.editLineIndex = null;
+        this.isEdit = false;
         this.formData = {};
       }
     },
@@ -285,6 +297,8 @@ export default {
         .then(() => {
           if (noLink) {
             this.editLineIndex = null;
+            this.isEdit = false;
+            this.isAdd = false;
             this.formData = {};
             save({ row, index });
           } else {
@@ -301,30 +315,15 @@ export default {
         this.tableData.splice(index, 1);
         remove({ row, index });
       } else {
-        save({ row, index });
+        remove({ row, index });
       }
     },
     //刷新表单
     refreshForm() {
       this.editLineIndex = null;
+      this.isAdd = false;
+      this.isEdit = false;
       this.formData = {};
-    },
-    // 拖拽排序
-    rowDrop() {
-      const el = this.$refs.table.$el.querySelectorAll(
-        ".el-table__body-wrapper > table > tbody"
-      )[0];
-
-      Sortable.create(el, {
-        onEnd: (evt) => {
-          const targetRow = this.tableData.splice(evt.oldIndex, 1)[0];
-          this.tableData.splice(evt.newIndex, 0, targetRow);
-
-          for (let index in this.tableData) {
-            this.tableData[index].sort = parseInt(index);
-          }
-        },
-      });
     },
     //数据下拉筛选
     dataFilters(column) {

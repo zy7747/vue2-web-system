@@ -3,7 +3,10 @@
   <div>
     <CPage ref="pageRef" :pageOption="pageOption">
       <template slot="dialog_form_icon">
-        <IconSelect :loadIconList="['menuIcon']" v-model="formData.icon" />
+        <IconSelect
+          :loadIconList="['menuIcon', 'appIcon']"
+          v-model="formData.icon"
+        />
       </template>
 
       <template slot="table_icon" slot-scope="{ row, index }">
@@ -125,12 +128,14 @@ export default {
               span: 6,
             },
           ],
+          queryData: this.queryData,
         },
         tableConfig: [
           {
             resizable: true,
             "row-id": "id",
             tableType: "vxeTable",
+            "row-class-name": this.tableRowClassName,
             "tree-config": {
               transform: true,
               rowField: "id",
@@ -149,6 +154,7 @@ export default {
                 prop: "sort",
                 width: 100,
                 sortable: true,
+                fixed: "left",
                 treeNode: true,
               },
               {
@@ -227,7 +233,7 @@ export default {
               {
                 type: "action",
                 fixed: "right",
-                width: 250,
+                width: 300,
               },
             ],
             tools: [
@@ -565,8 +571,35 @@ export default {
         updateTime: null,
       });
     },
+    tableRowClassName({ row }) {
+      if (row.type === "system") {
+        // return "list-system";
+      } else if (row.type === "directory") {
+        return "list-directory";
+      } else if (row.type === "menu") {
+        return "list-menu";
+      } else {
+        return "list-button";
+      }
+    },
   },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.list-system {
+  background-color: #fce4e4 !important;
+}
+
+.list-directory {
+  background-color: #f0f9eb !important;
+}
+
+.list-menu {
+  background-color: #f8ecda !important;
+}
+
+.list-button {
+  background-color: #ecf5ff !important;
+}
+</style>

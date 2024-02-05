@@ -247,12 +247,14 @@ export default {
             prop: "creator",
             width: 150,
             sortable: true,
+            translation: "user",
           },
           {
             label: this.$t("person.updater"), //更新人
             prop: "updater",
             width: 150,
             sortable: true,
+            translation: "user",
           },
           {
             label: this.$t("person.createTime"), //创建时间

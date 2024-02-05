@@ -80,6 +80,7 @@ export default {
               span: 6,
             },
           ],
+          queryData: this.queryData,
         },
         tableConfig: [
           {
@@ -313,6 +314,7 @@ export default {
       return {
         title: self.$t("dict.dict"),
         isRowDrop: true,
+        "row-key": "id",
         tableColumn: [
           {
             type: "selection",

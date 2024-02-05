@@ -223,7 +223,7 @@ export default {
               {
                 type: "action",
                 fixed: "right",
-                "min-width": 150,
+                "min-width": 200,
               },
             ],
             tools: [

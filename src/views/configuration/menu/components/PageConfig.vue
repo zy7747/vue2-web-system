@@ -100,6 +100,8 @@ export default {
     queryOption() {
       const self = this;
       return {
+        isRowDrop: true,
+        "row-key": "prop",
         tableColumn: [
           {
             type: "selection",
@@ -239,6 +241,7 @@ export default {
       const self = this;
       return {
         isRowDrop: true,
+        "row-key": "prop",
         tableColumn: [
           {
             type: "selection",
@@ -381,6 +384,8 @@ export default {
     formOption() {
       const self = this;
       return {
+        isRowDrop: true,
+        "row-key": "prop",
         tableColumn: [
           {
             type: "selection",

@@ -244,6 +244,7 @@ export default {
               span: 6,
             },
           ],
+          queryData: this.queryData,
         },
         tableConfig: [
           {

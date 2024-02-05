@@ -51,6 +51,7 @@ export default {
           title: this.gridOption.title,
           //查询表单基础参数
           queryParams: this.gridOption.queryParams,
+          queryData: this.queryData,
         },
         tableConfig: [
           {
@@ -157,7 +158,6 @@ export default {
               return self.api
                 .page({ page, size, ...self.queryData })
                 .then((res) => {
-                  console.log(123, res.data);
                   return res.data;
                 });
             },

@@ -201,6 +201,7 @@ export default {
       //编辑的行的下标
       editLineIndex: null,
       isEdit: false,
+      isAdd: false,
     };
   },
   computed: {
@@ -227,20 +228,20 @@ export default {
     //新建表单
     createForm(createData = {}) {
       if (this.tableData.length > 0) {
-        if (this.isEdit || this.editLineIndex !== null) {
+        if (this.editLineIndex !== null) {
           this.$message.warning("请先保存数据");
         } else {
           this.$emit("createForm");
           this.tableData.unshift(createData);
           this.formData = this.tableData[0];
           this.editLineIndex = 0;
-          this.isEdit = true;
+          this.isAdd = true;
         }
       } else {
         this.tableData.unshift(createData);
         this.formData = this.tableData[0];
         this.editLineIndex = 0;
-        this.isEdit = true;
+        this.isAdd = true;
       }
     },
     //编辑表单
@@ -257,13 +258,17 @@ export default {
     //取消
     cancel({ row, index }) {
       //如果没保存数据取消删除行
-      if (this.isEdit && JSON.stringify(this.oldData) == "{}") {
+      if (this.isAdd) {
         this.tableData.splice(0, 1);
         this.editLineIndex = null;
-        this.isEdit = false;
+        this.isAdd = false;
         this.formData = {};
       } else {
-        this.$set(this.tableData, this.editLineIndex, this.oldData);
+        this.$set(
+          this.tableData,
+          this.editLineIndex,
+          JSON.parse(JSON.stringify(this.oldData))
+        );
         this.oldData = {};
         this.editLineIndex = null;
         this.isEdit = false;
@@ -278,6 +283,7 @@ export default {
           if (noLink) {
             this.editLineIndex = null;
             this.isEdit = false;
+            this.isAdd = false;
             this.formData = {};
             save({ row, index });
           } else {
@@ -300,6 +306,7 @@ export default {
     //刷新表单
     refreshForm() {
       this.editLineIndex = null;
+      this.isAdd = false;
       this.isEdit = false;
       this.formData = {};
     },
@@ -317,8 +324,6 @@ export default {
           for (let index in this.tableData) {
             this.tableData[index].sort = parseInt(index);
           }
-
-          console.log(123, this.tableData);
         },
       });
     },
