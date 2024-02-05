@@ -157,6 +157,7 @@ export default {
               return self.api
                 .page({ page, size, ...self.queryData })
                 .then((res) => {
+                  console.log(123, res.data);
                   return res.data;
                 });
             },
@@ -190,6 +191,9 @@ export default {
           this.formData = res.data;
         }
       });
+    },
+    search() {
+      this.$refs.pageRef.search();
     },
     //重置新增修改表单数据
     resetForm() {

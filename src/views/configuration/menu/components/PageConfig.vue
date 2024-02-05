@@ -10,11 +10,11 @@
         <CTable ref="queryParams" :tableOption="queryOption" />
       </el-tab-pane>
 
-      <el-tab-pane label="查询表单" name="查询表单">
+      <el-tab-pane label="表格" name="表格">
         <CTable ref="tableColumn" :tableOption="tableOption" />
       </el-tab-pane>
 
-      <el-tab-pane label="编辑详情" name="编辑详情">
+      <el-tab-pane label="编辑/详情" name="编辑/详情">
         <CTable ref="formParams" :tableOption="formOption" />
       </el-tab-pane>
     </el-tabs>
@@ -41,7 +41,9 @@ export default {
       pageData: {
         id: null,
         menuId: null,
-        content: null,
+        title: null,
+        api: null,
+        permission: null,
         status: null,
       },
       active: "查询条件",
@@ -70,8 +72,20 @@ export default {
         },
         {
           type: "input",
-          label: "标题", //状态
+          label: "标题", //标题
           prop: "title",
+          span: 6,
+        },
+        {
+          type: "input",
+          label: "接口", //接口
+          prop: "api",
+          span: 6,
+        },
+        {
+          type: "input",
+          label: "权限", //权限
+          prop: "permission",
           span: 6,
         },
         {
@@ -198,7 +212,6 @@ export default {
         tools: [
           {
             type: "add",
-            permission: [],
             on: {
               click() {
                 self.$refs.queryParams.createForm({
@@ -337,7 +350,6 @@ export default {
         tools: [
           {
             type: "add",
-            permission: [],
             on: {
               click() {
                 self.$refs.tableColumn.createForm({
@@ -437,15 +449,6 @@ export default {
             width: 150,
             sortable: true,
           },
-          // {
-          //   label: "宽度",
-          //   prop: "width",
-          //   form: {
-          //     type: "input",
-          //   },
-          //   width: 150,
-          //   sortable: true,
-          // },
           {
             label: "占位",
             prop: "span",
@@ -486,7 +489,6 @@ export default {
         tools: [
           {
             type: "add",
-            permission: [],
             on: {
               click() {
                 self.$refs.formParams.createForm({
@@ -518,10 +520,26 @@ export default {
       this.$service.configuration.page.list({ menuId: row.id }).then((res) => {
         if (res.data.length > 0) {
           this.pageData = res.data[0];
+          const { queryParams, tableColumn, formParams } = JSON.parse(
+            res.data[0].content
+          );
+          this.queryParams = queryParams;
+          this.tableColumn = tableColumn;
+          this.formParams = formParams;
         } else {
           this.pageData.menuId = row.id;
         }
       });
+    },
+    getData() {
+      return {
+        ...this.pageData,
+        content: JSON.stringify({
+          queryParams: this.queryParams,
+          tableColumn: this.tableColumn,
+          formParams: this.formParams,
+        }),
+      };
     },
     //通过接口请求的下拉
     serviceDict() {

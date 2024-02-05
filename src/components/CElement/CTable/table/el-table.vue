@@ -200,6 +200,7 @@ export default {
       oldData: {},
       //编辑的行的下标
       editLineIndex: null,
+      isEdit: false,
     };
   },
   computed: {
@@ -226,18 +227,20 @@ export default {
     //新建表单
     createForm(createData = {}) {
       if (this.tableData.length > 0) {
-        if (!this.tableData[0].id || this.editLineIndex !== null) {
+        if (this.isEdit || this.editLineIndex !== null) {
           this.$message.warning("请先保存数据");
         } else {
           this.$emit("createForm");
           this.tableData.unshift(createData);
           this.formData = this.tableData[0];
           this.editLineIndex = 0;
+          this.isEdit = true;
         }
       } else {
         this.tableData.unshift(createData);
         this.formData = this.tableData[0];
         this.editLineIndex = 0;
+        this.isEdit = true;
       }
     },
     //编辑表单
@@ -248,18 +251,21 @@ export default {
         this.formData = row;
         this.oldData = JSON.parse(JSON.stringify(row));
         this.editLineIndex = index;
+        this.isEdit = true;
       }
     },
     //取消
     cancel({ row, index }) {
       //如果没保存数据取消删除行
-      if (!row.id) {
+      if (this.isEdit) {
         this.tableData.splice(0, 1);
         this.editLineIndex = null;
+        this.isEdit = false;
         this.formData = {};
       } else {
         this.$set(this.tableData, this.editLineIndex, this.oldData);
         this.editLineIndex = null;
+        this.isEdit = false;
         this.formData = {};
       }
     },
@@ -270,6 +276,7 @@ export default {
         .then(() => {
           if (noLink) {
             this.editLineIndex = null;
+            this.isEdit = false;
             this.formData = {};
             save({ row, index });
           } else {
@@ -292,6 +299,7 @@ export default {
     //刷新表单
     refreshForm() {
       this.editLineIndex = null;
+      this.isEdit = false;
       this.formData = {};
     },
     // 拖拽排序

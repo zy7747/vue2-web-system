@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-  <div class="cell">
+  <div>
     <!-- 标签 -->
     <el-tag
       v-if="column.type === 'tag' && row[prop] !== ''"
@@ -75,16 +75,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.cell {
-  width: 100%;
-}
 .link {
   color: #45b3ee;
   font-weight: 550;
   width: 100%;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .link:hover {
   color: #196a96;

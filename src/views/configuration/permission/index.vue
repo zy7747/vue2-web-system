@@ -8,56 +8,6 @@
 <script>
 export default {
   name: "Permission",
-  data() {
-    return {
-      //弹框标题
-      title: "",
-      //弹框类型
-      dialogType: "",
-      //多选
-      checkList: [],
-      //查询数据
-      queryData: {
-        id: null,
-        parentId: null,
-        name: null,
-        code: null,
-        permission: null,
-        type: null,
-        sort: null,
-        visible: null,
-        icon: null,
-        description: null,
-        status: null,
-        remark: null,
-        creator: null,
-        updater: null,
-        createTime: null,
-        updateTime: null,
-      },
-      //新增/修改/详情数据
-      formData: {
-        id: null,
-        parentId: null,
-        name: null,
-        code: null,
-        permission: null,
-        type: null,
-        sort: null,
-        visible: null,
-        icon: null,
-        description: null,
-        status: null,
-        remark: null,
-        creator: null,
-        updater: null,
-        createTime: null,
-        updateTime: null,
-      },
-      //表格数据
-      tableData: [],
-    };
-  },
   computed: {
     gridOption() {
       const self = this;

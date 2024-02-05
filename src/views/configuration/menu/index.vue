@@ -517,7 +517,15 @@ export default {
   },
   methods: {
     handleConfirm() {
-      console.log(123);
+      // 新增/修改
+      this.$service.configuration.page
+        .saveList([this.$refs.pageConfig.getData()])
+        .then((res) => {
+          if (res.code === 200) {
+            this.$message.success("提交成功");
+            this.$refs.configRef.handleClose();
+          }
+        });
     },
     //通过id获取详情
     detail(id) {
