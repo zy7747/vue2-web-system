@@ -25,6 +25,8 @@ export default {
             formParams,
           };
 
+          console.log(this.gridOption);
+
           this.show = true;
         }
       });

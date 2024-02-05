@@ -345,9 +345,6 @@ export default {
             prop: "value",
             form: {
               type: "input",
-              rules: [
-                { required: true, message: "值不能为空", trigger: "blur" },
-              ],
             },
             width: 150,
             sortable: true,
@@ -467,6 +464,7 @@ export default {
                   });
               },
               remove({ row, index }) {
+                console.log(123, row);
                 return self.$service.configuration.dict
                   .delete([row])
                   .then((res) => {

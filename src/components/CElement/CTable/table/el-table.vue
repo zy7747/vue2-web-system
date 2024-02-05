@@ -257,13 +257,14 @@ export default {
     //取消
     cancel({ row, index }) {
       //如果没保存数据取消删除行
-      if (this.isEdit) {
+      if (this.isEdit && JSON.stringify(this.oldData) == "{}") {
         this.tableData.splice(0, 1);
         this.editLineIndex = null;
         this.isEdit = false;
         this.formData = {};
       } else {
         this.$set(this.tableData, this.editLineIndex, this.oldData);
+        this.oldData = {};
         this.editLineIndex = null;
         this.isEdit = false;
         this.formData = {};
@@ -293,7 +294,7 @@ export default {
         this.tableData.splice(index, 1);
         remove({ row, index });
       } else {
-        save({ row, index });
+        remove({ row, index });
       }
     },
     //刷新表单
@@ -316,6 +317,8 @@ export default {
           for (let index in this.tableData) {
             this.tableData[index].sort = parseInt(index);
           }
+
+          console.log(123, this.tableData);
         },
       });
     },

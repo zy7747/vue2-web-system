@@ -199,7 +199,7 @@ export default {
               type: "select",
               options: self.getDictData("is_active"),
             },
-            translation: "dict_status",
+            translation: "is_active",
             width: 150,
             sortable: true,
           },
@@ -216,8 +216,6 @@ export default {
               click() {
                 self.$refs.queryParams.createForm({
                   status: "1",
-                  isFilters: 1,
-                  type: "input",
                   span: 6,
                 });
               },
@@ -240,6 +238,7 @@ export default {
     tableOption() {
       const self = this;
       return {
+        isRowDrop: true,
         tableColumn: [
           {
             type: "selection",
@@ -249,6 +248,11 @@ export default {
             label: this.$t("system.no"), //序号
             type: "index",
             width: 55,
+          },
+          {
+            label: this.$t("system.drop to sort"), //名
+            type: "sort",
+            width: 100,
           },
           {
             label: "字段名",
@@ -337,7 +341,7 @@ export default {
               type: "select",
               options: self.getDictData("is_active"),
             },
-            translation: "dict_status",
+            translation: "is_active",
             width: 150,
             sortable: true,
           },
@@ -355,7 +359,6 @@ export default {
                 self.$refs.tableColumn.createForm({
                   status: "1",
                   isFilters: 1,
-                  type: "input",
                   width: 150,
                 });
               },
@@ -476,7 +479,7 @@ export default {
               type: "select",
               options: self.getDictData("is_active"),
             },
-            translation: "dict_status",
+            translation: "is_active",
             width: 150,
             sortable: true,
           },
@@ -494,7 +497,6 @@ export default {
                 self.$refs.formParams.createForm({
                   status: "1",
                   isFilters: 1,
-                  type: "input",
                   span: 6,
                 });
               },
