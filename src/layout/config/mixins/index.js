@@ -11,16 +11,14 @@ export default {
           label: "布局模式",
           prop: "layout",
           span: 24,
-          attributes: {},
-          on: {},
+          options: this.getDictData("layout"),
         },
         {
           type: "select",
           label: "主题",
           prop: "theme",
           span: 24,
-          attributes: {},
-          on: {},
+          options: this.getDictData("theme"),
         },
         {
           type: "select",

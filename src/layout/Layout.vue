@@ -13,11 +13,12 @@ export default {
   components: {
     Theme1,
   },
-
+  created() {
+    console.log("加载样式");
+  },
   computed: {
     layout() {
-      //return this.$store.state.config.layout;
-      return { layout: "常规" };
+      return this.$store.state.config.layout;
     },
   },
 };
